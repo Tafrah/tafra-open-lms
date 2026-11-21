@@ -1,8 +1,8 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "future-code/admin-template",
+    "name": "tafrah/tafra-open-lms",
     "type": "project",
-    "description": "قالب لوحة التحكم — كود المستقبل (Future Code Admin Template)",
+    "description": "منصة تعليمية مجانية ومفتوحة المصدر للمدرس المصري — من طفرة (Tafra Open LMS)",
     "keywords": [
         "laravel",
         "filament",
@@ -10,7 +10,7 @@
         "multi-tenant",
         "rtl"
     ],
-    "license": "MIT",
+    "license": "AGPL-3.0-or-later",
     "require": {
         "php": "^8.4",
         "filament/filament": "^5.7",

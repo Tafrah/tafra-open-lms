@@ -16,7 +16,20 @@
 
 ---
 
-# قالب لوحة التحكم — كود المستقبل (Future Code Admin Template)
+## الرخصة
+
+[AGPL-3.0](LICENSE): استخدمه وعدّله ببلاش — بس أي نسخة معدّلة بتتشغّل للناس لازم كودها يتنشر بنفس الرخصة.
+اسم «طفرة» واللوجو علامة تجارية ومش جزء من الرخصة.
+
+## للمطورين
+
+- خريطة المنصة التعليمية: `src/Contexts/{Academy,Exams,Students,Billing,Storefront,Transfer,Installer}` — والقواعد في `CLAUDE.md`.
+- النقل من/إلى طفرة: [`docs/transfer/format.md`](docs/transfer/format.md).
+- الخطة والميزات: [`docs/product/plan.html`](docs/product/plan.html) · [`docs/product/features.html`](docs/product/features.html) · التصميم: [`docs/product/design-spec.md`](docs/product/design-spec.md).
+
+---
+
+# القالب الأساسي — قالب لوحة التحكم من كود المستقبل
 
 > **الهدف:** بناء قالب Laravel + Filament جاهز للإنتاج، نستنسخه في أي مشروع جديد فنكسب من أول يوم: صلاحيات كاملة، تعدد مستأجرين، ملفات، إعدادات ديناميكية، إشعارات، ترجمة، ثيم كود المستقبل، ولوجينج محترم.
 >

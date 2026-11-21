@@ -2,6 +2,22 @@
 
 Guidance for Claude Code when working in this repository.
 
+## Tafra Open LMS (this repo)
+
+A free, open-source LMS for **one Egyptian teacher per install**, built on the template below.
+Installable on **shared hosting (MySQL, no SSH/Redis/workers)**, VPS or Coolify. AGPL-3.0.
+
+- Contexts: `Academy` (levels, lesson library, courses → sections → items), `Exams` (MCQ/essay, attempts,
+  grading), `Students` (own `student` guard, phone + password), `Billing` (receipt payments, wallet,
+  recharge cards, coupons, enrollments), `Storefront` (public/student site, Blade + Livewire),
+  `Transfer` (`tafra:export` / `tafra:import`, panel page), `Installer` (`/install`, `lms:install`).
+- **Tables keep Tafra's tenant names and columns** (+ `tenant_id`) so moving to Tafra is row copying.
+  The contract is `docs/transfer/format.md` + `TafraSchemaMap`; change it only with a format_version bump
+  and the round-trip test (`src/Contexts/Transfer/Tests/Feature/RoundTripTest.php`).
+- Money always moves through `WalletAction` (row lock + ledger). Never `update(['balance'])`.
+- Tenancy mode is always `single`. Tests run on **MySQL** (`open_lms_testing`).
+- UI must look like Tafra: `docs/product/design-spec.md`.
+
 ## Project
 
 A production-ready Laravel + Filament admin template for Future Code (كود المستقبل).
