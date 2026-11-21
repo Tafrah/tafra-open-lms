@@ -64,6 +64,9 @@ trait SanitizesHtml
      */
     public function isSanitizedAttributeTranslatable(string $attribute): bool
     {
-        return in_array($attribute, $this->translatable, true);
+        // موديل من غير ترجمة (مفيش `$translatable`) = عمود نص عادي
+        return property_exists($this, 'translatable')
+            && is_array($this->translatable)
+            && in_array($attribute, $this->translatable, true);
     }
 }

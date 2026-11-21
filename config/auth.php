@@ -45,6 +45,12 @@ return [
             'provider' => 'users',
         ],
 
+        // الطلبة على الموقع العام — جدول منفصل، مالهمش دخول على لوحة التحكم
+        'student' => [
+            'driver' => 'session',
+            'provider' => 'students',
+        ],
+
         // توكنز OAuth لخادم MCP بس (docs/23) — مفيش API عام على الحارس ده
         'api' => [
             'driver' => 'passport',
@@ -73,6 +79,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', User::class),
+        ],
+
+        'students' => [
+            'driver' => 'eloquent',
+            'model' => Src\Contexts\Students\Domain\Models\Student::class,
         ],
 
         // 'users' => [

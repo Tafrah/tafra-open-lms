@@ -57,7 +57,7 @@ final class SettingsDrivenDiskResolver implements DiskResolver
         $settings = $this->settings();
 
         if ($settings === null) {
-            return in_array($collection, ['documents', 'contracts', 'identity_papers'], true);
+            return in_array($collection, ['documents', 'contracts', 'identity_papers', 'receipt', 'answer_images'], true);
         }
 
         return in_array($collection, $settings->private_collections, true);

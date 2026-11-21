@@ -92,6 +92,16 @@ function userWithRole(string $role, ?Tenant $tenant = null): User
     return $user->fresh();
 }
 
+/** سياق المؤسسة من غير مستخدم لوحة — لاختبارات الطالب والموقع العام. */
+function inTenant(?Tenant $tenant = null): Tenant
+{
+    $tenant ??= currentTenant();
+
+    app(TenantContext::class)->set($tenant->getKey());
+
+    return $tenant;
+}
+
 /** مستخدم من فريق التشغيل بس — مش عضو في أي مؤسسة. */
 function centralUser(string $role): User
 {

@@ -22,28 +22,28 @@ final class StudentPolicy extends StandardPolicy
     public function adjustWallet(User $user, Student $student): Response
     {
         return $this->owned($user, $student, 'adjust_wallet')
-            ->rule(! $record->trashed(), 'record_trashed')
+            ->rule(! $student->trashed(), 'record_trashed')
             ->response();
     }
 
     public function enroll(User $user, Student $student): Response
     {
         return $this->owned($user, $student, 'enroll')
-            ->rule(! $record->trashed(), 'record_trashed')
+            ->rule(! $student->trashed(), 'record_trashed')
             ->response();
     }
 
     public function resetPassword(User $user, Student $student): Response
     {
         return $this->owned($user, $student, 'reset_password')
-            ->rule(! $record->trashed(), 'record_trashed')
+            ->rule(! $student->trashed(), 'record_trashed')
             ->response();
     }
 
     public function block(User $user, Student $student): Response
     {
         return $this->owned($user, $student, 'block')
-            ->rule(! $record->trashed(), 'record_trashed')
+            ->rule(! $student->trashed(), 'record_trashed')
             ->response();
     }
 }

@@ -45,7 +45,7 @@ return new class extends SettingsMigration
         $this->migrator->add('storage.default_disk', 'public');
         $this->migrator->add('storage.private_disk', 'local');
         $this->migrator->add('storage.conversions_disk', 'public');
-        $this->migrator->add('storage.private_collections', ['documents', 'contracts', 'identity_papers']);
+        $this->migrator->add('storage.private_collections', ['documents', 'contracts', 'identity_papers', 'receipt', 'answer_images']);
         $this->migrator->add('storage.collection_disks', []);
         $this->migrator->add('storage.max_upload_size_kb', 10240);
         $this->migrator->add('storage.allowed_mimes', [
