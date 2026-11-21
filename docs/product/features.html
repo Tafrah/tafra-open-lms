@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>خريطة مميزات المنصة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f5f0; --surface:#ffffff; --surface-2:#f0ede5; --ink:#1d1b16; --muted:#6b665a; --line:#e2ddd0;
+  --accent:#0f6b5c; --accent-soft:#dcefe9;
+  --mvp:#0f6b5c; --mvp-bg:#dcefe9;
+  --p2:#8a5a00; --p2-bg:#f8ecd0;
+  --later:#5b4b8a; --later-bg:#e9e4f6;
+  --plugin:#9a3b2e; --plugin-bg:#f6e1dc;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14130f; --surface:#1d1c17; --surface-2:#26241e; --ink:#eeeadf; --muted:#a39d8e; --line:#353228;
+    --accent:#5cc7b0; --accent-soft:#16332d;
+    --mvp:#5cc7b0; --mvp-bg:#16332d;
+    --p2:#e8b75a; --p2-bg:#3a2d12;
+    --later:#b4a5e8; --later-bg:#2a2440;
+    --plugin:#ec9a8b; --plugin-bg:#3d211c;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14130f; --surface:#1d1c17; --surface-2:#26241e; --ink:#eeeadf; --muted:#a39d8e; --line:#353228;
+  --accent:#5cc7b0; --accent-soft:#16332d;
+  --mvp:#5cc7b0; --mvp-bg:#16332d;
+  --p2:#e8b75a; --p2-bg:#3a2d12;
+  --later:#b4a5e8; --later-bg:#2a2440;
+  --plugin:#ec9a8b; --plugin-bg:#3d211c;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans Arabic",system-ui,sans-serif;line-height:1.75;font-size:16px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+header.hero{padding:56px 0 32px;border-bottom:1px solid var(--line)}
+.kicker{color:var(--accent);font-weight:600;font-size:14px;letter-spacing:.02em}
+h1{font-size:clamp(28px,5vw,44px);line-height:1.25;margin:8px 0 12px}
+h2{font-size:24px;margin:0 0 6px}
+h3{font-size:18px;margin:0}
+p{margin:0 0 12px}
+.lead{font-size:18px;color:var(--muted);max-width:760px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:28px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.stat b{display:block;font-size:28px;line-height:1.2}
+.stat span{color:var(--muted);font-size:14px}
+section{padding:40px 0;border-bottom:1px solid var(--line)}
+.sec-sub{color:var(--muted);margin-bottom:20px}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88em;background:var(--surface-2);padding:1px 6px;border-radius:5px;direction:ltr;unicode-bidi:embed}
+pre{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:14px;overflow-x:auto;direction:ltr;text-align:left;font-size:14px;line-height:1.6;margin:0 0 12px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px}
+.card h3{margin-bottom:8px}
+.card ul{margin:0;padding-inline-start:20px}
+.card li{margin-bottom:4px}
+
+/* toolbar */
+.toolbar{position:sticky;top:0;z-index:5;background:var(--bg);padding:12px 0;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 14px;font:inherit;font-size:14px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip .n{opacity:.7;margin-inline-start:4px}
+.search{flex:1 1 200px;min-width:0;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 14px;font:inherit;font-size:14px}
+.theme-btn{margin-inline-start:auto}
+
+/* modules */
+.modules{display:grid;gap:14px;margin-top:20px}
+details.mod{background:var(--surface);border:1px solid var(--line);border-radius:12px}
+details.mod>summary{list-style:none;cursor:pointer;padding:16px 18px;display:flex;gap:12px;align-items:flex-start}
+details.mod>summary::-webkit-details-marker{display:none}
+.mod-num{flex:0 0 34px;height:34px;border-radius:9px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:700;font-size:15px}
+.mod-head{flex:1;min-width:0}
+.mod-desc{color:var(--muted);font-size:14px;margin:2px 0 0}
+.mod-count{color:var(--muted);font-size:13px;white-space:nowrap}
+.feat{list-style:none;margin:0;padding:0 18px 14px}
+.feat li{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line)}
+.feat .txt{flex:1;min-width:0}
+.feat .note{display:block;color:var(--muted);font-size:13.5px}
+.tag{flex:0 0 auto;font-size:12px;font-weight:600;padding:2px 10px;border-radius:999px;white-space:nowrap;margin-top:3px}
+.t-mvp{color:var(--mvp);background:var(--mvp-bg)}
+.t-p2{color:var(--p2);background:var(--p2-bg)}
+.t-later{color:var(--later);background:var(--later-bg)}
+.t-plugin{color:var(--plugin);background:var(--plugin-bg)}
+.src{font-size:12.5px;color:var(--muted);padding:0 18px 14px}
+.legend{display:flex;flex-wrap:wrap;gap:10px 18px;margin:8px 0 0;font-size:14px;color:var(--muted)}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+.empty{color:var(--muted);padding:20px 0;display:none}
+
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{text-align:start;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:13.5px}
+.tbl-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px 12px}
+
+.steps{counter-reset:s;display:grid;gap:12px}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px 16px 18px;position:relative;padding-inline-start:58px}
+.step::before{counter-increment:s;content:counter(s);position:absolute;inset-inline-start:16px;top:16px;width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-weight:700;font-size:14px}
+.callout{background:var(--accent-soft);border-radius:12px;padding:14px 18px;margin-top:16px}
+footer{padding:32px 0 56px;color:var(--muted);font-size:14px}
+@media (max-width:560px){
+  details.mod>summary{flex-wrap:wrap}
+  .mod-count{width:100%;padding-inline-start:46px}
+  .feat li{flex-direction:column;gap:4px}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kicker">مسودة قبل البدء · نوفمبر ٢٠٢٦</div>
+    <h1>منصة تعليمية مفتوحة المصدر للمدرس المصري</h1>
+    <p class="lead">LMS مجاني ومفتوح المصدر، أي مدرس أو سنتر يقدر يسطّبه على VPS بتاعه بخطوة واحدة (زي Coolify). المميزات هنا مستخرجة من تحليل لوحة تحكم منصة تعليمية مصرية كبيرة شغالة فعلًا، ومرتبة حسب الأولوية: إيه اللي ندخل بيه أول نسخة، وإيه اللي يتأجل.</p>
+    <div class="stats">
+      <div class="stat"><b>124</b><span>صفحة لوحة تحكم اتحللت (116 أدمن + 8 مدرس)</span></div>
+      <div class="stat"><b>351</b><span>نقطة API بتستخدمها اللوحات</span></div>
+      <div class="stat"><b>101</b><span>نقطة API لموقع الطالب</span></div>
+      <div class="stat"><b id="statMods">—</b><span>وحدة (module) في منصتنا</span></div>
+      <div class="stat"><b id="statFeats">—</b><span>ميزة مستخرجة</span></div>
+    </div>
+  </div>
+</header>
+
+<main>
+<section>
+  <div class="wrap">
+    <h2>الفكرة في سطرين</h2>
+    <p class="sec-sub">ليه المشروع ده، ولمين.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>المشكلة</h3>
+        <ul>
+          <li>المدرس عايز منصة باسمه، بس السوق إما منصات SaaS بعمولة واشتراك شهري، أو شركة برمجة تعمله سيستم بعشرات الآلاف.</li>
+          <li>الأنظمة المفتوحة الموجودة (Moodle وغيره) معمولة للجامعات الأجنبية، مش للدرس الخصوصي المصري: أكواد شحن، فودافون كاش، ولي أمر، سنتر، صفوف ثانوي/أزهر.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>الحل</h3>
+        <ul>
+          <li>منصة مفتوحة المصدر فيها اللي المدرس المصري محتاجه فعلًا، جاهزة من أول يوم.</li>
+          <li>تتسطّب بأمر واحد أو بزرار في Coolify، وبعدها معالج إعداد (wizard) بالعربي: اسم الأكاديمية، اللوجو، أول أدمن، طريقة الدفع.</li>
+          <li>كل ميزة كبيرة ليها مفتاح تشغيل/إيقاف، فالمدرس الصغير يشوف لوحة بسيطة والسنتر الكبير يفتح كل حاجة.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout">ملاحظة: إحنا بناخد <b>قائمة المميزات</b> بس كمرجع للي السوق محتاجه. الكود والتصميم والنصوص هنكتبهم من الصفر بتاعتنا، ومش هننسخ أي حاجة من كود المنصة الأصلية ولا من الهوية بتاعتها.</div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="wrap">
+    <h2>خريطة المميزات</h2>
+    <p class="sec-sub">كل وحدة فيها المميزات المستخرجة، وجنب كل ميزة أولويتها. دوس على الوحدة عشان تفتحها.</p>
+    <div class="legend">
+      <span><i class="tag t-mvp">أساسي</i> لازم يبقى في أول نسخة</span>
+      <span><i class="tag t-p2">المرحلة ٢</i> بعد أول إطلاق على طول</span>
+      <span><i class="tag t-later">لاحقًا</i> للسناتر والمنصات الكبيرة</span>
+      <span><i class="tag t-plugin">إضافة</i> اختيارية (plugin) مش في النواة</span>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="toolbar" role="toolbar" aria-label="تصفية المميزات">
+      <button class="chip" data-f="all" aria-pressed="true">الكل<span class="n" id="n-all"></span></button>
+      <button class="chip" data-f="mvp" aria-pressed="false">أساسي<span class="n" id="n-mvp"></span></button>
+      <button class="chip" data-f="p2" aria-pressed="false">المرحلة ٢<span class="n" id="n-p2"></span></button>
+      <button class="chip" data-f="later" aria-pressed="false">لاحقًا<span class="n" id="n-later"></span></button>
+      <button class="chip" data-f="plugin" aria-pressed="false">إضافة<span class="n" id="n-plugin"></span></button>
+      <input class="search" id="q" type="search" placeholder="ابحث عن ميزة… (مثلًا: أكواد، مقالي، ولي الأمر)">
+      <button class="chip" id="expand">افتح الكل</button>
+    </div>
+    <div class="modules" id="modules"></div>
+    <p class="empty" id="empty">مفيش ميزة مطابقة للبحث.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>هنعمم إيه بدل ما ننسخه</h2>
+    <p class="sec-sub">حاجات في المنصة الأصلية معمولة لعميل واحد. عندنا هتبقى عامة لأي مدرس.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>في المنصة الأصلية</th><th>عندنا</th></tr></thead>
+        <tbody>
+          <tr><td>أرقام فودافون كاش ومراجعة إيصالاتها</td><td>«محافظ التحويل اليدوي»: أي محفظة (فودافون/اتصالات/أورانج/إنستاباي) + رفع إيصال + مراجعة</td></tr>
+          <tr><td>بوابة دفع واحدة مربوطة بالكود</td><td>طبقة «بوابات دفع» بـ driver لكل بوابة (Fawaterk، Kashier، Paymob…) يتفعّل من الإعدادات</td></tr>
+          <tr><td>كوميونيتي باسم المدرس</td><td>«المجتمع / المنتدى» كوحدة عامة</td></tr>
+          <tr><td>طلبات أجّلوا الكيمياء</td><td>«نماذج طلبات مخصصة»: المدرس يعمل نموذج طلب بأي حقول ويراجع الردود</td></tr>
+          <tr><td>طلبات نتيجة الثانوية</td><td>نموذج مخصص من نفس النوع + لوحة شرف للأوائل</td></tr>
+          <tr><td>صفوف ثانوي/أزهر/بكالوريا مكتوبة في الكود</td><td>المراحل والصفوف وأنواع التعليم بيانات يعدّلها الأدمن، ومعاها قوالب جاهزة للمنهج المصري</td></tr>
+          <tr><td>أعلام ميزات مخفية في ملف إعدادات للمطورين</td><td>صفحة «الوحدات» في الإعدادات: المدرس يفعّل ويقفل الميزات بنفسه</td></tr>
+          <tr><td>فحص البطاقة بالذكاء الاصطناعي بموديل معين</td><td>إضافة اختيارية، المدرس يحط مفتاح API بتاعه (أي مزود)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>التسطيب بخطوة واحدة</h2>
+    <p class="sec-sub">ده الهدف الأساسي للمشروع: مدرس مش مبرمج يقدر يشغّله.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>الطريقة ١: من Coolify</h3>
+        <p>نعمل قالب خدمة (one-click service) فيه كل حاجة: التطبيق، قاعدة البيانات، Redis، الـ worker، والـ scheduler. المدرس يدوس «Deploy» ويكتب الدومين وبس.</p>
+      </div>
+      <div class="card">
+        <h3>الطريقة ٢: سطر واحد على أي VPS</h3>
+<pre>curl -fsSL https://get.&lt;project&gt;.org | sudo bash</pre>
+        <p>السكربت بيسطّب Docker، ينزّل ملف <code>compose.yml</code>، يولّد كلمات السر، يطلع شهادة SSL تلقائي، ويفتح معالج الإعداد.</p>
+      </div>
+    </div>
+    <h3 style="margin:24px 0 12px">بعد التسطيب</h3>
+    <div class="steps">
+      <div class="step"><b>معالج الإعداد بالعربي:</b> اسم الأكاديمية، اللوجو والألوان، حساب السوبر أدمن، وضع «مدرس واحد» ولا «أكاديمية فيها مدرسين».</div>
+      <div class="step"><b>اختيار قالب المنهج:</b> ثانوي عام / أزهر / إعدادي / جامعة / فاضي. ده بيملا الصفوف والمواد تلقائي.</div>
+      <div class="step"><b>طريقة الدفع:</b> أكواد شحن، محفظة تحويل يدوي، أو بوابة دفع. ممكن أكتر من طريقة مع بعض.</div>
+      <div class="step"><b>استضافة الفيديو:</b> YouTube (غير مدرج) / Bunny Stream / Vimeo / رفع على السيرفر.</div>
+      <div class="step"><b>التحديثات والنسخ الاحتياطي:</b> زرار «تحديث» في اللوحة (بيسحب نسخة الـ image الجديدة ويشغّل الـ migrations)، ونسخة احتياطية يومية تلقائي لقاعدة البيانات والملفات (محلي أو S3 / R2).</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>اقتراح للتقنيات (قابل للنقاش)</h2>
+    <p class="sec-sub">المنصة الأصلية واضح إنها Laravel (أوامر <code>php artisan</code> ظاهرة في اللوحة) + React. اقتراحنا قريب من ده عشان أغلب مبرمجي مصر يقدروا يساهموا.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>الجزء</th><th>الاقتراح</th><th>ليه</th></tr></thead>
+        <tbody>
+          <tr><td>الباك إند</td><td>Laravel 12 + PHP 8.4</td><td>أكبر مجتمع مطورين في مصر، والـ queues والـ scheduler جاهزين</td></tr>
+          <tr><td>لوحة الأدمن والمدرس</td><td>Filament 4</td><td>جداول وفلاتر ونماذج CRUD جاهزة، ودي ٨٠٪ من الـ 124 صفحة</td></tr>
+          <tr><td>موقع الطالب</td><td>Inertia + React (أو Livewire)</td><td>تجربة سريعة على الموبايل، ومن غير API منفصل في البداية</td></tr>
+          <tr><td>قاعدة البيانات</td><td>PostgreSQL (أو MySQL)</td><td>الاتنين مدعومين في Coolify</td></tr>
+          <tr><td>الطوابير والكاش</td><td>Redis + Horizon</td><td>رسايل SMS/واتساب، تصحيح، توليد أكواد بالآلاف</td></tr>
+          <tr><td>الويب سيرفر</td><td>FrankenPHP / Caddy</td><td>SSL تلقائي وصورة Docker واحدة</td></tr>
+          <tr><td>الترخيص</td><td>AGPL-3.0 (أو MIT)</td><td>AGPL بتضمن إن أي حد يعمل منها SaaS يرجّع التعديلات للمجتمع</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>خطة المراحل</h2>
+    <p class="sec-sub">الأرقام بالأسابيع تقديرية لمطور واحد متفرّغ.</p>
+    <div class="grid2">
+      <div class="card"><h3>المرحلة ١ · أول نسخة (≈ ٨–١٠ أسابيع)</h3><p>كل ميزة متعلّمة «أساسي»: الهيكل الدراسي، الكورسات والمحتوى، الفيديو المحمي، الامتحانات (اختيار من متعدد)، الأكواد، التفعيل اليدوي، محفظة التحويل، ملف الطالب، الأدمنز والصلاحيات، التسطيب بخطوة واحدة.</p></div>
+      <div class="card"><h3>المرحلة ٢ · (≈ ٦ أسابيع)</h3><p>المقالي والتصحيح، بوابات الدفع، رسايل ولي الأمر، الجلسات المباشرة، التقارير، لوحة المدرس، الكوبونات، الإشعارات.</p></div>
+      <div class="card"><h3>المرحلة ٣ · للسناتر الكبيرة</h3><p>حجز مقاعد السنتر، منافذ البيع، توزيع الطلبة على الدعم، المنتدى بالإشراف، جدول المذاكرة، المراجعة بالتوازي.</p></div>
+      <div class="card"><h3>الإضافات</h3><p>فحص البطاقة بالـ AI، التصحيح الآلي بالـ AI، الربط مع منصات تانية، التوظيف، السحب على الجوائز.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>قرارات محتاجين نتفق عليها قبل ما نبدأ</h2>
+    <div class="grid2">
+      <div class="card"><h3>١. تركيب لكل مدرس ولا تركيب لكذا مدرس؟</h3><p>اقتراحنا: كل تركيب = أكاديمية واحدة (فيها مدرس أو أكتر). أبسط بكتير من multi-tenant، ومناسب لفكرة «سيرفرك بتاعك».</p></div>
+      <div class="card"><h3>٢. اسم المشروع والدومين</h3><p>محتاجين اسم عربي/إنجليزي سهل، ودومين لسكربت التسطيب والتوثيق.</p></div>
+      <div class="card"><h3>٣. الترخيص</h3><p>AGPL ولا MIT؟ ده بيحدد هل شركة تقدر تاخده وتبيعه SaaS من غير ما ترجّع حاجة.</p></div>
+      <div class="card"><h3>٤. الواجهة</h3><p>لوحة الطالب React (أسرع وأجمل) ولا Livewire (مطور واحد يقدر يمسك المشروع كله)؟</p></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">المصدر: تحليل لوحة التحكم في <code>khaled-sakr-admin-analysis/</code> (REPORT.md و BACKEND-ROUTES.md و data/nav.json). المميزات اتعاد ترتيبها وتعميمها، والأولويات اقتراح مبدئي.</div>
+</footer>
+
+<script>
+const T={mvp:"أساسي",p2:"المرحلة ٢",later:"لاحقًا",plugin:"إضافة"};
+const M=[
+ {t:"الهيكل الدراسي",d:"المراحل والصفوف والمواد والمدرسين، ودي الأساس اللي كل حاجة بتتبني عليه.",s:"الشعبات، المواد، المدرسين، الأقسام، فئات الكورسات",f:[
+  ["مراحل وصفوف دراسية (أول/تاني/تالت ثانوي…) يعدّلها الأدمن","mvp"],
+  ["أنواع التعليم: عام / أزهر / بكالوريا / لغات، والمحتوى يظهر حسب نوع الطالب","mvp"],
+  ["المواد مربوطة بالصفوف","mvp"],
+  ["الشُعب (علمي علوم / رياضة / أدبي)","mvp"],
+  ["أكتر من مدرس في نفس المنصة، وكل مدرس ليه مواده","p2","وضع «أكاديمية». الوضع الافتراضي مدرس واحد"],
+  ["أقسام الموقع (divisions) لتقسيم المحتوى داخل الصف","mvp"],
+  ["فئات للكورسات","mvp"],
+  ["المحافظات والمدن (لبيانات الطلبة وحجز السنتر)","mvp"],
+ ]},
+ {t:"الكورسات",d:"المنتج اللي الطالب بيشترك فيه.",s:"اضافة وتعديل الكورسات (48 حقل)، الكوبونات، جدول الكورسات",f:[
+  ["إنشاء كورس: عنوان، وصف، صورة، سعر، سعر قبل الخصم","mvp"],
+  ["قابل للبيع / مخفي / ظاهر في الرئيسية / مثبّت / مقترح للطلاب","mvp"],
+  ["اشتراك شهري (الكورس يتسمّى «شهر» ويتجدد)","mvp"],
+  ["اشتراك بالمادة كلها مع المدرس بدل كورس كورس","p2"],
+  ["كورس مقفول على طلبة محددين بس","p2"],
+  ["ترقية من كورس لكورس مع خصم قيمة الكورس القديم","later"],
+  ["كوبونات خصم (نسبة/مبلغ، عدد مرات، تاريخ انتهاء) وتفعيلها لكل كورس","p2"],
+  ["قابل للدفع المسبق بالأكواد","mvp"],
+  ["محتوى تفصيلي للكورس (صفحة بيع فيها أقسام: هتتعلم إيه، المنهج…)","p2"],
+  ["عدد جلسات مباشرة مسموحة لكل مشترك","later"],
+  ["إرسال رسالة لولي الأمر عند الاشتراك","p2"],
+  ["بحث في الكورسات وفلترة بالمادة والمدرس","mvp"],
+ ]},
+ {t:"محتوى الكورس",d:"مجموعات (وحدات) جواها فيديوهات ومذكرات وامتحانات بترتيب.",s:"المجموعات، تعديل/نقل مجموعات الكورس، الفيديوهات، المذكرات، الروابط المحمية",f:[
+  ["مجموعات (sections) جوه الكورس، وكل مجموعة فيها عناصر مرتبة","mvp"],
+  ["المحتوى قابل لإعادة الاستخدام: نفس الفيديو أو الامتحان في أكتر من كورس","mvp"],
+  ["ترتيب المجموعات والعناصر بالسحب","mvp"],
+  ["نسخ/نقل مجموعات من كورس لكورس","p2"],
+  ["جدولة الظهور: ظاهر من تاريخ لتاريخ لكل عنصر","mvp"],
+  ["عنصر مجاني للتجربة جوه كورس مدفوع","mvp"],
+  ["فيديو من YouTube / Vimeo / Bunny Stream / رفع مباشر","mvp"],
+  ["حد لعدد مرات مشاهدة الفيديو لكل طالب","mvp"],
+  ["تسجيل المشاهدة: مدة فتح الصفحة ومدة التشغيل الفعلي وIP","mvp"],
+  ["مذكرات PDF بتحميل محمي (روابط موقّعة بمدة)","mvp"],
+  ["علامة مائية برقم الطالب على الفيديو والـ PDF","p2"],
+  ["قفل عنصر لحد ما الطالب ينجح في امتحان قبله","p2"],
+  ["استبيان/تقييم قبل الامتحان أو بعد الدرس","later"],
+ ]},
+ {t:"الامتحانات والواجبات",d:"بنك أسئلة، امتحانات عشوائية، ومحاولات محدودة.",s:"الامتحانات (32 حقل)، مجاميع الأسئلة، الأسئلة، بنك الأسئلة، إضافة أكتر من سؤال",f:[
+  ["نوعين: امتحان وواجب، ولكل نوع جدول نتائج منفصل","mvp"],
+  ["بنك أسئلة مقسّم لمجاميع (partitions) لكل صف","mvp"],
+  ["امتحان بيسحب عدد معين من كل مجموعة أسئلة","mvp"],
+  ["عشوائية ترتيب المجموعات / الأسئلة / الإجابات","mvp"],
+  ["مدة الامتحان، درجة النجاح، عدد مرات الفتح","mvp"],
+  ["إمكانية استكمال الامتحان لو النت فصل (حفظ الإجابات أول بأول)","mvp"],
+  ["إظهار الإجابات الصحيحة والتفسير بعد التسليم (اختياري)","mvp"],
+  ["سؤال اختيار من متعدد، بصورة في السؤال وصورة في التفسير","mvp"],
+  ["سؤال مقالي بنموذج إجابة، والطالب يقدر يرفع صورة إجابته","p2"],
+  ["سؤال كلمات دالة بيتصحح آلي (مطابقة كلمات)","p2"],
+  ["إضافة أسئلة بالجملة (لصق / ملف إكسل)","p2"],
+  ["امتحان شخصي: الطالب يمتحن نفسه في الأسئلة اللي غلط فيها قبل كده","later"],
+  ["زيادة عدد محاولات امتحان لطالب معيّن","mvp"],
+ ]},
+ {t:"تصحيح المقالي",d:"طابور مراجعة لفريق المصححين.",s:"مراجعة الأسئلة المقالي (+ بالتوازي)، إحصائيات التصحيح، مواعيد التصحيح",f:[
+  ["طابور إجابات مقالية مستنية تصحيح، مع فلترة بالامتحان والطالب","p2"],
+  ["المصحح يدي درجة والنتيجة تتحدث تلقائي","p2"],
+  ["تصحيح بالتوازي: كل إجابة تتحجز لمصحح واحد لفترة عشان محدش يصحح نفس السؤال","later"],
+  ["هدف يومي لكل مصحح (عدد أسئلة) ومواعيد التصحيح","later"],
+  ["إحصائيات المصححين (آخر ٢٤ ساعة / ٧ أيام / فترة مخصصة) وتصدير التصحيحات","later"],
+  ["تصحيح مبدئي بالذكاء الاصطناعي بمعايير (rubric) يراجعها المصحح","plugin"],
+ ]},
+ {t:"الاشتراكات والمدفوعات",d:"إزاي الطالب يدفع ويتفعّل له الكورس.",s:"الدفع اليدوي، إلغاء الاشتراك، معلومات الدفع، أرقام فودافون كاش، مراجعة الفواتير، جداول الاشتراكات والفواتير",f:[
+  ["تفعيل يدوي لطالب أو لمئات الأرقام مرة واحدة (لصق من إكسل) مع تقرير بالنتيجة","mvp"],
+  ["إلغاء اشتراك بالجملة بنفس الطريقة","mvp"],
+  ["اشتراك بتاريخ بداية ونهاية، أو لآخر السنة، أو المنصة كلها","mvp"],
+  ["محفظة رصيد للطالب يشتري منها الكورسات","mvp"],
+  ["فواتير لكل عملية شراء بحالتها وطريقة الدفع","mvp"],
+  ["تحويل يدوي على محفظة موبايل: الطالب يرفع الإيصال والأدمن يقبل أو يرفض","mvp"],
+  ["أرقام محافظ متعددة، وكل رقم مربوط بمسؤول يراجع إيصالاته","p2"],
+  ["صفحة «إزاي تدفع» يكتبها المدرس بنفسه","mvp"],
+  ["بوابات دفع أونلاين بـ driver لكل بوابة (Fawaterk / Kashier / Paymob)","p2"],
+  ["فترة تجريبية مجانية","later"],
+  ["اشتراك «غير مخصص» يختار الطالب الكورس بتاعه بعدين","later"],
+  ["طلبات إعفاء من الدفع ومراجعتها","later"],
+ ]},
+ {t:"أكواد الشحن ومنافذ البيع",d:"الكروت المطبوعة اللي بتتباع في المكتبات والسناتر، ودي أهم طريقة دفع في مصر.",s:"انشاء اكواد، جدول الأكواد، متابعة الاستهلاك، سجلات حسابات الأكواد، المحاضرات مسبقة الدفع، منافذ البيع",f:[
+  ["توليد دفعة أكواد بعدد وقيمة وصف دراسي","mvp"],
+  ["أنواع الأكواد: شحن محفظة / تفعيل كورس معين / كود = حساب جاهز","mvp"],
+  ["تحميل الأكواد بالسيريال للطباعة (PDF / إكسل)","mvp"],
+  ["متابعة الاستهلاك: مين شحن أنهي كود وإمتى","mvp"],
+  ["كورسات مسبقة الدفع وتعديلها لكل طالب","p2"],
+  ["أكواد مخصصة لسنتر معيّن","later"],
+  ["سجلات محاسبية للأكواد (اتسلّم كام لمين واتحصّل كام)","later"],
+  ["منافذ البيع على الخريطة وتقييمات الطلبة ليها","later"],
+ ]},
+ {t:"السنتر (الحضور الأوفلاين)",d:"ربط الحصص في السنتر بالمنصة.",s:"حجوزات السنتر في الكورس، اضافة طالب بكارت سنتر، مستخدمين السنتر، طلبات الحجز",f:[
+  ["حجز مقعد في حصة السنتر: عدد مقاعد، موعد فتح الحجز، موعد الحصة، لوكيشن","later"],
+  ["قصر الحجز على محافظات معينة أو نوع (بنين/بنات) أو مشتركين في كورس","later"],
+  ["رقم مقعد تسلسلي وكود دخول لكل حاجز","later"],
+  ["إضافة طالب بكارت سنتر","later"],
+  ["رفع نتايج امتحانات السنتر الورقية على حساب الطالب","later"],
+ ]},
+ {t:"الجلسات المباشرة",d:"حصص لايف أو جلسات أسئلة مع المدرس أو المشرف.",s:"الجلسات المباشرة، جداول متابعة الحجوزات",f:[
+  ["إنشاء جلسة (رابط Zoom / Meet / Jitsi) بموعد وعدد أماكن","p2"],
+  ["الطالب يحجز ميعاد متاح، والأدمن يتابع الحجوزات","p2"],
+  ["تسجيل الحضور وتقييم الطالب للجلسة","later"],
+  ["جلسات المشرفين (مش المدرس) بجدول منفصل","later"],
+ ]},
+ {t:"حسابات الطلبة",d:"التسجيل، التحقق، وملف الطالب الكامل.",s:"ملف المستخدم (73 عمود)، اضافة طالب، طلبات انشاء الحسابات، سجلات فحص AI، OTP، التاجات، الدخول كطالب",f:[
+  ["تسجيل برقم الموبايل + رقم ولي الأمر + المحافظة + الصف","mvp"],
+  ["تأكيد الرقم بـ OTP، مع استثناء طلبة معينين","p2"],
+  ["تسجيل بموافقة: الطالب يرفع البطاقة/شهادة الميلاد والأدمن يقبل أو يرفض برسالة","p2"],
+  ["مراجعة طلبات التسجيل بالتوازي (كل طلب يتحجز لمسؤول)","later"],
+  ["قراءة البطاقة بالذكاء الاصطناعي ومقارنتها بالبيانات المكتوبة","plugin"],
+  ["ملف طالب واحد فيه كل حاجة: بيانات، إحصائيات، اشتراكات، فواتير، مشاهدات، نتايج","mvp"],
+  ["تغيير كلمة السر، حظر برسالة، فك الحظر، حذف نهائي","mvp"],
+  ["تحديد عدد الأجهزة وتسجيلات الدخول، وزيادتها لطالب معين","mvp"],
+  ["زيادة مشاهدات فيديو معيّن أو محاولات امتحان لطالب معيّن","mvp"],
+  ["ملاحظات داخلية بين الأدمنز على الطالب","p2"],
+  ["تاجات للطلبة (مميز، متأخر في الدفع…) والفلترة بيها","p2"],
+  ["الدخول كطالب لرؤية حسابه زي ما هو شايفه (للدعم الفني)","p2"],
+  ["سجل تغيير رقم الموبايل وكلمة السر","later"],
+ ]},
+ {t:"التواصل مع الطالب وولي الأمر",d:"إشعارات ورسايل، وأهمها رسالة النتيجة لولي الأمر.",s:"الإشعارات، جدول انتظار الرسايل، إرسال رسائل الامتحانات، اشعارات المنتدى",f:[
+  ["إشعارات داخل المنصة لكل الطلبة أو لصف أو لكورس","mvp"],
+  ["رسالة نتيجة الامتحان لولي الأمر (حملة لكل امتحان)","p2"],
+  ["طابور رسايل بحالة كل رسالة (مستنية / اتبعتت / فشلت)","p2"],
+  ["قنوات إرسال بـ driver: SMS / واتساب / بريد / تليجرام","p2"],
+  ["رسالة متابعة لولي الأمر عند الاشتراك","p2"],
+  ["إشعارات Web Push على الموبايل","later"],
+ ]},
+ {t:"أدوات الطالب",d:"اللي بيخلي الطالب يرجع للمنصة كل يوم.",s:"نقاط API موقع الطالب: progress، favorites، rankings، study_planner، lecture_schedules",f:[
+  ["لوحة الطالب: كورساتي، تقدمي، آخر نتايجي","mvp"],
+  ["المفضلة","p2"],
+  ["جدول المحاضرات الأسبوعي لكل مدرس","p2"],
+  ["جدول مذاكرة: أسابيع ومواد والطالب يعلّم اللي خلّصه","later"],
+  ["ترتيب الطلبة (لوحة الشرف) حسب الدرجات","p2"],
+  ["إبلاغ عن مشكلة من جوه المنصة","mvp"],
+ ]},
+ {t:"المجتمع والمنتدى",d:"مكان الطلبة يسألوا ويتناقشوا تحت إشراف.",s:"مجموعات وفئات المنتدى، إشراف المنتدى (8 صفحات)",f:[
+  ["مجموعات نقاش لكل كورس أو صف، وجواها فئات","later"],
+  ["مواضيع وتعليقات بصور","later"],
+  ["مراجعة المواضيع قبل النشر (ومراجعة بالتوازي)","later"],
+  ["مشرفين وإحصائيات لكل مشرف (قبل/حذف/علّق)","later"],
+  ["إجابات مقترحة وتثبيت الإجابة الصح","later"],
+ ]},
+ {t:"المتابعة والدعم الفني",d:"لما الأكاديمية تكبر ويبقى فيه فريق.",s:"توزيع الطلبة على المسؤولين/الدعم، جداول المتابعة، تقارير المشاكل، الطلبات",f:[
+  ["توزيع الطلبة على المسؤولين، وكل مسؤول يشوف «طلبتي»","later"],
+  ["توزيع على فريق الدعم الفني وجدول متابعة","later"],
+  ["تقارير مشاكل الطلبة (عامة ويومية) بحالة كل مشكلة","p2"],
+  ["نماذج طلبات مخصصة (تأجيل، تسجيل نتيجة، أي حاجة)","later"],
+  ["إحصائيات المشتركين لفريق الدعم","later"],
+ ]},
+ {t:"التقارير والإحصائيات",d:"أرقام المدرس محتاج يشوفها كل يوم.",s:"الإحصائيات، احصائيات الفيديوهات والامتحانات، نتائج الامتحانات والواجبات، احصائيات المشتركين",f:[
+  ["الرئيسية: عدد الطلبة، الاشتراكات، الفواتير والمدفوع منها، توزيع الطلبة على الصفوف","mvp"],
+  ["مشاهدات الفيديو، والمشاهدات الحقيقية (أكتر من ٥ دقايق)","mvp"],
+  ["جداول نتايج الامتحانات والواجبات بفلترة وتصدير إكسل","mvp"],
+  ["إحصائيات كل فيديو وكل امتحان (متوسط، نسبة نجاح، أصعب سؤال)","p2"],
+  ["إحصائيات المدرس (في وضع الأكاديمية)","p2"],
+  ["آخر التحديثات (سجل نشاط المنصة)","p2"],
+ ]},
+ {t:"لوحة المدرس",d:"في وضع الأكاديمية: كل مدرس يشوف بياناته هو بس.",s:"لوحة المدرس (8 صفحات)",f:[
+  ["إحصائيات المدرس: اشتراكاته وفواتيره وطلبته لكل صف","p2"],
+  ["جداول الاشتراكات والفواتير الخاصة بيه","p2"],
+  ["نتايج امتحانات وواجبات طلبته","p2"],
+  ["تصحيح المقالي بتاعه","p2"],
+ ]},
+ {t:"الإدارة والأمان",d:"مين يدخل اللوحة، ويعمل إيه، ومين حاول يدخل.",s:"اضافه وتعديل مسؤول، الأمان، جلسات الدخول، فهرس معلومات الأدمن",f:[
+  ["مسؤولين بصلاحيات على مستوى الصفحة، وسوبر أدمن","mvp"],
+  ["سجل محاولات دخول اللوحة (IP، الجهاز، نجح/فشل)","p2"],
+  ["حظر IP تلقائي بعد محاولات فاشلة، وحظر/فك يدوي","p2"],
+  ["كابتشا على تسجيل الدخول","p2"],
+  ["مراجعة تسجيلات الدخول والخروج لكل الحسابات","p2"],
+  ["تحقق بخطوتين للأدمن","p2"],
+  ["ويكي داخلي للفريق (أقسام وفئات ومعلومات) للردود الجاهزة","later"],
+  ["صفحة «الوحدات»: تفعيل وإيقاف أي ميزة كبيرة من الإعدادات","mvp"],
+ ]},
+ {t:"التسطيب والتشغيل",d:"مش موجودة في المنصة الأصلية، بس هي سبب وجود مشروعنا.",s:"جديد عندنا",f:[
+  ["قالب Coolify بزرار واحد","mvp"],
+  ["سكربت تسطيب بسطر واحد على أي VPS (Ubuntu/Debian)","mvp"],
+  ["معالج إعداد أول مرة بالعربي","mvp"],
+  ["قوالب منهج جاهزة (ثانوي عام / أزهر / إعدادي)","mvp"],
+  ["نسخ احتياطي يومي تلقائي (محلي أو S3 / R2) واسترجاع","mvp"],
+  ["تحديث من اللوحة بزرار","p2"],
+  ["هوية بصرية من الإعدادات: لوجو، ألوان، دومين، صفحة رئيسية","mvp"],
+  ["لغة الواجهة عربي أولًا، وترجمة إنجليزي","mvp"],
+  ["نظام إضافات (plugins) للمطورين","p2"],
+ ]},
+ {t:"إضافات متقدمة",d:"مش في النواة، تتعمل كإضافات اختيارية.",s:"الوظائف، الفائزين، الربط مع منصات أخرى، كورس سنتر API",f:[
+  ["توظيف: خيارات وظائف وطلبات تقديم","plugin"],
+  ["سحب على جوايز بين الطلبة وجدول الفائزين","plugin"],
+  ["الاشتراك في الكورس من منصة تانية (ربط API)","plugin"],
+  ["API للسناتر لربط أنظمتها","plugin"],
+  ["تطبيق موبايل (PWA أولًا)","plugin"],
+ ]},
+];
+
+const root=document.getElementById("modules");
+let total=0; const counts={mvp:0,p2:0,later:0,plugin:0};
+M.forEach((m,i)=>{
+  const d=document.createElement("details"); d.className="mod"; if(i<2) d.open=true;
+  const items=m.f.map(([txt,p,note])=>{total++;counts[p]++;
+    return `<li data-p="${p}"><span class="txt">${txt}${note?`<span class="note">${note}</span>`:""}</span><span class="tag t-${p}">${T[p]}</span></li>`}).join("");
+  const mvp=m.f.filter(x=>x[1]==="mvp").length;
+  d.innerHTML=`<summary><span class="mod-num">${i+1}</span><span class="mod-head"><h3>${m.t}</h3><p class="mod-desc">${m.d}</p></span><span class="mod-count">${m.f.length} ميزة · ${mvp} أساسي</span></summary><ul class="feat">${items}</ul><div class="src">من صفحات: ${m.s}</div>`;
+  root.appendChild(d);
+});
+const ar=n=>n.toLocaleString("ar-EG");
+document.getElementById("statMods").textContent=M.length;
+document.getElementById("statFeats").textContent=total;
+document.getElementById("n-all").textContent=ar(total);
+for(const k in counts) document.getElementById("n-"+k).textContent=ar(counts[k]);
+
+let filt="all";
+const q=document.getElementById("q");
+function apply(){
+  const s=q.value.trim(); let any=false;
+  root.querySelectorAll("details.mod").forEach(d=>{
+    let shown=0;
+    d.querySelectorAll("li").forEach(li=>{
+      const ok=(filt==="all"||li.dataset.p===filt)&&(!s||li.textContent.includes(s)||d.querySelector("h3").textContent.includes(s));
+      li.hidden=!ok; if(ok) shown++;
+    });
+    d.hidden=shown===0; if(shown) any=true;
+    if(s||filt!=="all") d.open=shown>0;
+  });
+  document.getElementById("empty").style.display=any?"none":"block";
+}
+document.querySelectorAll(".chip[data-f]").forEach(b=>b.addEventListener("click",()=>{
+  filt=b.dataset.f;
+  document.querySelectorAll(".chip[data-f]").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  apply();
+}));
+q.addEventListener("input",apply);
+const ex=document.getElementById("expand"); let allOpen=false;
+ex.addEventListener("click",()=>{allOpen=!allOpen;root.querySelectorAll("details.mod:not([hidden])").forEach(d=>d.open=allOpen);ex.textContent=allOpen?"اقفل الكل":"افتح الكل";});
+</script>
+</body>
+</html>

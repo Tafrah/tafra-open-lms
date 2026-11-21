@@ -1,0 +1,250 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  secrets:
+    name: فحص الأسرار
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # أي سر مسرّب = رفض فوري (docs/20 بند ٨).
+      #
+      # بننزّل الـ CLI بدل `gitleaks/gitleaks-action@v2`: الأكشن بقى بيطلب
+      # رخصة مدفوعة لأي مستودع تابع لمنظمة وبيفشل بـ «missing gitleaks
+      # license». الـ CLI نفسه MIT ومجاني، ونفس الفحص بالظبط.
+      - name: gitleaks
+        env:
+          GITLEAKS_VERSION: 8.30.1
+        run: |
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
+            | tar -xz gitleaks
+          ./gitleaks git . --config .gitleaks.toml --redact --no-banner
+
+  scripts:
+    name: سكربتات النشر
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # `bash -n` بيمسك أخطاء التركيب بس. shellcheck بيمسك اللي بيعدّي منه —
+      # زي backtick جوه نص مزدوج الاقتباس (= تنفيذ أمر بالغلط)، ومتغيّر
+      # من غير اقتباس، و`|| true` على خطوة حرجة.
+      - name: shellcheck
+        run: shellcheck -x deploy.sh rollback.sh deploy/lib.sh
+
+  quality:
+    name: الجودة والاختبارات (${{ matrix.tenancy }})
+    runs-on: ubuntu-latest
+
+    # الوضعين في كل PR — الوضع التاني مايتكسرش بصمت (docs/17 بند ١٢).
+    # multi بيعمل `CREATE DATABASE`: مستخدم `fc` هو superuser الحاوية فمعاه الصلاحية.
+    strategy:
+      fail-fast: false
+      matrix:
+        tenancy: [single, multi]
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_DB: fc_admin_testing
+          POSTGRES_USER: fc
+          POSTGRES_PASSWORD: secret
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U fc"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:8
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_pgsql, redis, gd, exif, intl, bcmath, zip
+          coverage: none
+          ini-values: memory_limit=1G
+
+      - name: كاش الاعتماديات
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+
+      - name: composer install
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: تجهيز البيئة
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+        env:
+          DB_HOST: 127.0.0.1
+          DB_USERNAME: fc
+          DB_PASSWORD: secret
+
+      # ثغرة عالية أو حرجة = رسوب (docs/20 بند ١٢)
+      - name: composer audit
+        run: composer audit --no-dev
+
+      - name: Pint
+        run: vendor/bin/pint --test
+
+      - name: PHPStan
+        run: php -d memory_limit=2G vendor/bin/phpstan analyse --no-progress
+
+      - name: Pest
+        run: php -d memory_limit=1G vendor/bin/pest
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: fc_admin_testing
+          DB_USERNAME: fc
+          DB_PASSWORD: secret
+          REDIS_HOST: 127.0.0.1
+          TENANCY_MODE: ${{ matrix.tenancy }}
+
+  # رحلات المستخدم في متصفح حقيقي (docs/17 بند ١٣). منفصلة عن `quality`
+  # عشان محتاجة أصول مبنية + Chromium، وأبطأ بكتير من باقي الاختبارات.
+  browser:
+    name: رحلات المستخدم (${{ matrix.tenancy }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        tenancy: [single, multi]
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_DB: fc_admin_testing
+          POSTGRES_USER: fc
+          POSTGRES_PASSWORD: secret
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U fc"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:8
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_pgsql, redis, gd, exif, intl, bcmath, zip
+          coverage: none
+          ini-values: memory_limit=1G
+
+      - name: كاش الاعتماديات
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+
+      - name: composer install
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      # الجولات والثيم من الأصول المبنية — من غيرها الرحلة بتعدّي على صفحة من غير جولة
+      - name: بناء الأصول
+        run: |
+          npm ci
+          npm run build
+
+      - name: Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: تجهيز البيئة
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: رحلات المستخدم
+        run: composer test:browser
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: fc_admin_testing
+          DB_USERNAME: fc
+          DB_PASSWORD: secret
+          REDIS_HOST: 127.0.0.1
+          TENANCY_MODE: ${{ matrix.tenancy }}
+
+      # لقطة الصفحة وقت الفشل = أسرع طريق لفهم رحلة مكسورة
+      - name: لقطات الفشل
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-screenshots-${{ matrix.tenancy }}
+          path: tests/Browser/Screenshots
+          if-no-files-found: ignore
+
+  assets:
+    name: بناء الأصول
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # الأصول محتاجة vendor: `resources/css/filament/admin/theme.css`
+      # بيستورد `vendor/filament/filament/resources/css/theme.css`.
+      # من غير الخطوتين دول الـ build بيفشل بـ «Can't resolve».
+      - name: PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      - name: composer install
+        run: composer install --no-dev --no-interaction --prefer-dist --no-progress --no-scripts
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+      - run: npm audit --audit-level=high || true
+      - run: npm run build

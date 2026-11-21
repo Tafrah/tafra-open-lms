@@ -1,0 +1,24 @@
+# إعدادات فحص الأسرار.
+#
+# القاعدة: أي سر في الكود = سر مسرّب — حتى في الاختبارات والسيدرز
+# (docs/20 بند ٨).
+
+title = "Future Code Admin — secret scan"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "استثناءات مقصودة وموثّقة"
+paths = [
+    '''(.*?)(jpg|jpeg|png|gif|webp|woff2?|ico)$''',
+    '''package-lock\.json''',
+    '''composer\.lock''',
+    '''public/build/''',
+]
+regexes = [
+    # كلمة مرور البذور للتطوير — قيمة معروفة ومقصودة، مش سر إنتاج
+    '''Password!2026''',
+    # مفاتيح MinIO المحلية في docker-compose
+    '''minio12345''',
+]

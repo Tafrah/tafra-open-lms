@@ -1,0 +1,153 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "future-code/admin-template",
+    "type": "project",
+    "description": "قالب لوحة التحكم — كود المستقبل (Future Code Admin Template)",
+    "keywords": [
+        "laravel",
+        "filament",
+        "admin",
+        "multi-tenant",
+        "rtl"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^8.4",
+        "filament/filament": "^5.7",
+        "filament/spatie-laravel-media-library-plugin": "^5.7",
+        "filament/spatie-laravel-settings-plugin": "^5.7",
+        "future-code/filament-onboarding": "@dev",
+        "laravel/fortify": "^1.39",
+        "laravel/framework": "^13.17",
+        "laravel/horizon": "^5.48",
+        "laravel/mcp": "1.0.1",
+        "laravel/passport": "^13.9",
+        "laravel/pulse": "^1.8",
+        "laravel/reverb": "^1.11",
+        "laravel/tinker": "^3.0",
+        "pxlrbt/filament-activity-log": "^3.1",
+        "sentry/sentry-laravel": "^4.27",
+        "spatie/laravel-activitylog": "^5.1",
+        "spatie/laravel-backup": "^10.3",
+        "spatie/laravel-health": "^1.40",
+        "spatie/laravel-medialibrary": "^11.23",
+        "spatie/laravel-permission": "^8.3",
+        "spatie/laravel-settings": "^3.9",
+        "spatie/laravel-translatable": "^6.14",
+        "stancl/tenancy": "^3.10",
+        "stechstudio/filament-impersonate": "^5.6",
+        "symfony/html-sanitizer": "^7.0"
+    },
+    "require-dev": {
+        "fakerphp/faker": "^1.23",
+        "larastan/larastan": "^3.10",
+        "laravel/pail": "^1.2.5",
+        "laravel/pao": "^1.0.6",
+        "laravel/pint": "^1.27",
+        "laravel/telescope": "^5.22",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.6",
+        "pestphp/pest": "^5.1",
+        "pestphp/pest-plugin-browser": "^5.0",
+        "pestphp/pest-plugin-laravel": "^5.0",
+        "pestphp/pest-plugin-livewire": "^5.0",
+        "phpunit/phpunit": "^13.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Src\\": "src/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        },
+        "files": [
+            "src/Support/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "setup": [
+            "composer install",
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "@php artisan key:generate",
+            "@php artisan migrate --force",
+            "@php artisan db:seed --force",
+            "@php artisan storage:link",
+            "npm install --ignore-scripts",
+            "npm run build"
+        ],
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php artisan dev"
+        ],
+        "test": "@php -d memory_limit=1G vendor/bin/pest",
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi",
+            "@php artisan filament:upgrade"
+        ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "pre-package-uninstall": [
+            "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
+        ],
+        "test:multi": [
+            "Composer\\Config::disableProcessTimeout",
+            "@putenv TENANCY_MODE=multi",
+            "@php -d memory_limit=1G vendor/bin/pest"
+        ],
+        "test:browser": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php -d memory_limit=1G vendor/bin/pest tests/Browser"
+        ],
+        "test:par": "@php -d memory_limit=1G vendor/bin/pest --parallel",
+        "test:cov": "@php -d memory_limit=2G vendor/bin/pest --coverage --min=70",
+        "test:arch": "@php -d memory_limit=1G vendor/bin/pest tests/Architecture",
+        "lint": [
+            "@php -d memory_limit=1G vendor/bin/pint --test",
+            "@php -d memory_limit=2G vendor/bin/phpstan analyse --no-progress"
+        ],
+        "fix": "@php -d memory_limit=1G vendor/bin/pint",
+        "check": [
+            "@lint",
+            "@test",
+            "@test:multi",
+            "@php composer audit --no-dev"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": [
+                "laravel/telescope"
+            ]
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "path",
+            "url": "packages/future-code/filament-onboarding",
+            "options": {
+                "symlink": true
+            }
+        }
+    ]
+}

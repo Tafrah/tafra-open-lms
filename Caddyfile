@@ -1,0 +1,23 @@
+# HTTPS محلي من غير Docker.
+#
+# Caddy بيولّد شهادة موثوقة محلياً لوحده (مفيش حاجة اسمها mkcert مطلوبة)،
+# وبيعمل proxy لـ `php artisan serve`. المطلوب:
+#
+#   1) في /etc/hosts:
+#        127.0.0.1 fc-admin.test acme.fc-admin.test beta.fc-admin.test
+#   2) php artisan serve --port=8000
+#   3) sudo caddy run --config Caddyfile
+#   4) APP_URL=https://fc-admin.test
+#
+# النتيجة: https://fc-admin.test/admin بقفل أخضر (docs/00 بند ٢).
+
+fc-admin.test, *.fc-admin.test {
+	tls internal
+
+	reverse_proxy 127.0.0.1:8000 {
+		header_up X-Forwarded-Proto https
+		header_up X-Forwarded-Host {host}
+	}
+
+	encode gzip zstd
+}

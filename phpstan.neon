@@ -1,0 +1,31 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 6
+
+    paths:
+        - app
+        - src
+        - database/seeders
+        - database/factories
+        - packages/future-code/filament-onboarding/src
+
+    excludePaths:
+        analyseAndScan:
+            - src/*/Tests/*
+            - src/Contexts/*/Tests/*
+
+    # larastan بيستنتج خصائص الموديل من الميجريشنز — ميجريشناتنا موزّعة
+    # على السياقات فلازم نديله كل المسارات
+    databaseMigrationsPath:
+        - database/migrations
+        - src/Contexts/Tenancy/Database/Migrations
+        - src/Contexts/Identity/Database/Migrations
+        - src/Contexts/Settings/Database/Migrations/Tenant
+        - src/Contexts/Notifications/Database/Migrations
+        - src/Contexts/Content/Database/Migrations/Tenant
+        - src/Contexts/Ai/Database/Migrations
+        - packages/future-code/filament-onboarding/database/migrations
+
+    parseModelCastsMethod: true

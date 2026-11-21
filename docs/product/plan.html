@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>خطة المنصة المجانية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f5f0; --surface:#fff; --surface-2:#f0ede5; --ink:#1d1b16; --muted:#6b665a; --line:#e2ddd0;
+  --accent:#0f6b5c; --accent-soft:#dcefe9; --warn:#8a5a00; --warn-soft:#f8ecd0; --no:#9a3b2e; --no-soft:#f6e1dc;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14130f; --surface:#1d1c17; --surface-2:#26241e; --ink:#eeeadf; --muted:#a39d8e; --line:#353228;
+    --accent:#5cc7b0; --accent-soft:#16332d; --warn:#e8b75a; --warn-soft:#3a2d12; --no:#ec9a8b; --no-soft:#3d211c;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14130f; --surface:#1d1c17; --surface-2:#26241e; --ink:#eeeadf; --muted:#a39d8e; --line:#353228;
+  --accent:#5cc7b0; --accent-soft:#16332d; --warn:#e8b75a; --warn-soft:#3a2d12; --no:#ec9a8b; --no-soft:#3d211c;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans Arabic",system-ui,sans-serif;line-height:1.8;font-size:16px}
+.wrap{max-width:1000px;margin:0 auto;padding:0 16px}
+header{padding:56px 0 28px;border-bottom:1px solid var(--line)}
+.kicker{color:var(--accent);font-weight:600;font-size:14px}
+h1{font-size:clamp(28px,5vw,42px);line-height:1.25;margin:8px 0 12px}
+h2{font-size:24px;margin:0 0 4px}
+h3{font-size:17px;margin:0 0 6px}
+p{margin:0 0 10px}
+.lead{font-size:18px;color:var(--muted);max-width:760px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+nav.toc a{font-size:14px;color:var(--ink);text-decoration:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px}
+section{padding:40px 0;border-bottom:1px solid var(--line)}
+.sub{color:var(--muted);margin-bottom:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px}
+.card ul,.list{margin:0;padding-inline-start:20px}
+.card li,.list li{margin-bottom:5px}
+.muted{color:var(--muted)}
+code{font-family:ui-monospace,Menlo,monospace;font-size:.88em;background:var(--surface-2);padding:1px 6px;border-radius:5px;direction:ltr;unicode-bidi:embed}
+pre{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:14px;overflow-x:auto;direction:ltr;text-align:left;font-size:13.5px;line-height:1.6;margin:8px 0 12px}
+.tbl{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px 12px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{text-align:start;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{color:var(--muted);font-weight:600;font-size:13.5px}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:1px 10px;border-radius:999px;white-space:nowrap}
+.yes{color:var(--accent);background:var(--accent-soft)}
+.paid{color:var(--warn);background:var(--warn-soft)}
+.no{color:var(--no);background:var(--no-soft)}
+.callout{border-radius:12px;padding:14px 18px;margin-top:16px;background:var(--accent-soft)}
+.callout.warn{background:var(--warn-soft)}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+.flow span{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:6px 12px;font-size:14.5px}
+.flow i{font-style:normal;color:var(--muted)}
+.steps{counter-reset:s;display:grid;gap:10px}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 18px;position:relative;padding-inline-start:56px}
+.step::before{counter-increment:s;content:counter(s);position:absolute;inset-inline-start:16px;top:15px;width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-weight:700;font-size:14px}
+/* hero mock */
+.mock{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#0d1b2a;color:#fff}
+.mock-nav{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;font-size:14px;opacity:.9}
+.mock-nav .btns{display:flex;gap:8px}
+.mbtn{border-radius:999px;padding:5px 14px;font-size:13px;font-weight:600}
+.mbtn.o{border:1px solid rgba(255,255,255,.5)}
+.mbtn.f{background:#ffc93c;color:#0d1b2a}
+.mock-body{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;padding:22px 22px 0;align-items:end;background:radial-gradient(600px 300px at 20% 30%,rgba(255,201,60,.18),transparent 70%)}
+.mock-body h4{font-size:clamp(22px,4vw,34px);line-height:1.3;margin:0 0 8px}
+.mock-body h4 em{font-style:normal;color:#ffc93c}
+.mock-body p{opacity:.8;font-size:14.5px}
+.mock-photo{height:200px;border-radius:120px 120px 0 0;background:linear-gradient(180deg,#ffc93c,#e09b00);display:grid;place-items:center;color:#0d1b2a;font-weight:700;font-size:14px}
+.mock-stats{display:flex;gap:18px;padding:14px 22px 20px;font-size:13px;opacity:.85;flex-wrap:wrap}
+@media (max-width:600px){.mock-body{grid-template-columns:1fr}.mock-photo{height:130px}}
+footer{padding:30px 0 56px;color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="kicker">خطة التنفيذ · النسخة الأولى · نوفمبر ٢٠٢٦</div>
+    <h1>منصة مجانية لمدرس الثانوية العامة، وبوابة لطفرة</h1>
+    <p class="lead">منصة مفتوحة المصدر بالكامل ومحترمة لمدرس واحد. أي مدرس ينزّلها مجانًا على سيرفره بخطوة واحدة، وفيها الأساسيات: كورسات، دروس، امتحانات، خصومات، كروت شحن، ودفع بالإيصال. وأي حاجة أكتر من كده، المدرس يلاقيها في طفرة مع دعم فني ومن غير ما يشيل هم السيرفرات.</p>
+    <nav class="toc">
+      <a href="#biz">النموذج التجاري</a><a href="#scope">النطاق</a><a href="#student">تجربة الطالب</a><a href="#content">الكورسات والدروس</a><a href="#exams">الامتحانات</a><a href="#pay">الدفع</a><a href="#codes">الخصومات وكروت الشحن</a><a href="#admin">لوحة المدرس</a><a href="#landing">الواجهة</a><a href="#funnel">التسويق لطفرة</a><a href="#license">الترخيص والحماية</a><a href="#sync">التصدير والاستيراد مع طفرة</a><a href="#install">التسطيب</a><a href="#tech">التقنيات</a><a href="#phases">المراحل</a><a href="#risks">المخاطر</a><a href="#decide">قرارات</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<section id="biz">
+  <div class="wrap">
+    <h2>١. النموذج التجاري</h2>
+    <p class="sub">البرنامج نفسه مجاني، والفلوس بتيجي من حاجتين: الدعم الفني، والانتقال لطفرة.</p>
+    <div class="grid">
+      <div class="card"><h3>المجاني (تسطيب ذاتي)</h3><p>المدرس ينزّله على VPS بتاعه. بياخد الأساسيات كاملة، بدون دعم، وهو المسؤول عن السيرفر والنسخ الاحتياطي.</p><p><span class="pill yes">٠ جنيه</span></p></div>
+      <div class="card"><h3>الدعم الفني</h3><p>نفس النسخة المجانية + دعم على واتساب، تسطيب وتحديث ونسخ احتياطي بالنيابة عنه، وإزالة «مدعوم من طفرة» من الفوتر.</p><p><span class="pill paid">≈ ١٥٠٠ جنيه / شهر</span></p></div>
+      <div class="card"><h3>طفرة (SaaS)</h3><p>كل المميزات (أكواد، بوابات دفع، رسايل ولي الأمر، سنتر، تطبيق، لايف…) + استضافة + دعم. المدرس مش بيدفع سيرفرات.</p><p><span class="pill paid">باقات طفرة</span></p></div>
+    </div>
+    <div class="callout">الفكرة إن الدعم الفني بـ ١٥٠٠ يبقى قريب من سعر طفرة، فالمدرس يلاقي إن طفرة أوفر وفيها حاجات أكتر. يعني النسخة المجانية شغالة كـ «عيّنة» وكـ قناة تسويق.</div>
+    <div class="callout"><b>ليه مفتوحة المصدر بالكامل أحسن لينا:</b> الثقة (المدرس شايف الكود ومفيش حاجة مستخبية)، مطورين يساهموا ويصلّحوا مجانًا، نجوم على GitHub وسمعة لطفرة في مجتمع المبرمجين، وكل مبرمج بيسطّبها لمدرس هو مسوّق لينا. والفلوس مش في الكود، الفلوس في الدعم والاستضافة وراحة البال.</div>
+  </div>
+</section>
+
+<section id="scope">
+  <div class="wrap">
+    <h2>٢. النطاق: إيه اللي في المجاني وإيه اللي في طفرة</h2>
+    <p class="sub">مدرس واحد بس (مع مساعدين)، ومعمولة لمدرس الثانوية العامة.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>الميزة</th><th>المجاني</th><th>طفرة</th></tr></thead>
+      <tbody>
+        <tr><td>مدرس واحد + حسابات مساعدين بصلاحيات</td><td><span class="pill yes">موجود</span></td><td><span class="pill yes">موجود</span></td></tr>
+        <tr><td>الصفوف (أول/تاني/تالت ثانوي) وعام/أزهر</td><td><span class="pill yes">موجود</span></td><td><span class="pill yes">موجود</span></td></tr>
+        <tr><td>كورسات ← أقسام ← دروس (يوتيوب، PDF، نص، امتحان)</td><td><span class="pill yes">موجود</span></td><td><span class="pill yes">موجود</span></td></tr>
+        <tr><td>امتحانات اختيار من متعدد + مقالي بتصحيح يدوي</td><td><span class="pill yes">موجود</span></td><td><span class="pill yes">موجود</span></td></tr>
+        <tr><td>دفع بالإيصال اليدوي (محافظ / إنستاباي)</td><td><span class="pill yes">موجود</span></td><td><span class="pill yes">موجود</span></td></tr>
+        <tr><td>تفعيل يدوي برقم الطالب، ومنع مشاركة الحساب (جهاز واحد)</td><td><span class="pill yes">موجود</span></td><td><span class="pill yes">موجود</span></td></tr>
+        <tr><td>خصومات على المحاضرات (سعر قبل/بعد، خصم لفترة، كوبونات)</td><td><span class="pill yes">موجود</span></td><td><span class="pill yes">موجود</span></td></tr>
+        <tr><td>كروت شحن (أكواد مطبوعة) لشحن المحفظة أو فتح محاضرة</td><td><span class="pill yes">موجود</span></td><td><span class="pill yes">موجود</span></td></tr>
+        <tr><td>محفظة رصيد للطالب يشتري منها</td><td><span class="pill yes">موجود</span></td><td><span class="pill yes">موجود</span></td></tr>
+        <tr><td>واجهة (هيرو + كورسات) بالوجو والألوان</td><td><span class="pill yes">موجود</span></td><td><span class="pill yes">موجود</span></td></tr>
+        <tr><td>منافذ بيع الكروت على الخريطة وحسابات الموزعين</td><td><span class="pill no">لا</span></td><td><span class="pill yes">موجود</span></td></tr>
+        <tr><td>بوابات دفع أونلاين (فوري، كروت، محافظ أوتوماتيك)</td><td><span class="pill no">لا</span></td><td><span class="pill yes">موجود</span></td></tr>
+        <tr><td>رسايل واتساب/SMS لولي الأمر بالنتايج والغياب</td><td><span class="pill no">لا</span></td><td><span class="pill yes">موجود</span></td></tr>
+        <tr><td>فيديو محمي (Bunny) بعلامة مائية</td><td><span class="pill no">لا</span></td><td><span class="pill yes">موجود</span></td></tr>
+        <tr><td>تطبيق موبايل، لايف، سنتر وحضور، كوبونات، بنك أسئلة متقدم، تصحيح بالـ AI، تقارير متقدمة</td><td><span class="pill no">لا</span></td><td><span class="pill yes">موجود</span></td></tr>
+        <tr><td>أكتر من مدرس في نفس المنصة</td><td><span class="pill no">لا</span></td><td><span class="pill yes">موجود</span></td></tr>
+        <tr><td>دعم فني، استضافة، نسخ احتياطي</td><td><span class="pill no">لا</span></td><td><span class="pill yes">موجود</span></td></tr>
+      </tbody>
+    </table></div>
+    <p class="muted" style="margin-top:12px">القاعدة: المجاني لازم يكون <b>كفاية فعلًا</b> لمدرس بيبدأ، عشان يتكلم عنه كويس. والحدود تكون في الحاجات اللي بتظهر لما المدرس يكبر (أعداد، أتمتة، رسايل، فلوس أوتوماتيك).</p>
+  </div>
+</section>
+
+<section id="student">
+  <div class="wrap">
+    <h2>٣. تجربة الطالب</h2>
+    <p class="sub">من أول ما يدخل الموقع لحد ما يحل الامتحان.</p>
+    <div class="flow"><span>الواجهة</span><i>←</i><span>إنشاء حساب</span><i>←</i><span>يختار كورس</span><i>←</i><span>يحوّل ويرفع الإيصال</span><i>←</i><span>المدرس يراجع</span><i>←</i><span>الكورس يتفتح</span><i>←</i><span>دروس وامتحانات</span></div>
+    <div class="grid">
+      <div class="card"><h3>إنشاء الحساب</h3><ul>
+        <li>الاسم رباعي، رقم الطالب، رقم ولي الأمر، المحافظة، الصف، عام ولا أزهر، كلمة السر</li>
+        <li>الدخول برقم الموبايل + كلمة السر</li>
+        <li>جهاز واحد في نفس الوقت (المدرس يقدر يغيّر العدد ويفصل الأجهزة)</li>
+        <li>نسيت كلمة السر: الطالب يكلّم المدرس، والمدرس يغيّرها من اللوحة (عشان مفيش SMS في المجاني)</li>
+      </ul></div>
+      <div class="card"><h3>لوحة الطالب</h3><ul>
+        <li>كورساتي ونسبة التقدم في كل كورس</li>
+        <li>كورسات متاحة لصفّه بس</li>
+        <li>نتايجي (الامتحانات والواجبات بدرجاتها)</li>
+        <li>فواتيري وحالة كل إيصال (مستني / اتقبل / اترفض + السبب)</li>
+        <li>إشعارات داخل المنصة (اتقبل إيصالك، اتصحح امتحانك)</li>
+        <li>بروفايلي وتغيير كلمة السر</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+<section id="content">
+  <div class="wrap">
+    <h2>٤. الكورسات والدروس</h2>
+    <p class="sub">كورس ← أقسام (زي «الفصل الأول» أو «محاضرة ١») ← عناصر بترتيب.</p>
+    <div class="grid">
+      <div class="card"><h3>الكورس</h3><ul>
+        <li>العنوان، الوصف، الصورة، الصف، عام/أزهر/الاتنين</li>
+        <li>السعر، والسعر قبل الخصم، وخصم لفترة محددة (شوف قسم الخصومات)</li>
+        <li>بيع الكورس كامل أو كل محاضرة لوحدها</li>
+        <li>منشور / مسودة، ومثبّت في الأول</li>
+        <li>نوع الاشتراك: دائم لآخر السنة، أو لعدد أيام (للاشتراك الشهري)</li>
+        <li>درس مجاني للتجربة من غير اشتراك</li>
+      </ul></div>
+      <div class="card"><h3>أنواع الدروس</h3><ul>
+        <li><b>فيديو يوتيوب:</b> رابط فيديو غير مدرج، يتعرض جوه مشغّل المنصة مش صفحة يوتيوب، مع حد لعدد مرات المشاهدة لكل طالب</li>
+        <li><b>كتاب/مذكرة PDF:</b> عرض داخل المنصة، وتحميل اختياري برابط مؤقت للمشتركين بس</li>
+        <li><b>نص:</b> محرر نصوص بصور ومعادلات بسيطة</li>
+        <li><b>امتحان أو واجب:</b> بيربط امتحان من مكتبة الامتحانات</li>
+      </ul></div>
+      <div class="card"><h3>اللي مدرسين الثانوي بيحتاجوه دايمًا</h3><ul>
+        <li><b>قفل الدرس:</b> الدرس اللي بعده ميتفتحش غير لما الطالب ينجح في الواجب/الامتحان اللي قبله</li>
+        <li><b>جدولة الظهور:</b> العنصر يظهر من تاريخ لتاريخ</li>
+        <li><b>زيادة المشاهدات</b> لطالب معيّن من بروفايله</li>
+        <li>ترتيب الأقسام والدروس بالسحب</li>
+      </ul></div>
+    </div>
+    <div class="callout warn">يوتيوب مفيهوش حماية حقيقية. الرابط ممكن يتسرّب، والمشغّل بيصعّب ده بس. ده بالظبط سبب إن «الفيديو المحمي (Bunny + علامة مائية)» نقطة بيع لطفرة.</div>
+  </div>
+</section>
+
+<section id="exams">
+  <div class="wrap">
+    <h2>٥. الامتحانات</h2>
+    <div class="grid">
+      <div class="card"><h3>الإعدادات</h3><ul>
+        <li>النوع: امتحان أو واجب</li>
+        <li>المدة بالدقايق (عدّاد، وبيتسلّم تلقائي لما الوقت يخلص)</li>
+        <li>درجة النجاح، وعدد المحاولات</li>
+        <li>ترتيب عشوائي للأسئلة والاختيارات</li>
+        <li>إظهار الإجابات الصح والتفسير بعد التسليم: أبدًا / على طول / بعد تاريخ معيّن</li>
+        <li>حفظ الإجابات أول بأول، فلو النت فصل الطالب يكمّل</li>
+      </ul></div>
+      <div class="card"><h3>أنواع الأسئلة</h3><ul>
+        <li><b>اختيار من متعدد:</b> نص و/أو صورة للسؤال، من ٢ لـ ٦ اختيارات (نص أو صورة)، إجابة صح واحدة، تفسير بنص أو صورة، والتصحيح تلقائي</li>
+        <li><b>مقالي:</b> الطالب يكتب إجابته و/أو يرفع صورة ورقة الإجابة، وفيه نموذج إجابة يشوفه المصحح</li>
+        <li>درجة لكل سؤال</li>
+        <li>إضافة أسئلة اختيار من متعدد بالجملة من ملف إكسل (قالب جاهز)</li>
+      </ul></div>
+      <div class="card"><h3>تصحيح المقالي</h3><ul>
+        <li>طابور «مستني تصحيح» بفلتر بالامتحان</li>
+        <li>المصحح (المدرس أو مساعد) يشوف الإجابة والصورة ونموذج الإجابة، ويدي درجة وتعليق</li>
+        <li>النتيجة تتحسب تلقائي بعد آخر سؤال يتصحح، والطالب ياخد إشعار</li>
+        <li>لحد ما التصحيح يخلص، الطالب يشوف «درجة الاختيار من متعدد + مستني تصحيح المقالي»</li>
+      </ul></div>
+    </div>
+    <p class="muted" style="margin-top:12px">جدول النتايج: لكل امتحان (الطالب، الدرجة، الوقت، ناجح/راسب) مع تصدير إكسل. ولو الطالب محتاج يعيد، المدرس يعيد المحاولات من البروفايل.</p>
+  </div>
+</section>
+
+<section id="pay">
+  <div class="wrap">
+    <h2>٦. الدفع بالإيصال اليدوي</h2>
+    <p class="sub">مفيش بوابات دفع في المجاني. المدرس بيستقبل الفلوس على أرقامه، والمنصة بتنظّم المراجعة.</p>
+    <div class="steps">
+      <div class="step"><b>المدرس يحط طرق الدفع:</b> رقم فودافون كاش/اتصالات/أورانج كاش، عنوان إنستاباي، وتعليمات مكتوبة. كل رقم ممكن يتقفل لو وصل للحد بتاعه.</div>
+      <div class="step"><b>الطالب يدوس «اشترك»:</b> بتطلع فاتورة برقم، فيها المبلغ والأرقام المتاحة وزرار نسخ لكل رقم.</div>
+      <div class="step"><b>الطالب يحوّل ويرفع:</b> صورة الإيصال (سكرين شوت)، الرقم اللي حوّل منه، والرقم اللي حوّل عليه. الفاتورة تبقى «مستنية مراجعة».</div>
+      <div class="step"><b>المدرس أو المساعد يراجع:</b> قائمة الإيصالات المستنية، الصورة كبيرة جنب بيانات الفاتورة. قبول بضغطة، أو رفض بسبب (الصورة مش واضحة، المبلغ ناقص…).</div>
+      <div class="step"><b>الكورس يتفتح:</b> عند القبول الاشتراك يتفعّل تلقائي والطالب ياخد إشعار. وعند الرفض الطالب يشوف السبب ويقدر يرفع إيصال تاني.</div>
+    </div>
+    <div class="grid" style="margin-top:14px">
+      <div class="card"><h3>حماية من التلاعب</h3><ul>
+        <li>تنبيه لو نفس صورة الإيصال اترفعت قبل كده (مقارنة بصمة الصورة)</li>
+        <li>تنبيه لو نفس رقم التحويل اتستخدم في نفس اليوم بنفس المبلغ</li>
+        <li>سجل بمين قبل أو رفض كل إيصال وإمتى</li>
+      </ul></div>
+      <div class="card"><h3>التفعيل اليدوي</h3><ul>
+        <li>المدرس يفعّل كورس لطالب أو لمجموعة أرقام مرة واحدة (لصق من إكسل)، للي دفعوا كاش في السنتر</li>
+        <li>إلغاء اشتراك بنفس الطريقة</li>
+        <li>تقرير الإيرادات: المقبول في الشهر، لكل كورس، ولكل رقم محفظة</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+<section id="codes">
+  <div class="wrap">
+    <h2>٦ب. الخصومات وكروت الشحن</h2>
+    <p class="sub">كروت الشحن هي أشهر طريقة دفع عند مدرسين الثانوي (بتتباع في السنتر والمكتبات)، والخصومات أساس أي حملة بيع.</p>
+    <div class="grid">
+      <div class="card"><h3>خصومات المحاضرات</h3><ul>
+        <li><b>سعر قبل وبعد:</b> السعر القديم بخط عليه جنب السعر الجديد</li>
+        <li><b>خصم لفترة:</b> نسبة أو مبلغ من تاريخ لتاريخ، مع عدّاد «العرض بيخلص بعد…»</li>
+        <li><b>كوبونات:</b> كود (مثلًا <code>EID50</code>) نسبة أو مبلغ، على كورس معيّن أو كل الكورسات، بعدد مرات استخدام وتاريخ انتهاء، ومرة واحدة لكل طالب</li>
+        <li><b>باقة:</b> كذا محاضرة مع بعض بسعر أقل</li>
+        <li>تقرير: كل كوبون اتستخدم كام مرة ووفّر كام</li>
+      </ul></div>
+      <div class="card"><h3>كروت الشحن: الأنواع</h3><ul>
+        <li><b>كارت شحن محفظة:</b> بقيمة (مثلًا ١٠٠ جنيه)، الطالب يشحن رصيده ويشتري بيه أي محاضرة</li>
+        <li><b>كارت محاضرة:</b> بيفتح محاضرة أو كورس معيّن على طول</li>
+        <li>كل كارت بيتستخدم مرة واحدة بس، ومربوط بالطالب اللي شحنه</li>
+      </ul></div>
+      <div class="card"><h3>كروت الشحن: الإنشاء والطباعة</h3><ul>
+        <li>المدرس يعمل «دفعة»: الاسم (مثلًا «سنتر المعادي - نوفمبر»)، العدد، النوع، القيمة أو المحاضرة، تاريخ انتهاء اختياري</li>
+        <li>أكواد عشوائية طويلة صعبة التخمين (مثلًا ١٢ حرف ورقم من غير الحروف المتشابهة زي O و 0)</li>
+        <li>سيريال لكل كارت عشان المتابعة</li>
+        <li>تحميل PDF جاهز للطباعة (كروت على ورقة A4 بلوجو المدرس) أو ملف إكسل للمطبعة</li>
+      </ul></div>
+      <div class="card"><h3>كروت الشحن: المتابعة والأمان</h3><ul>
+        <li>جدول كل دفعة: كام اتشحن وكام لسه، ومين شحن أنهي كارت وإمتى</li>
+        <li>إيقاف دفعة كاملة أو كارت واحد (لو اتسرق أو ضاع)</li>
+        <li>حد لمحاولات الكود الغلط: بعد ٥ محاولات غلط الطالب يستنى ١٥ دقيقة</li>
+        <li>سجل محفظة لكل طالب: كل شحنة وكل شراء</li>
+      </ul></div>
+    </div>
+    <h3 style="margin-top:20px">رحلة الطالب بالكارت</h3>
+    <div class="flow"><span>يشتري كارت من السنتر</span><i>←</i><span>يخدش الكود</span><i>←</i><span>«شحن كود» في المنصة</span><i>←</i><span>الرصيد يزيد أو المحاضرة تتفتح</span><i>←</i><span>يشتري من رصيده</span></div>
+    <p class="muted">وعند الشراء بالرصيد الطالب يقدر يستخدم كوبون كمان. يعني الدفع في المنصة ٣ طرق: إيصال يدوي، كارت شحن، ورصيد المحفظة.</p>
+  </div>
+</section>
+
+<section id="admin">
+  <div class="wrap">
+    <h2>٧. لوحة المدرس</h2>
+    <div class="grid">
+      <div class="card"><h3>الرئيسية</h3><ul>
+        <li>إيصالات مستنية مراجعة (أهم رقم)</li>
+        <li>إجابات مقالي مستنية تصحيح</li>
+        <li>عدد الطلبة، والمشتركين في كل كورس</li>
+        <li>إيرادات الشهر</li>
+        <li>بطاقة «جرب طفرة» (شوف قسم التسويق)</li>
+      </ul></div>
+      <div class="card"><h3>الطلبة</h3><ul>
+        <li>بحث بالرقم أو الاسم، وفلتر بالصف</li>
+        <li>البروفايل: البيانات، الاشتراكات، الفواتير، النتايج، المشاهدات</li>
+        <li>تغيير كلمة السر، حظر، فصل الأجهزة</li>
+        <li>زيادة مشاهدات فيديو أو محاولات امتحان</li>
+        <li>تصدير الطلبة إكسل</li>
+      </ul></div>
+      <div class="card"><h3>المساعدين</h3><ul>
+        <li>حسابات للمساعدين، والمدرس هو المالك</li>
+        <li>صلاحيات جاهزة: مراجعة الإيصالات، تصحيح المقالي، إدارة المحتوى، الطلبة</li>
+        <li>سجل نشاط: مين عمل إيه</li>
+      </ul></div>
+      <div class="card"><h3>الإعدادات</h3><ul>
+        <li>اسم المنصة، اللوجو، الألوان، صورة المدرس، المادة</li>
+        <li>نصوص الهيرو، روابط السوشيال، رقم واتساب الدعم</li>
+        <li>طرق الدفع وتعليماتها</li>
+        <li>عدد الأجهزة المسموح لكل طالب</li>
+        <li>الترخيص والتحديثات</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+<section id="landing">
+  <div class="wrap">
+    <h2>٨. الواجهة</h2>
+    <p class="sub">صفحة واحدة: هيرو بسيط بس قوي، ومن بعده الصفوف والكورسات. كل النصوص والصور يغيّرها المدرس من الإعدادات.</p>
+    <div class="mock" aria-label="شكل تقريبي للهيرو">
+      <div class="mock-nav"><b>لوجو المدرس</b><div class="btns"><span class="mbtn o">تسجيل الدخول</span><span class="mbtn f">إنشاء حساب</span></div></div>
+      <div class="mock-body">
+        <div>
+          <h4>الكيمياء مع <em>اسم المدرس</em><br>من الصفر للدرجة النهائية</h4>
+          <p>شرح، واجبات، وامتحانات بعد كل درس. لطلاب أولى وتانية وتالتة ثانوي.</p>
+          <p><span class="mbtn f">ابدأ دلوقتي</span></p>
+        </div>
+        <div class="mock-photo">صورة المدرس (مفرّغة)</div>
+      </div>
+      <div class="mock-stats"><span>+٥٠٠٠ طالب</span><span>+٣٠٠ درس</span><span>+١٠٠ امتحان</span></div>
+    </div>
+    <div class="grid" style="margin-top:14px">
+      <div class="card"><h3>مكونات الصفحة</h3><ul>
+        <li>شريط علوي: لوجو، «تسجيل الدخول»، «إنشاء حساب»</li>
+        <li>هيرو: عنوان كبير باسم المادة والمدرس، جملة، زرار، صورة المدرس مفرّغة على خلفية بلون الهوية، أرقام (طلبة/دروس/امتحانات)</li>
+        <li>كروت الصفوف الثلاثة: كل كارت يودّي لكورسات الصف</li>
+        <li>أحدث الكورسات</li>
+        <li>فوتر: السوشيال، واتساب، «مدعوم من طفرة»</li>
+      </ul></div>
+      <div class="card"><h3>قواعد التصميم</h3><ul>
+        <li>موبايل أولًا (أغلب الطلبة من الموبايل)</li>
+        <li>٣ قوالب ألوان جاهزة + لون مخصص، ووضع ليلي</li>
+        <li>خط عربي واضح (IBM Plex Sans Arabic أو Cairo)</li>
+        <li>سريعة: صورة الهيرو WebP، من غير مكتبات تقيلة</li>
+        <li>SEO أساسي: عنوان ووصف وصورة مشاركة لكل كورس</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+<section id="funnel">
+  <div class="wrap">
+    <h2>٩. التسويق لطفرة من جوه المنصة</h2>
+    <p class="sub">بهدوء ومن غير إزعاج: المدرس يشوف طفرة لما يحتاج حاجة مش موجودة، مش إعلانات في كل حتة.</p>
+    <div class="grid">
+      <div class="card"><h3>لما المدرس يدوّر على ميزة</h3><p>في القائمة الجانبية قسم «مميزات طفرة» فيه الحاجات اللي مش موجودة (أكواد، رسايل ولي الأمر، بوابات دفع، تطبيق…). كل واحدة بتفتح صفحة صغيرة: بتعمل إيه، صورة، وزرار «كلّمنا على واتساب».</p></div>
+      <div class="card"><h3>لما المنصة تكبر</h3><p>رسالة لطيفة لما يعدّي أرقام معيّنة (مثلًا ٥٠٠ طالب، أو ١٠٠ إيصال في الأسبوع): «مراجعة الإيصالات واخدة وقتك؟ في طفرة الدفع بيتفعّل أوتوماتيك».</p></div>
+      <div class="card"><h3>الفوتر عند الطالب</h3><p>«مدعوم من طفرة» برابط. في التسطيب العادي بيفضل موجود، وفي باقة الدعم الفني بنشيله إحنا للمدرس. (تقنيًا أي مبرمج يقدر يشيله لأن الكود مفتوح، والترخيص بيطلب بس الإبقاء على ذكر المصدر في صفحة «عن المنصة».)</p></div>
+      <div class="card"><h3>نقل البيانات</h3><p>زرار «انقل منصتك لطفرة»: تصدير كامل لكل البيانات، وطفرة بتستوردها والطلبة بيدخلوا بنفس كلمات السر. ده بيشيل أكبر خوف عند المدرس. التفاصيل في <a href="#sync">قسم التصدير والاستيراد</a>.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="license">
+  <div class="wrap">
+    <h2>١٠. الترخيص المفتوح ومعرفة التسطيبات</h2>
+    <p class="sub">الكود كله على GitHub. السؤال بقى: أنهي ترخيص يحمينا من المنافسين، وإزاي نعرف مين سطّب.</p>
+    <div class="grid">
+      <div class="card"><h3>الترخيص: AGPL-3.0 (المقترح)</h3><ul>
+        <li>أي حد يقدر يسطّب ويستخدم ويعدّل مجانًا</li>
+        <li>لكن لو شركة عدّلت فيها وشغّلتها كخدمة (SaaS) للمدرسين، لازم تنشر تعديلاتها مفتوحة. ده بيصعّب على منافس ياخدها ويعمل منها «طفرة تانية» مقفولة</li>
+        <li>البديل MIT: انتشار أوسع، بس أي منافس يقدر ياخدها ويقفلها</li>
+        <li>الاسم واللوجو علامة تجارية لطفرة، مش جزء من الترخيص: اللي يعمل نسخة معدّلة يغيّر اسمها</li>
+      </ul></div>
+      <div class="card"><h3>إزاي نعرف مين سطّب</h3><ul>
+        <li><b>التسجيل في معالج التسطيب:</b> خطوة «سجّل منصتك» (اسم، رقم، دومين) وفي المقابل ياخد: تنبيهات التحديثات والأمان، دخول جروب المدرسين، وفيديوهات الشرح. اختيارية، بس معمولة عشان تبقى مغرية</li>
+        <li><b>فحص التحديثات:</b> المنصة بتسأل سيرفرنا «فيه نسخة جديدة؟» ومعاها الدومين ورقم النسخة بس. مكتوبة بوضوح في المعالج، وفيه زرار لإيقافها</li>
+        <li><b>أرقام عامة:</b> عدد مرات تحميل الـ Docker image، والنجوم والـ forks على GitHub</li>
+        <li>مفيش أي بيانات طلبة بتطلع من سيرفر المدرس</li>
+      </ul></div>
+      <div class="card"><h3>لوحة التسطيبات عندك</h3><ul>
+        <li>كل منصة مسجّلة: المدرس، الدومين، النسخة، آخر ظهور</li>
+        <li>مين على نسخة قديمة فيها ثغرة (نكلّمه، وده بيع للدعم الفني)</li>
+        <li>المسجّلين بيدخلوا CRM طفرة كـ leads على طول</li>
+      </ul></div>
+      <div class="card"><h3>المساهمات</h3><ul>
+        <li>المساهمين بيوقّعوا CLA بسيط، عشان طفرة تقدر تستخدم مساهماتهم في المنتج المدفوع</li>
+        <li>دليل مساهمة بالعربي، ومهام «good first issue» لطلبة كورس الفول ستاك</li>
+        <li>خريطة طريق عامة: إيه اللي جاي في المفتوح، وإيه اللي في طفرة بس</li>
+      </ul></div>
+    </div>
+    <div class="callout warn"><b>نكون صريحين مع نفسنا:</b> بما إن الكود مفتوح، أي مبرمج يقدر يشيل فحص التحديثات أو التسجيل. فمش هنعرف <b>كل</b> تسطيب، هنعرف أغلب اللي سطّبوا بالطريقة العادية. وده كفاية، لأن المدرس اللي عنده مبرمج بيشيل الحاجات دي غالبًا مش عميلنا أصلًا. الإفصاح الواضح عن فحص التحديثات بيحافظ على الثقة، ومتوافق مع قانون حماية البيانات المصري (١٥١ لسنة ٢٠٢٠).</div>
+  </div>
+</section>
+
+<section id="sync">
+  <div class="wrap">
+    <h2>١٠ب. التصدير والاستيراد مع طفرة</h2>
+    <p class="sub">كل بيانات المنصة المجانية لازم تتصدّر وتتستورد في طفرة، والعكس. ده مبني على قراءة كود طفرة الحالي: <code>Tafra-ESS-Laravel</code> (الباك إند)، و <code>LMS-Home-ReactJS</code> (تطبيق الطالب، Next 16 + React 19)، و <code>LMS-Admin-ReactJS</code> (لوحة الأكاديمية، React 18).</p>
+
+    <div class="callout"><b>القرار الأساسي: نفس قاعدة البيانات.</b> المنصة المجانية تستخدم <b>جزء من جداول طفرة بنفس الأسماء والأعمدة والقيم</b> (نفس جداول الـ tenant في <code>database/migrations/tenant</code>)، ونفس التقنيات: Laravel 12، PHP 8.4، PostgreSQL، Filament 5. يعني النقل بيبقى نسخ صفوف مش ترجمة بيانات، وكلمات سر الطلبة (bcrypt) بتشتغل زي ما هي في طفرة.</div>
+
+    <h3 style="margin-top:22px">خريطة البيانات: المنصة المجانية ← جداول طفرة</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>عندنا</th><th>في طفرة</th><th>ملاحظات</th></tr></thead>
+      <tbody>
+        <tr><td>المرحلة (ثانوي عام / أزهر)</td><td><code>educational_categories</code></td><td>عام وأزهر = فئتين</td></tr>
+        <tr><td>الصف (أول/تاني/تالت)</td><td><code>educational_levels</code></td><td><code>year_number</code> و <code>code</code></td></tr>
+        <tr><td>المادة</td><td><code>materials</code></td><td>المدرس الواحد = مادة أو أكتر</td></tr>
+        <tr><td>المدرس والمساعدين والطلبة</td><td><code>users</code> (<code>user_type</code>: instructor / moderator / student)</td><td>الصلاحيات من Spatie permission</td></tr>
+        <tr><td>بيانات الطالب</td><td><code>students</code></td><td><code>parent_phone</code>، <code>educational_level_id</code>، <code>governorate_id</code>، <code>code</code></td></tr>
+        <tr><td>الكورس / المحاضرة</td><td><code>bootcamps</code></td><td><code>price</code>، <code>discount_price</code>، <code>discount_start_date</code>/<code>discount_end_date</code>، <code>can_watch_in_days</code>، <code>publish_status</code></td></tr>
+        <tr><td>القسم</td><td><code>bootcamp_sections</code></td><td><code>order</code>، <code>prerequisite_exam_id</code>، <code>is_free_preview</code></td></tr>
+        <tr><td>عنصر في القسم</td><td><code>bootcamp_section_items</code></td><td><code>type</code> = lesson أو exam، <code>allowed_views_number</code>، <code>prerequisite_exam_id</code>، مواعيد الظهور</td></tr>
+        <tr><td>درس (يوتيوب / PDF / نص)</td><td><code>online_lessons</code></td><td><code>type</code> = <code>YoutubeVideo</code> / <code>Pdf</code> / <code>Text</code>، والـ PDF في media collection <code>documents</code></td></tr>
+        <tr><td>الامتحان والواجب</td><td><code>online_exams</code> + <code>online_exam_blocks</code> + <code>online_exam_block_items</code></td><td>المدة، <code>allowed_chances</code>، <code>min_percentage</code>، العشوائية، إظهار الإجابات</td></tr>
+        <tr><td>السؤال</td><td><code>questions</code> + <code>multiple_choices</code> + <code>choices</code> / <code>essay_question</code></td><td>المقالي: <code>ideal_answer</code> و <code>allow_images</code></td></tr>
+        <tr><td>محاولة الطالب وإجاباته</td><td><code>online_passed_exams</code> + <code>student_exam_answers</code></td><td>تصحيح المقالي: <code>grading_status</code>، <code>graded_by</code>، <code>grader_feedback</code></td></tr>
+        <tr><td>الاشتراك في كورس</td><td><code>bootcamp_enrolled_students_histories</code></td><td><code>source</code>، <code>payment_invoice_id</code>، <code>recharge_card_id</code>، <code>access_duration_days</code></td></tr>
+        <tr><td>المشاهدات</td><td><code>section_item_views</code></td><td><code>watch_progress_seconds</code>، <code>is_completed</code></td></tr>
+        <tr><td>الفاتورة</td><td><code>payment_invoices</code></td><td><code>status</code>، <code>coupon_id</code>، <code>discount_amount</code>، <code>source</code></td></tr>
+        <tr><td>المحفظة</td><td><code>money_transactions</code></td><td>credit / debit، مربوطة بالكارت أو الفاتورة</td></tr>
+        <tr><td>كروت الشحن</td><td><code>recharge_card_groups</code> + <code>recharge_cards</code></td><td>الكود، القيمة، مين استخدمه وإمتى، الصلاحية</td></tr>
+        <tr><td>الكوبونات</td><td><code>coupons</code> + <code>coupon_items</code> + <code>coupon_redemptions</code></td><td>نفس الأنواع: free / fixed / percentage / custom_price</td></tr>
+        <tr><td>الأجهزة</td><td><code>user_login_devices</code></td><td>مش بتتنقل؛ الطالب بيسجّل دخول من جديد</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 style="margin-top:22px">حاجات عندنا مش موجودة في طفرة لسه</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>الفرق</th><th>الحل المقترح</th></tr></thead>
+      <tbody>
+        <tr><td><b>الدفع بالإيصال اليدوي:</b> طفرة فيها بوابات دفع (Fawaterk، Paymob، Kashier…) وفواتير يدوية من الأدمن، لكن مفيش «الطالب يرفع إيصال والأدمن يراجع»</td><td>نضيف الميزة دي لطفرة (طريقة دفع <code>manual_transfer</code> + إيصال على الفاتورة + شاشة مراجعة في <code>LMS-Admin-ReactJS</code>). ولحد ما تتعمل: الفواتير المقبولة تتستورد كفواتير <code>paid</code> والإيصالات كمرفقات</td></tr>
+        <tr><td><b>كارت المحاضرة:</b> كروت طفرة بقيمة فلوس بس (<code>recharge_cards.amount</code>)، مفيش كارت بيفتح كورس معيّن</td><td>عمود اختياري <code>bootcamp_id</code> على <code>recharge_cards</code> في طفرة (migration صغيرة). أو في المجاني نكتفي بكروت المحفظة، وده أبسط</td></tr>
+        <tr><td><b>تصدير واستيراد أكاديمية كاملة:</b> طفرة فيها استيراد مستخدمين (<code>users:import-from-json</code>) وأسئلة من إكسل وقوائم يوتيوب، بس مفيش نقل أكاديمية كاملة</td><td>شغل جديد في طفرة، تحت</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 style="margin-top:22px">شكل ملف التصدير</h3>
+    <p>ملف <code>.zip</code> واحد بصيغة مفتوحة وموثّقة، ونفس الصيغة في الاتجاهين:</p>
+<pre>tafra-export-2026-11-20.zip
+├── manifest.json        # format_version, source (free|tafra), app_version, عدد الصفوف، checksums
+├── settings.json        # اسم المنصة، الألوان، طرق الدفع، الواجهة
+├── data/
+│   ├── users.ndjson     # سطر JSON لكل صف، بنفس أعمدة طفرة
+│   ├── students.ndjson
+│   ├── bootcamps.ndjson
+│   ├── ...              # جدول لكل ملف
+│   └── recharge_cards.ndjson
+└── media/               # الصور، الـ PDF، صور الإيصالات وإجابات المقالي
+    └── &lt;model&gt;/&lt;id&gt;/&lt;collection&gt;/&lt;file&gt;</pre>
+    <ul class="list">
+      <li><b>format_version:</b> رقم نسخة للصيغة نفسها، عشان أي نسخة من المجاني تفضل تتستورد في طفرة حتى لو الجداول اتغيّرت</li>
+      <li><b>الـ IDs:</b> الـ IDs الأصلية بتتصدّر زي ما هي، والمستورد بيعمل جدول تحويل (قديم ← جديد) ويظبط كل العلاقات، فينفع الاستيراد في أكاديمية فيها بيانات أصلًا</li>
+      <li><b>ملفات كبيرة:</b> NDJSON بيتقرا سطر سطر، فأكاديمية فيها ٥٠ ألف طالب ما تملاش الذاكرة</li>
+      <li><b>مش بيتصدّر:</b> التوكنات، الأجهزة، الجلسات، كلمات سر الأدمن للخدمات الخارجية</li>
+    </ul>
+
+    <div class="grid" style="margin-top:18px">
+      <div class="card"><h3>من المجاني لطفرة (الاتجاه الأساسي)</h3><ul>
+        <li>في المجاني: الإعدادات ← «انقل لطفرة» ← تنزيل الملف، أو رفع مباشر بمفتاح نقل من طفرة</li>
+        <li>في طفرة: معالج «استيراد من المنصة المجانية» في <code>LMS-Admin-ReactJS</code> (أو من فريق طفرة في لوحة الإدارة المركزية)</li>
+        <li><b>تجربة الأول (dry run):</b> تقرير بالأعداد والمشاكل قبل أي كتابة</li>
+        <li>استيراد في الخلفية (job) مع شريط تقدّم وتقرير في الآخر</li>
+        <li>بعدها المدرس يوجّه الدومين بتاعه لطفرة، والطلبة يدخلوا بنفس الرقم وكلمة السر على تطبيق <code>LMS-Home-ReactJS</code>، ويلاقوا كورساتهم ونتايجهم ورصيدهم</li>
+      </ul></div>
+      <div class="card"><h3>من طفرة للمجاني (الاتجاه العكسي)</h3><ul>
+        <li>طفرة تصدّر نفس الصيغة، بس للجداول اللي المجاني بيفهمها</li>
+        <li>الحاجات اللي مش في المجاني (فيديو Bunny، SCORM، لايف، سنتر…) بتتسجّل في تقرير «اتشال»، والدروس بتتحوّل لأقرب نوع لو ينفع (مثلًا فيديو Bunny ← رابط)</li>
+        <li>ده بيدّي المدرس ثقة إنه مش محبوس في طفرة، وده لوحده سبب اشتراك</li>
+      </ul></div>
+      <div class="card"><h3>الشغل المطلوب في المجاني</h3><ul>
+        <li>الـ migrations نسخة من جداول طفرة المطلوبة بس (نفس الأسماء والأعمدة والـ enums)</li>
+        <li>أمر <code>php artisan tafra:export</code> وزرار في الإعدادات</li>
+        <li>أمر <code>php artisan tafra:import</code> (للاتجاه العكسي، وللنقل بين سيرفرين)</li>
+      </ul></div>
+      <div class="card"><h3>الشغل المطلوب في طفرة</h3><ul>
+        <li><code>Tafra-ESS-Laravel</code>: خدمة <code>AcademyExporter</code> و <code>AcademyImporter</code> بتشتغل جوه الـ tenant، endpoints في <code>/v1/academy/admin</code>، أمر artisan، وأداة MCP</li>
+        <li><code>LMS-Admin-ReactJS</code>: شاشة الاستيراد والتصدير (رفع، تجربة، تقدّم، تقرير)</li>
+        <li><code>LMS-Home-ReactJS</code>: مفيش تغيير غير شاشة «الإيصال» لو ضفنا الدفع اليدوي</li>
+        <li>الفروق اللي فوق: الدفع بالإيصال، وكارت المحاضرة لو اتفقنا عليه</li>
+      </ul></div>
+    </div>
+
+    <div class="callout warn"><b>أهم خطر: الجداول تبعد عن بعض مع الوقت.</b> الحل: (١) ملف «عقد» واحد (JSON Schema لكل جدول في الصيغة) في الريبو المفتوح، وطفرة بتستخدمه كمان. (٢) اختبار CI في الريبوهين: نعمل بيانات تجريبية، نصدّر، نستورد في الناحية التانية، ونقارن الأعداد والعلاقات (round-trip). (٣) أي migration في طفرة بتلمس جدول من جداول العقد لازم تحدّث العقد أو الـ mapping.</div>
+  </div>
+</section>
+
+<section id="install">
+  <div class="wrap">
+    <h2>١١. التسطيب بخطوة واحدة</h2>
+    <div class="grid">
+      <div class="card"><h3>من Coolify</h3><p>ملف <code>docker-compose</code> واحد المدرس يلصقه في Coolify (أو قالب جاهز في المستقبل). بيستخدم متغيرات Coolify التلقائية للدومين وكلمات السر، فالمدرس يكتب الدومين ويدوس Deploy.</p>
+<pre>services:
+  app:
+    image: ghcr.io/&lt;org&gt;/teacher-lms:1
+    environment:
+      - SERVICE_FQDN_APP
+      - DB_PASSWORD=${SERVICE_PASSWORD_DB}
+  db:      # MySQL / Postgres
+  worker:  # الطوابير
+</pre></div>
+      <div class="card"><h3>من غير Coolify</h3><p>أمر واحد على VPS جديد (Ubuntu):</p>
+<pre>curl -fsSL https://get.&lt;domain&gt;/install | sudo bash</pre>
+<p>بيسطّب Docker، يسأل عن الدومين، يولّد كلمات السر، ويشغّل كل حاجة بـ SSL تلقائي. السكربت نفسه مفتوح على GitHub عشان أي حد يقرأه قبل ما يشغّله.</p></div>
+      <div class="card"><h3>أول مرة تفتح المنصة</h3><ul>
+        <li>«سجّل منصتك» اختياري (تنبيهات تحديثات + جروب + فيديوهات)، مع شرح واضح لفحص التحديثات وزرار لإيقافه</li>
+        <li>حساب المدرس، المادة، اللوجو، الألوان</li>
+        <li>طرق الدفع</li>
+        <li>بيانات تجريبية اختيارية (كورس وامتحان) عشان يشوف شكلها</li>
+      </ul></div>
+      <div class="card"><h3>التحديث والنسخ الاحتياطي</h3><ul>
+        <li>تنبيه «فيه نسخة جديدة» في اللوحة، والتحديث بأمر واحد أو زرار في Coolify</li>
+        <li>نسخة احتياطية يومية لقاعدة البيانات والملفات على نفس السيرفر، مع شرح لنقلها برّه</li>
+      </ul></div>
+    </div>
+    <p class="muted" style="margin-top:12px">أقل سيرفر: ٢ CPU و ٤ جيجا رامات (زي Hetzner CX22 بحوالي ٤–٥ يورو). الفيديو على يوتيوب، فالسيرفر مش شايل حمل الفيديو.</p>
+  </div>
+</section>
+
+<section id="tech">
+  <div class="wrap">
+    <h2>١٢. التقنيات</h2>
+    <p class="sub">بسيطة عشان مطوّر واحد يقدر يبنيها ويصينها، وقريبة من طفرة عشان نقل البيانات يبقى سهل.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>الجزء</th><th>الاختيار</th><th>ليه</th></tr></thead>
+      <tbody>
+        <tr><td>الباك إند</td><td>Laravel 12 + PHP 8.4</td><td>نفس عيلة طفرة، وطوابير وجدولة جاهزة</td></tr>
+        <tr><td>لوحة المدرس</td><td>Filament 5 (عربي RTL)</td><td>نفس نسخة طفرة، وجداول ونماذج وفلاتر جاهزة</td></tr>
+        <tr><td>موقع الطالب</td><td>Blade + Livewire + Tailwind</td><td>سريع على الموبايل، من غير API منفصل، ومن غير ما نكشف كود تطبيقات طفرة (React)</td></tr>
+        <tr><td>قاعدة البيانات</td><td>PostgreSQL</td><td>نفس طفرة بالظبط، عشان النقل يبقى نسخ صفوف</td></tr>
+        <tr><td>التشغيل</td><td>image واحدة (FrankenPHP) + worker + db</td><td>SSL تلقائي وتسطيب بسيط</td></tr>
+        <tr><td>سيرفر التسجيل والتحديثات</td><td>جزء صغير جوه طفرة</td><td>نفس قاعدة العملاء، والـ lead يدخل CRM طفرة على طول</td></tr>
+        <tr><td>الكود والتوزيع</td><td>GitHub (AGPL-3.0) + GitHub Container Registry</td><td>مجاني، والـ image بتتبني تلقائي مع كل إصدار</td></tr>
+      </tbody>
+    </table></div>
+    <h3 style="margin-top:20px">الجداول الأساسية (بأسماء طفرة)</h3>
+    <p class="muted"><code>users</code> · <code>students</code> · <code>educational_categories</code> · <code>educational_levels</code> · <code>materials</code> · <code>bootcamps</code> · <code>bootcamp_sections</code> · <code>bootcamp_section_items</code> · <code>online_lessons</code> · <code>online_exams</code> · <code>online_exam_blocks</code> · <code>online_exam_block_items</code> · <code>questions</code> · <code>multiple_choices</code> · <code>choices</code> · <code>essay_question</code> · <code>online_passed_exams</code> · <code>student_exam_answers</code> · <code>bootcamp_enrolled_students_histories</code> · <code>section_item_views</code> · <code>payment_invoices</code> · <code>money_transactions</code> · <code>recharge_card_groups</code> · <code>recharge_cards</code> · <code>coupons</code> · <code>coupon_items</code> · <code>coupon_redemptions</code> · <code>user_login_devices</code> · <code>governorates</code> · <code>notifications</code> · <code>media</code> · <code>settings</code></p>
+    <p class="muted">جداول خاصة بالمجاني بس (بتتصدّر كمرفقات أو بتتحوّل): <code>payment_methods</code> (أرقام المحافظ) و <code>payment_receipts</code> (الإيصالات المرفوعة).</p>
+  </div>
+</section>
+
+<section id="phases">
+  <div class="wrap">
+    <h2>١٣. المراحل</h2>
+    <p class="sub">تقدير لمطوّر واحد متفرّغ. الإجمالي حوالي ١٢ أسبوع لحد الإطلاق، وشغل طفرة (حوالي أسبوعين) يمشي بالتوازي مع فريق طفرة.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>الأسبوع</th><th>الشغل</th><th>الناتج</th></tr></thead>
+      <tbody>
+        <tr><td>١</td><td>المشروع، نسخ الـ migrations المطلوبة من طفرة، ملف العقد (JSON Schema)، الحسابات، الأجهزة، الصفوف، الإعدادات، لوحة Filament عربي</td><td>تسجيل ودخول شغالين على جداول طفرة</td></tr>
+        <tr><td>٢–٣</td><td>الكورسات والأقسام والدروس (يوتيوب، PDF، نص)، القفل والجدولة، صفحات الطالب</td><td>طالب يشوف كورس كامل</td></tr>
+        <tr><td>٤–٥</td><td>الامتحانات: اختيار من متعدد، مقالي، العدّاد، الحفظ التلقائي، الاستيراد من إكسل، طابور التصحيح</td><td>دورة امتحان كاملة</td></tr>
+        <tr><td>٦</td><td>الفواتير والإيصالات والمراجعة، التفعيل اليدوي بالجملة، الإيرادات</td><td>أول عملية دفع من الأول للآخر</td></tr>
+        <tr><td>٧</td><td>المحفظة، كروت الشحن (دفعات، طباعة PDF، متابعة، إيقاف)، الخصومات والكوبونات</td><td>الطالب يشحن كارت ويشتري بخصم</td></tr>
+        <tr><td>٨</td><td>الواجهة (الهيرو والكروت)، الهوية من الإعدادات، الإشعارات، الرئيسية</td><td>منصة شكلها جاهز</td></tr>
+        <tr><td>٩</td><td>سيرفر التسجيل والتحديثات، معالج التسطيب، صفحة «مميزات طفرة»</td><td>دايرة التسويق كاملة</td></tr>
+        <tr><td>١٠</td><td>التصدير والاستيراد في المجاني (<code>tafra:export</code> / <code>tafra:import</code>) + اختبار round-trip في CI. وبالتوازي في طفرة: <code>AcademyImporter</code>/<code>AcademyExporter</code>، شاشة <code>LMS-Admin-ReactJS</code>، والدفع بالإيصال</td><td>أكاديمية تجريبية تتنقل لطفرة وترجع من غير ما حاجة تضيع</td></tr>
+        <tr><td>١١</td><td>Docker image، ملف Coolify، سكربت التسطيب، النسخ الاحتياطي، التحديث، README ودليل المساهمة</td><td>تسطيب على VPS جديد في أقل من ١٠ دقايق</td></tr>
+        <tr><td>١٢</td><td>تجربة مع ٣ مدرسين حقيقيين (واحد منهم ينقل لطفرة فعلًا)، إصلاحات، نشر الريبو، صفحة تحميل وفيديو شرح</td><td>الإطلاق</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<section id="risks">
+  <div class="wrap">
+    <h2>١٤. المخاطر</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>الخطر</th><th>إزاي نتعامل معاه</th></tr></thead>
+      <tbody>
+        <tr><td>النسخة المجانية تبقى كويسة لدرجة إن محدش يشترك</td><td>الحدود في الأتمتة والنمو (دفع أوتوماتيك، رسايل، أكواد، تطبيق)، مش في الأساسيات. ونراقب نسبة التحويل من لوحة التسطيبات</td></tr>
+        <tr><td>شركة تاخد الكود وتعمل منه منصة منافسة</td><td>AGPL بتجبرها تنشر تعديلاتها، والاسم علامة تجارية لينا. وميزتنا الحقيقية: إحنا الأصل، والتحديثات والدعم وطفرة عندنا</td></tr>
+        <tr><td>جداول المجاني وطفرة يبعدوا عن بعض فالنقل يبوظ</td><td>ملف عقد واحد مشترك، اختبار round-trip في CI في الريبوهين، و <code>format_version</code> في كل ملف تصدير</td></tr>
+        <tr><td>كروت شحن تتسرّب أو تتخمّن</td><td>أكواد طويلة عشوائية، حد للمحاولات الغلط، إيقاف دفعة كاملة، وسجل بمين شحن إيه</td></tr>
+        <tr><td>مدرسين بيسطّبوا وبيقعوا (سيرفر، SSL، باك أب) ويشتكوا</td><td>ده بالظبط عميل الدعم الفني بـ ١٥٠٠. ومعاه توثيق وفيديوهات وجروب مجتمع</td></tr>
+        <tr><td>تسريب روابط يوتيوب</td><td>نوضّحها من الأول، والحل الحقيقي (فيديو محمي) في طفرة</td></tr>
+        <tr><td>الصيانة: نسختين (المجاني وطفرة)</td><td>المجاني منتج صغير ومقفول النطاق. أي ميزة جديدة تروح طفرة، والمجاني ياخد إصلاحات وأمان بس</td></tr>
+        <tr><td>شكاوى الخصوصية بسبب فحص التحديثات</td><td>الإفصاح الكامل في المعالج، دومين ونسخة بس، ومفيش بيانات طلبة، وزرار لإيقافه</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<section id="decide">
+  <div class="wrap">
+    <h2>١٥. قرارات قبل ما نبدأ</h2>
+    <div class="grid">
+      <div class="card"><h3>اسم المنتج</h3><p>اسم منفصل («مِنصّتي من طفرة» مثلًا)، ولا «طفرة لايت»؟ الاسم المربوط بطفرة بيسهّل الانتقال.</p></div>
+      <div class="card"><h3>سعر الدعم الفني</h3><p>١٥٠٠ شهري. هل فيه سنوي بخصم؟ وهل التسطيب نفسه خدمة مدفوعة لوحدها (مثلًا ٢٠٠٠ مرة واحدة)؟</p></div>
+      <div class="card"><h3>حدود المجاني</h3><p>من غير حد لعدد الطلبة (الأفضل للسمعة)، ولا حد كبير زي ١٠٠٠ طالب؟</p></div>
+      <div class="card"><h3>الترخيص</h3><p>AGPL-3.0 (المقترح، بيحمي من المنافسين) ولا MIT (انتشار أوسع)؟</p></div>
+      <div class="card"><h3>كارت المحاضرة</h3><p>نضيف <code>bootcamp_id</code> على <code>recharge_cards</code> في طفرة عشان الكارت يفتح محاضرة، ولا المجاني يكتفي بكروت المحفظة؟</p></div>
+      <div class="card"><h3>الدفع بالإيصال في طفرة</h3><p>نبني ميزة «الطالب يرفع إيصال» في طفرة نفسها (مفيدة لكل عملاء طفرة)، ولا الإيصالات تتستورد كفواتير مدفوعة بس؟</p></div>
+      <div class="card"><h3>اسم الريبو والمنظمة على GitHub</h3><p>تحت حساب طفرة، ولا منظمة منفصلة باسم المشروع؟</p></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap">مبني على تحليل لوحة التحكم في <code>khaled-sakr-admin-analysis/</code> وعلى خريطة المميزات في <code>docs/features.html</code>. الأرقام والأسعار تقديرية.</div></footer>
+</body>
+</html>

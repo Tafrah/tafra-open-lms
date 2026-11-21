@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+>
+    <testsuites>
+        <testsuite name="Architecture">
+            <directory>tests/Architecture</directory>
+        </testsuite>
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory>tests/Feature</directory>
+            <!-- معايير القبول لكل ميزة (docs/17 بند ١٣). رحلات المتصفح tests/Browser
+                 مش هنا عن قصد: composer test بيفضل سريع ومن غير متصفح —
+                 بتشتغل بـ composer test:browser. -->
+            <directory>tests/Acceptance</directory>
+        </testsuite>
+        <testsuite name="Contexts">
+            <directory>src/Contexts/*/Tests</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory>app</directory>
+            <directory>src</directory>
+        </include>
+    </source>
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="APP_MAINTENANCE_DRIVER" value="file"/>
+        <env name="BCRYPT_ROUNDS" value="4"/>
+        <env name="BROADCAST_CONNECTION" value="null"/>
+
+        <!-- الاختبارات على MySQL (القاعدة اللي الاستضافة المشتركة بتديها) مش SQLite.
+             `DB_CONNECTION=pgsql composer test` بيشغّلها على Postgres كمان. -->
+        <env name="DB_CONNECTION" value="mysql"/>
+        <env name="DB_HOST" value="127.0.0.1"/>
+        <env name="DB_PORT" value="3306"/>
+        <env name="DB_USERNAME" value="root"/>
+        <env name="DB_PASSWORD" value=""/>
+        <env name="DB_DATABASE" value="open_lms_testing"/>
+        <env name="DB_URL" value=""/>
+
+        <!-- الوضع الافتراضي single. `TENANCY_MODE=multi composer test` بيغلبه
+             (من غير force). قواعد المؤسسات في الاختبار ليها بادئة مميزة
+             بتتمسح بعد كل اختبار — ومسح أي قاعدة غيرها ممنوع (docs/17 بند ١٢). -->
+        <env name="TENANCY_MODE" value="single"/>
+        <env name="TENANCY_DB_PREFIX" value="fc_test_tenant_"/>
+
+        <env name="CACHE_STORE" value="array"/>
+        <env name="SESSION_DRIVER" value="array"/>
+        <env name="QUEUE_CONNECTION" value="sync"/>
+        <env name="MAIL_MAILER" value="array"/>
+        <env name="FILESYSTEM_DISK" value="public"/>
+
+        <!-- كاش الصلاحيات في مصفوفة عشان الاختبارات ما تتلوّثش من بعض -->
+        <env name="PERMISSION_CACHE_STORE" value="array"/>
+        <env name="SETTINGS_CACHE_STORE" value="array"/>
+        <env name="SETTINGS_CACHE_ENABLED" value="false"/>
+
+        <env name="PULSE_ENABLED" value="false"/>
+        <env name="TELESCOPE_ENABLED" value="false"/>
+        <env name="NIGHTWATCH_ENABLED" value="false"/>
+        <env name="CSP_ENABLED" value="false"/>
+    </php>
+</phpunit>
