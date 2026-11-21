@@ -28,7 +28,7 @@ return new class extends SettingsMigration
         ]);
 
         // ═══════════ المظهر ═══════════
-        $this->migrator->add('appearance.primary_color', '#12454F');
+        $this->migrator->add('appearance.primary_color', '#419DF1');
         $this->migrator->add('appearance.logo_light_path', null);
         $this->migrator->add('appearance.logo_dark_path', null);
         $this->migrator->add('appearance.favicon_path', null);
@@ -39,7 +39,7 @@ return new class extends SettingsMigration
             'ar' => '© ٢٠٢٦ كود المستقبل — جميع الحقوق محفوظة',
             'en' => '© 2026 Future Code — All rights reserved',
         ]);
-        $this->migrator->add('appearance.font_family', 'IBM Plex Sans Arabic');
+        $this->migrator->add('appearance.font_family', 'Almarai');
 
         // ═══════════ التخزين ═══════════
         $this->migrator->add('storage.default_disk', 'public');

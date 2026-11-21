@@ -8,7 +8,7 @@
 
 @theme {
   /* ═══ الخطوط ═══ */
-  --font-sans: 'IBM Plex Sans Arabic', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Almarai', 'IBM Plex Sans Arabic', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --font-mono: 'IBM Plex Mono', 'SFMono-Regular', ui-monospace, monospace;
 
   /* ═══ سُلَّم المقاسات ═══ */
@@ -34,14 +34,15 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  --fc-bg:            #F2F5F4;
+  /* لوحة ألوان طفرة (LMS-Admin-ReactJS) */
+  --fc-bg:            #FCFCFC;
   --fc-surface:       #FFFFFF;
-  --fc-sunken:        #E9EFEE;
-  --fc-border:        #D8E1E0;
-  --fc-border-subtle: #E8EEED;
-  --fc-text:          #16292B;
-  --fc-text-2:        #4E6260;
-  --fc-text-muted:    #667877;
+  --fc-sunken:        #F9F9F9;
+  --fc-border:        #DBDFE9;
+  --fc-border-subtle: #F1F1F4;
+  --fc-text:          #071437;
+  --fc-text-2:        #4B5675;
+  --fc-text-muted:    #78829D;
 
   --fc-success: #0F7A3D;
   --fc-warning: #96550A;
@@ -57,14 +58,14 @@
 }
 
 .dark {
-  --fc-bg:            #0C1415;
-  --fc-surface:       #141F20;
-  --fc-sunken:        #0F1A1B;
-  --fc-border:        #263536;
-  --fc-border-subtle: #1D2A2B;
-  --fc-text:          #E7EEED;
-  --fc-text-2:        #A6B8B7;
-  --fc-text-muted:    #7E9291;
+  --fc-bg:            #0F1014;
+  --fc-surface:       #1C1D22;
+  --fc-sunken:        #15161B;
+  --fc-border:        #363843;
+  --fc-border-subtle: #26272F;
+  --fc-text:          #F5F5F5;
+  --fc-text-2:        #B5B7C8;
+  --fc-text-muted:    #9A9CAE;
 
   --fc-success: #4ADE80;
   --fc-warning: #FBBF24;

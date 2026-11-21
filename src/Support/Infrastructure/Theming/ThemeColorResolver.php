@@ -15,11 +15,11 @@ use Src\Contexts\Settings\Domain\Settings\AppearanceSettings;
  */
 final class ThemeColorResolver
 {
-    /** لون العلامة الافتراضي — بترولي كود المستقبل (درجة 600) */
-    public const DEFAULT_BRAND = '#12454F';
+    /** لون العلامة الافتراضي — أزرق طفرة (LMS-Admin-ReactJS: --bs-primary) */
+    public const DEFAULT_BRAND = '#419DF1';
 
-    /** المحايدات البترولية بتاعتنا — مش رمادي Filament الافتراضي */
-    public const BRAND_NEUTRAL = '#4E6260';
+    /** رمادي طفرة (gray-500 في لوحة الإدارة) — مش رمادي Filament الافتراضي */
+    public const BRAND_NEUTRAL = '#78829D';
 
     /** ألوان الحالة — ثابتة، ممنوع تتغيّر لكل مؤسسة */
     public const STATUS = [

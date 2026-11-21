@@ -72,6 +72,7 @@ final class ManageAppearance extends SettingsPage
                     Select::make('font_family')
                         ->label(__('settings::settings.fields.font'))
                         ->options([
+                            'Almarai' => 'Almarai',
                             'IBM Plex Sans Arabic' => 'IBM Plex Sans Arabic',
                             'Noto Sans Arabic' => 'Noto Sans Arabic',
                             'Cairo' => 'Cairo',

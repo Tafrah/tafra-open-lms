@@ -57,7 +57,7 @@ final class ManageTenantAppearance extends Page
     protected static function defaults(): array
     {
         return [
-            'font_family' => 'IBM Plex Sans Arabic',
+            'font_family' => 'Almarai',
             'allow_theme_switch' => true,
         ];
     }
@@ -73,6 +73,7 @@ final class ManageTenantAppearance extends Page
                     Select::make('font_family')
                         ->label(__('settings::settings.fields.font'))
                         ->options([
+                            'Almarai' => 'Almarai',
                             'IBM Plex Sans Arabic' => 'IBM Plex Sans Arabic',
                             'Noto Sans Arabic' => 'Noto Sans Arabic',
                             'Cairo' => 'Cairo',

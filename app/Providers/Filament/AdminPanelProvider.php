@@ -64,8 +64,8 @@ final class AdminPanelProvider extends PanelProvider
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->font(
                 fn (): string => $this->settingValue(
-                    fn (): string => app(TenantSettings::class)->get('appearance', 'font_family', 'IBM Plex Sans Arabic'),
-                    'IBM Plex Sans Arabic',
+                    fn (): string => app(TenantSettings::class)->get('appearance', 'font_family', 'Almarai'),
+                    'Almarai',
                 ),
                 provider: GoogleFontProvider::class,
             )

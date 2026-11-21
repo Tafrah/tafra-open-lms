@@ -24,7 +24,7 @@ final class TenantSeeder extends Seeder
                 'slug' => 'acme',
                 'name' => ['ar' => 'شركة النموذج', 'en' => 'Acme Corporation'],
                 'description' => ['ar' => 'مؤسسة تجريبية أولى', 'en' => 'First demo organization'],
-                'primary_color' => '#12454F',
+                'primary_color' => '#419DF1',
                 'is_active' => true,
             ],
             [

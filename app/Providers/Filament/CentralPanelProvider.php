@@ -57,7 +57,7 @@ final class CentralPanelProvider extends PanelProvider
 
             // ═══════════ الهوية ═══════════
             ->viteTheme('resources/css/filament/admin/theme.css')
-            ->font('IBM Plex Sans Arabic', provider: GoogleFontProvider::class)
+            ->font('Almarai', provider: GoogleFontProvider::class)
             ->monoFont('IBM Plex Mono', provider: GoogleFontProvider::class)
             ->colors(fn (): array => app(ThemeColorResolver::class)->palette())
             ->brandName(fn (): string => __('tenancy::tenancy.central.brand'))
