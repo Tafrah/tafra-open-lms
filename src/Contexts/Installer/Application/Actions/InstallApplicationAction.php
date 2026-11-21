@@ -63,8 +63,17 @@ final readonly class InstallApplicationAction
         $handle = $this->acquireLock();
 
         try {
+            // طلبين تثبيت في نفس الوقت: التاني بيستنى القفل وبعدين يلاقي التثبيت خلص
+            $this->state->forget();
+
+            if ($this->state->isInstalled()) {
+                throw AlreadyInstalledException::make();
+            }
+
             @set_time_limit(0);
             ignore_user_abort(true);
+
+            $this->ensureAppKey();
 
             if ($data->database !== null) {
                 $this->step('database', $progress, fn () => $this->useDatabase($data->database));
@@ -137,6 +146,21 @@ final readonly class InstallApplicationAction
 
             throw new InstallationFailed($name, $details);
         }
+    }
+
+    /**
+     * التثبيت من سطر الأوامر من غير .env: مفيش APP_KEY لحد ما الملف يتكتب في الآخر،
+     * بس الإعدادات المشفّرة في الميجريشنز محتاجاه من الأول — نولّد واحد ونستخدمه
+     * (وهو نفسه اللي بيتكتب في .env بعدين، لأن writeEnvironment بتاخد config('app.key')).
+     */
+    private function ensureAppKey(): void
+    {
+        if (str_starts_with((string) config('app.key'), 'base64:')) {
+            return;
+        }
+
+        config(['app.key' => EnvironmentBlueprint::generateKey()]);
+        app()->forgetInstance('encrypter');
     }
 
     private function useDatabase(DatabaseCredentials $credentials): void

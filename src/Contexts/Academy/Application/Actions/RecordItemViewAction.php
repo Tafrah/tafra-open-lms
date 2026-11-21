@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Src\Contexts\Academy\Application\Actions;
 
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
 use Src\Contexts\Academy\Domain\Models\BootcampSectionItem;
 use Src\Contexts\Academy\Domain\Models\SectionItemView;
@@ -14,9 +15,19 @@ use Src\Contexts\Students\Domain\Models\Student;
  */
 final readonly class RecordItemViewAction
 {
-    private const SAME_VIEW_MINUTES = 60;
+    public const SAME_VIEW_MINUTES = 60;
 
     public function handle(Student $student, BootcampSectionItem $item): SectionItemView
+    {
+        try {
+            return $this->record($student, $item);
+        } catch (UniqueConstraintViolationException) {
+            // فتحتين في نفس اللحظة لأول مرة — التانية بتلاقي الصف اتعمل
+            return $this->record($student, $item);
+        }
+    }
+
+    private function record(Student $student, BootcampSectionItem $item): SectionItemView
     {
         return DB::transaction(function () use ($student, $item): SectionItemView {
             $view = SectionItemView::query()

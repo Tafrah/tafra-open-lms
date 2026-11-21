@@ -23,8 +23,11 @@ use Src\Support\Domain\Exceptions\MissingTenantContextException;
  */
 final readonly class TenantSettings
 {
-    /** المجموعات المسموح للمؤسسة تعدّلها */
-    public const TENANT_EDITABLE_GROUPS = ['appearance', 'notifications', 'ai'];
+    /**
+     * المجموعات المسموح للمؤسسة تعدّلها. `site` = إعدادات الموقع العام للطلبة
+     * (Storefront — بتتكتب من `UpdateSiteSettingsAction` بصلاحية `access.site_settings`).
+     */
+    public const TENANT_EDITABLE_GROUPS = ['appearance', 'notifications', 'ai', 'site'];
 
     public function __construct(
         private TenantContext $context,

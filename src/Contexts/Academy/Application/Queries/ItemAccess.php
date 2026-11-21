@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Src\Contexts\Academy\Application\Queries;
 
+use Src\Contexts\Academy\Application\Actions\RecordItemViewAction;
 use Src\Contexts\Academy\Domain\Enums\PublishStatus;
 use Src\Contexts\Academy\Domain\Models\BootcampSectionItem;
 use Src\Contexts\Academy\Domain\Models\SectionItemView;
@@ -49,12 +50,15 @@ final readonly class ItemAccess
         }
 
         if ($item->allowed_views_number !== null && $item->online_lesson_id !== null) {
-            $views = (int) SectionItemView::query()
+            $view = SectionItemView::query()
                 ->where('student_id', $student->getKey())
                 ->where('bootcamp_section_item_id', $item->getKey())
-                ->value('views_count');
+                ->first(['views_count', 'viewed_at']);
 
-            if ($views >= $item->allowed_views_number) {
+            // نفس المشاهدة (ريفرش/رجوع خلال الساعة) مابتتحسبش — زي RecordItemViewAction بالظبط
+            $sameView = $view !== null && $view->viewed_at->gte(now()->subMinutes(RecordItemViewAction::SAME_VIEW_MINUTES));
+
+            if ($view !== null && $view->views_count >= $item->allowed_views_number && ! $sameView) {
                 return 'views_exhausted';
             }
         }

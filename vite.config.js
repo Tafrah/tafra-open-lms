@@ -9,6 +9,9 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/css/filament/admin/theme.css',
+                // الموقع العام للطلبة (src/Contexts/Storefront)
+                'resources/css/site.css',
+                'resources/js/site.js',
             ],
             refresh: true,
         }),

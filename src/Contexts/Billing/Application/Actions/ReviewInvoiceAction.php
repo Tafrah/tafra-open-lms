@@ -7,6 +7,7 @@ namespace Src\Contexts\Billing\Application\Actions;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Src\Contexts\Billing\Application\Queries\BootcampAccess;
 use Src\Contexts\Billing\Domain\Enums\EnrollmentSource;
 use Src\Contexts\Billing\Domain\Enums\InvoiceStatus;
 use Src\Contexts\Billing\Domain\Enums\ReceiptStatus;
@@ -22,6 +23,7 @@ final readonly class ReviewInvoiceAction
 {
     public function __construct(
         private CheckoutAction $checkout,
+        private BootcampAccess $access,
         private Dispatcher $events,
     ) {}
 
@@ -36,6 +38,9 @@ final readonly class ReviewInvoiceAction
             $student = $locked->student;
             $bootcamp = $locked->bootcamp;
             throw_if($student === null || $bootcamp === null, BillingException::because('invoice_broken'));
+            // الطالب اشترى الكورس بطريقة تانية في الأثناء — القبول هنا معناه إنه دفع مرتين
+            $this->access->forget();
+            throw_if($this->access->has($student, $bootcamp), BillingException::because('already_enrolled_review'));
 
             $locked->receipts()->where('status', ReceiptStatus::Pending)->update(['status' => ReceiptStatus::Approved]);
             $this->checkout->markPaid($locked, $student, $bootcamp, EnrollmentSource::Receipt, (int) $actor->getKey());

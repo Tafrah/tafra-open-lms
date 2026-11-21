@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Src\Contexts\Audit\Presentation\Http\Controllers\HealthEndpointController;
 
-Route::redirect('/', '/admin');
+// `/` = الصفحة الرئيسية للموقع العام (src/Contexts/Storefront/Routes/web.php) — اللوحة على /admin
 
 /*
 |--------------------------------------------------------------------------

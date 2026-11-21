@@ -133,7 +133,7 @@ return [
         'storage_failed' => 'Could not connect to disk :disk',
         'mail_sent' => 'Test email sent',
         'mail_failed' => 'Could not send the test email',
-        'test_mail_subject' => 'Test email from the Future Code admin panel',
+        'test_mail_subject' => 'Test email from your admin panel',
         'test_mail_body' => 'If this message reached you, the mail settings are working.',
     ],
 

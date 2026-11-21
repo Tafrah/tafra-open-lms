@@ -23,6 +23,10 @@ final readonly class StartAttemptAction
     {
         throw_unless($exam->isOpenNow(), ExamsException::because('exam_closed'));
 
+        // محاولة وقتها خلص بتتسلّم في transaction لوحدها — لو اتعملت جوه اللي تحت
+        // وبعدين اترمى «خلصت المحاولات»، التسليم كان بيترجع والمحاولة تفضل مفتوحة للأبد
+        $this->finalizeExpired($student, $exam);
+
         return DB::transaction(function () use ($student, $exam, $sectionItemId): OnlinePassedExam {
             Student::query()->whereKey($student->getKey())->lockForUpdate()->first();
 
@@ -33,12 +37,8 @@ final readonly class StartAttemptAction
                 ->latest('id')
                 ->first();
 
-            if ($open !== null) {
-                if (! $open->isExpired()) {
-                    return $open;
-                }
-
-                $this->submit->handle($open);
+            if ($open !== null && ! $open->isExpired()) {
+                return $open;
             }
 
             $used = OnlinePassedExam::query()
@@ -77,5 +77,17 @@ final readonly class StartAttemptAction
                 'deadline_at' => $deadline,
             ]);
         });
+    }
+
+    private function finalizeExpired(Student $student, OnlineExam $exam): void
+    {
+        OnlinePassedExam::query()
+            ->where('student_id', $student->getKey())
+            ->where('online_exam_id', $exam->getKey())
+            ->where('finished', false)
+            ->whereNotNull('deadline_at')
+            ->where('deadline_at', '<', now())
+            ->get()
+            ->each(fn (OnlinePassedExam $attempt) => $this->submit->handle($attempt));
     }
 }

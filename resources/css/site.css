@@ -1,0 +1,210 @@
+/*
+ * الموقع العام للطلبة — مطابق لواجهة طفرة (docs/product/design-spec.md).
+ *
+ * ألوان العلامة متغيرة لكل أكاديمية: القيم هنا افتراضية بس، والـ layout
+ * بيحقن `--color-primary` / `--color-secondary` / `--font-primary` من
+ * «إعدادات الموقع» في <head> بعد الملف ده.
+ */
+@import 'tailwindcss';
+
+@source '../../src/Contexts/Storefront/Presentation/Views/**/*.blade.php';
+@source '../../src/Contexts/Storefront/Presentation/Livewire/**/*.php';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --font-sans: var(--font-primary, 'Almarai'), 'Almarai', 'IBM Plex Sans Arabic', 'Segoe UI', system-ui, sans-serif;
+
+    /* العلامة — بتتغير من الإعدادات */
+    --color-primary: #3B82F6;
+    --color-secondary: #6B7280;
+    --color-accent: #EF4444;
+
+    /* الحالات */
+    --color-success: #10B981;
+    --color-warning: #F59E0B;
+    --color-danger: #EF4444;
+    --color-success-ink: #047857;
+    --color-danger-ink: #B91C1C;
+    --color-warning-ink: #B45309;
+
+    /* المحايدات — فاتح (الغامق تحت في .dark) */
+    --color-surface: #FFFFFF;
+    --color-surface-alt: #F1F1F1;
+    --color-canvas: #F9FAFB;
+    --color-ink: #1E1E1E;
+    --color-body: #5A6574;
+    --color-muted: #6B7380;
+    --color-line: #E4E4E4;
+    --color-tint: #E2EEFF;
+    --color-navy: #002045;
+    --color-navy-2: #112D55;
+    --color-gold: #EFA425;
+    --color-tafra: #F3830A;
+
+    --radius-card: 0.5rem;
+    --radius-item: 0.75rem;
+    --radius-banner: 1rem;
+    --radius-float: 1.5rem;
+
+    --breakpoint-lg: 64.0625rem; /* 1025px — نقطة الكسر في طفرة */
+
+    --animate-fade-in: fade-in 0.8s ease both;
+    --animate-slide-up: slide-up 0.8s ease both;
+    --animate-underline: underline-grow 1.2s ease 0.3s both;
+
+    @keyframes fade-in {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slide-up {
+        from { opacity: 0; transform: translateY(24px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes underline-grow {
+        from { transform: scaleX(0); }
+        to { transform: scaleX(1); }
+    }
+}
+
+.dark {
+    --color-surface: #0D0D0D;
+    --color-surface-alt: #161616;
+    --color-canvas: #101215;
+    --color-ink: #F0F0F0;
+    --color-body: #B8C0CC;
+    --color-muted: #9AA3AF;
+    --color-line: #282828;
+    --color-tint: #002045;
+    --color-navy: #E2EEFF;
+    --color-navy-2: #C9DBF5;
+    --color-gold: #F1AF3D;
+    --color-success-ink: #6EE7B7;
+    --color-danger-ink: #FCA5A5;
+    --color-warning-ink: #FCD34D;
+}
+
+@layer base {
+    html {
+        -webkit-tap-highlight-color: transparent;
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply bg-surface text-ink font-sans antialiased;
+        line-height: 1.6;
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
+}
+
+@utility sf-btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-card px-5 py-2.5 text-sm font-bold transition duration-300 disabled:cursor-not-allowed disabled:opacity-60;
+}
+
+@layer components {
+    .sf-container {
+        @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+    }
+
+    .sf-btn-primary {
+        @apply sf-btn bg-primary text-white hover:scale-105 hover:shadow-[0_0_25px] hover:shadow-primary/50;
+    }
+
+    .sf-btn-outline {
+        @apply sf-btn border border-line bg-surface text-ink hover:border-primary hover:text-primary;
+    }
+
+    .sf-btn-ghost {
+        @apply sf-btn text-ink hover:bg-primary/10 hover:text-primary;
+    }
+
+    .sf-btn-danger {
+        @apply sf-btn bg-danger text-white hover:opacity-90;
+    }
+
+    .sf-input {
+        @apply block w-full rounded-card border border-line bg-surface px-4 py-3 text-sm text-ink placeholder:text-muted transition focus:border-primary focus:ring-2 focus:ring-primary/30 focus:outline-none;
+    }
+
+    .sf-label {
+        @apply mb-1.5 block text-sm font-bold text-ink;
+    }
+
+    .sf-error {
+        @apply mt-1.5 text-sm text-danger-ink;
+    }
+
+    .sf-card {
+        @apply rounded-banner border border-line bg-surface;
+    }
+
+    .sf-badge {
+        @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold;
+        background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+        color: var(--color-primary);
+    }
+
+    .sf-title {
+        @apply text-2xl font-bold text-navy sm:text-3xl;
+    }
+
+    .sf-shine {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .sf-shine::after {
+        content: '';
+        position: absolute;
+        inset-block: 0;
+        inset-inline-start: -75%;
+        width: 50%;
+        background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.35), transparent);
+        transform: skewX(-20deg);
+        transition: inset-inline-start 1s ease;
+    }
+
+    .group:hover .sf-shine::after {
+        inset-inline-start: 125%;
+    }
+
+    .sf-pattern {
+        background-image: radial-gradient(color-mix(in srgb, var(--color-primary) 18%, transparent) 1px, transparent 1px);
+        background-size: 22px 22px;
+    }
+
+    .sf-prose {
+        @apply text-base leading-8 text-ink;
+    }
+
+    .sf-prose p { @apply my-3; }
+    .sf-prose h2 { @apply mt-6 mb-3 text-xl font-bold text-navy; }
+    .sf-prose h3 { @apply mt-5 mb-2 text-lg font-bold text-navy; }
+    .sf-prose h4 { @apply mt-4 mb-2 font-bold; }
+    .sf-prose ul { @apply my-3 list-disc ps-6; }
+    .sf-prose ol { @apply my-3 list-decimal ps-6; }
+    .sf-prose a { @apply text-primary underline; }
+    .sf-prose blockquote { @apply my-4 border-s-4 border-primary/40 ps-4 text-body; }
+    .sf-prose img { @apply my-4 h-auto max-w-full rounded-card; }
+    .sf-prose table { @apply my-4 w-full border-collapse text-sm; }
+    .sf-prose th, .sf-prose td { @apply border border-line px-3 py-2 text-start; }
+    .sf-prose pre { @apply my-4 overflow-x-auto rounded-card bg-surface-alt p-4 text-sm; }
+}

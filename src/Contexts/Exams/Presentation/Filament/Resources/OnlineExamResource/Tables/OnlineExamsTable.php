@@ -9,7 +9,6 @@ use Filament\Actions\ActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\IconColumn;
@@ -77,7 +76,6 @@ final class OnlineExamsTable
                         ->action(fn (OnlineExam $record) => app(PublishExamAction::class)->unpublish($record, self::actor())),
                     DeleteAction::make()->authorizationTooltip(),
                     RestoreAction::make(),
-                    ForceDeleteAction::make(),
                 ])
                     ->label(__('common.actions'))
                     ->icon('heroicon-m-ellipsis-vertical')

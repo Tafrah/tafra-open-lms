@@ -8,6 +8,7 @@ use Carbon\CarbonImmutable;
 use Filament\Actions\Exports\Models\Export;
 use Filament\Actions\Imports\Models\FailedImportRow;
 use Filament\Actions\Imports\Models\Import;
+use Filament\Notifications\Notification;
 use Filament\Tables\Table;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
@@ -18,10 +19,12 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Livewire\Livewire;
 use Src\Contexts\Settings\Domain\Settings\SecuritySettings;
 use Src\Support\Application\Contracts\Clock;
 use Src\Support\Application\Contracts\DiskResolver;
 use Src\Support\Application\Contracts\TenantContext;
+use Src\Support\Domain\Exceptions\DomainException;
 use Src\Support\Infrastructure\Authorization\PolicyMemo;
 use Src\Support\Infrastructure\Filesystem\SettingsDrivenDiskResolver;
 use Src\Support\Infrastructure\Persistence\Filament\CentralExport;
@@ -65,6 +68,7 @@ final class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->reportDomainErrorsAsNotifications();
         $this->configureTrustedProxies();
         $this->configureModels();
         $this->configureDates();
@@ -109,7 +113,9 @@ final class AppServiceProvider extends ServiceProvider
 
     private function configureUrls(): void
     {
-        if ($this->app->isProduction()) {
+        // HTTPS إجباري بس لما الموقع نفسه على https — استضافة مشتركة لسه من غير
+        // شهادة كانت بتفتح اللوحة من غير CSS ولا JS (كل الروابط https ومفيش SSL)
+        if ($this->app->isProduction() && (bool) config('app.force_https')) {
             URL::forceScheme('https');
         }
     }
@@ -196,6 +202,22 @@ final class AppServiceProvider extends ServiceProvider
                 ->emptyStateHeading(__('table.empty.heading'))
                 ->emptyStateDescription(__('table.empty.description'))
                 ->emptyStateIcon('heroicon-o-inbox');
+        });
+    }
+
+    /**
+     * خطأ أعمال من زرار في اللوحة (رصيد مش كفاية، الطالب مشترك بالفعل…) رسالته مترجمة
+     * ومقصود يوصل للمستخدم — بيظهر إشعار أحمر بدل صفحة 500.
+     */
+    private function reportDomainErrorsAsNotifications(): void
+    {
+        Livewire::listen('exception', function (object $component, \Throwable $e, callable $stopPropagation): void {
+            if (! $e instanceof DomainException) {
+                return;
+            }
+
+            Notification::make()->danger()->title($e->getMessage())->send();
+            $stopPropagation();
         });
     }
 }

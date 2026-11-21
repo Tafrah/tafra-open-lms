@@ -45,9 +45,9 @@ return [
     'saved' => 'اتحفظ',
     'error' => 'حصل خطأ',
     'greeting' => 'أهلاً :name،',
-    'salutation' => 'تحياتنا، فريق كود المستقبل',
+    'salutation' => 'تحياتنا،',
     'built_by' => 'من تطوير',
-    'company' => 'كود المستقبل',
+    'company' => 'طفرة',
     'version' => 'الإصدار',
     'environment' => 'البيئة',
 

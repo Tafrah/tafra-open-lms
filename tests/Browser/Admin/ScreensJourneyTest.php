@@ -13,6 +13,7 @@ use Src\Contexts\Notifications\Presentation\Filament\Pages\NotificationPreferenc
 use Src\Contexts\Settings\Presentation\Filament\Pages\ManageTenantAi;
 use Src\Contexts\Settings\Presentation\Filament\Pages\ManageTenantAppearance;
 use Src\Contexts\Settings\Presentation\Filament\Pages\ManageTenantNotifications;
+use Src\Contexts\Storefront\Presentation\Filament\Pages\ManageSiteSettings;
 use Src\Contexts\Tenancy\Presentation\Filament\Pages\EditOrganization;
 
 /*
@@ -37,6 +38,7 @@ dataset('admin_screens', [
     'organization appearance' => [ManageTenantAppearance::class, 'settings.organization', 'sidebar', 'editor'],
     'organization notifications' => [ManageTenantNotifications::class, 'settings.organization', 'sidebar', 'editor'],
     'organization ai access' => [ManageTenantAi::class, 'settings.organization', 'sidebar', 'editor'],
+    'site settings' => [ManageSiteSettings::class, 'storefront.site_settings', 'sidebar', 'editor'],
     'connected ai apps' => [AiConnections::class, 'ai.connections', 'user-menu', null],
 ]);
 

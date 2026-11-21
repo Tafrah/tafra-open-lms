@@ -47,6 +47,7 @@ return [
 
     // جداول OAuth مركزية في الوضعين — التوكن بيتفحص قبل ما نعرف المؤسسة،
     // وفي multi الاتصال الافتراضي بيبقى قاعدة المؤسسة (docs/21 بند ٣٠)
-    'connection' => env('PASSPORT_CONNECTION', env('DB_CONNECTION', 'pgsql')),
+    // null = الاتصال الافتراضي (المثبّت بيغيّره وقت التثبيت من غير .env)
+    'connection' => env('PASSPORT_CONNECTION'),
 
 ];

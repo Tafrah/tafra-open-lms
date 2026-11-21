@@ -14,6 +14,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Gate;
 use Src\Contexts\Billing\Domain\Enums\CouponType;
 use Src\Contexts\Billing\Domain\Models\Coupon;
 
@@ -47,7 +48,14 @@ final class CouponsTable
                     ->dateTime('d M Y')
                     ->placeholder('∞'),
                 ToggleColumn::make('is_active')
-                    ->label(__('billing::billing.coupon.fields.is_active')),
+                    ->label(__('billing::billing.coupon.fields.is_active'))
+                    ->disabled(fn (Coupon $record): bool => ! (auth()->user()?->can('update', $record) ?? false))
+                    ->updateStateUsing(function (Coupon $record, bool $state): bool {
+                        Gate::authorize('update', $record);
+                        $record->update(['is_active' => $state]);
+
+                        return $state;
+                    }),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([TrashedFilter::make()])

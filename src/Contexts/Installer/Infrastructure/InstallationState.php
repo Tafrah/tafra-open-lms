@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Src\Contexts\Installer\Infrastructure;
 
+use Illuminate\Support\Facades\DB;
 use Src\Support\Infrastructure\Tenancy\TenancyModeLock;
+use Throwable;
 
 /**
  * التطبيق متثبّت ولا لأ؟
@@ -38,7 +40,26 @@ final class InstallationState
             return $this->installed = true;
         }
 
-        return false;
+        // ملف العلامة ضاع والقاعدة مش بترد لحظيًا؟ لو .env فيه قاعدة متظبطة يبقى الموقع
+        // متثبّت ووقع — نقفل (صفحة خطأ) بدل ما نفتح المثبّت لأي حد على موقع شغّال
+        return $this->databaseConfiguredButUnreachable();
+    }
+
+    private function databaseConfiguredButUnreachable(): bool
+    {
+        $env = app()->environmentFilePath();
+
+        if (! is_file($env) || preg_match('/^DB_DATABASE=\S+/m', (string) file_get_contents($env)) !== 1) {
+            return false;
+        }
+
+        try {
+            DB::connection()->getPdo();
+
+            return false;
+        } catch (Throwable) {
+            return true;
+        }
     }
 
     /** @param array<string, mixed> $details */

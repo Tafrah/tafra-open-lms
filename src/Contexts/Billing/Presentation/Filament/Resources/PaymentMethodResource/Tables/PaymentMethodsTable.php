@@ -11,6 +11,7 @@ use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Gate;
 use Src\Contexts\Billing\Domain\Models\PaymentMethod;
 
 final class PaymentMethodsTable
@@ -30,10 +31,17 @@ final class PaymentMethodsTable
                     ->label(__('billing::billing.method.fields.account_name'))
                     ->placeholder('—'),
                 ToggleColumn::make('is_active')
-                    ->label(__('billing::billing.method.fields.is_active')),
+                    ->label(__('billing::billing.method.fields.is_active'))
+                    ->disabled(fn (PaymentMethod $record): bool => ! (auth()->user()?->can('update', $record) ?? false))
+                    ->updateStateUsing(function (PaymentMethod $record, bool $state): bool {
+                        Gate::authorize('update', $record);
+                        $record->update(['is_active' => $state]);
+
+                        return $state;
+                    }),
             ])
             ->defaultSort('order')
-            ->reorderable('order')
+            ->reorderable('order', fn (): bool => auth()->user()?->can('create', PaymentMethod::class) ?? false)
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make()->authorizationTooltip(),

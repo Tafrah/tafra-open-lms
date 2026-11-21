@@ -85,6 +85,7 @@ return [
         'card_used' => 'This code has already been used.',
         'card_expired' => 'This code has expired.',
         'too_many_attempts' => 'Too many wrong attempts. Wait :seconds seconds and try again.',
+        'already_enrolled_review' => 'The student is already enrolled in this course (bought it another way). Reject this receipt and refund the transfer or add it to their wallet.',
     ],
     'invoice' => [
         'singular' => 'Invoice',

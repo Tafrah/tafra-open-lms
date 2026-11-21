@@ -45,9 +45,9 @@ return [
     'saved' => 'Saved',
     'error' => 'Something went wrong',
     'greeting' => 'Hello :name,',
-    'salutation' => 'Regards, the Future Code team',
+    'salutation' => 'Regards,',
     'built_by' => 'Built by',
-    'company' => 'Future Code',
+    'company' => 'Tafra',
     'version' => 'Version',
     'environment' => 'Environment',
 

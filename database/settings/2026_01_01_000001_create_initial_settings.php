@@ -10,8 +10,8 @@ return new class extends SettingsMigration
     {
         // ═══════════ عام ═══════════
         $this->migrator->add('general.app_name', [
-            'ar' => 'لوحة كود المستقبل',
-            'en' => 'Future Code Admin',
+            'ar' => 'منصتي التعليمية',
+            'en' => 'My learning platform',
         ]);
         $this->migrator->add('general.app_description', [
             'ar' => 'لوحة تحكم إدارية متعددة المؤسسات',
@@ -36,8 +36,8 @@ return new class extends SettingsMigration
         $this->migrator->add('appearance.allow_theme_switch', true);
         $this->migrator->add('appearance.sidebar_default', 'expanded');
         $this->migrator->add('appearance.footer_text', [
-            'ar' => '© ٢٠٢٦ كود المستقبل — جميع الحقوق محفوظة',
-            'en' => '© 2026 Future Code — All rights reserved',
+            'ar' => '© ٢٠٢٦ — جميع الحقوق محفوظة',
+            'en' => '© 2026 — All rights reserved',
         ]);
         $this->migrator->add('appearance.font_family', 'Almarai');
 
@@ -61,8 +61,8 @@ return new class extends SettingsMigration
         $this->migrator->add('mail.encryption', 'tls');
         $this->migrator->add('mail.from_address', 'admin@futurecode.test');
         $this->migrator->add('mail.from_name', [
-            'ar' => 'لوحة كود المستقبل',
-            'en' => 'Future Code Admin',
+            'ar' => 'منصتي التعليمية',
+            'en' => 'My learning platform',
         ]);
 
         // ═══════════ الإشعارات ═══════════

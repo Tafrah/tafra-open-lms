@@ -19,10 +19,14 @@ use Src\Contexts\Billing\Application\DataObjects\RechargeCardBatchData;
 use Src\Contexts\Billing\Application\Queries\BootcampAccess;
 use Src\Contexts\Billing\Domain\Enums\PaymentGateway;
 use Src\Contexts\Billing\Domain\Models\Coupon;
+use Src\Contexts\Billing\Domain\Models\Enrollment;
+use Src\Contexts\Billing\Domain\Models\MoneyTransaction;
 use Src\Contexts\Exams\Application\Actions\SaveAnswerAction;
 use Src\Contexts\Exams\Application\Actions\StartAttemptAction;
 use Src\Contexts\Exams\Application\Actions\SubmitAttemptAction;
+use Src\Contexts\Exams\Domain\Models\Choice;
 use Src\Contexts\Exams\Domain\Models\OnlineExam;
+use Src\Contexts\Exams\Domain\Models\OnlinePassedExam;
 use Src\Contexts\Exams\Domain\Models\Question;
 use Src\Contexts\Students\Domain\Models\Student;
 use Src\Contexts\Tenancy\Domain\Models\Tenant;
@@ -121,7 +125,7 @@ it('التجربة مابتحفظش حاجة لكن بتدّي تقرير حقي
         ->and(Bootcamp::query()->count())->toBe(0);
 });
 
-it('الاستيراد مرتين بيدمج الطالب بالموبايل ومابيكررش الأكواد', function (): void {
+it('نسخة تانية من نفس الأكاديمية (تصدير تاني) بتدمج الطالب بالموبايل ومابتكررش الأكواد', function (): void {
     inTenant();
     seedAcademy();
     $zip = storage_path('app/testing/export.zip');
@@ -130,7 +134,14 @@ it('الاستيراد مرتين بيدمج الطالب بالموبايل و�
     $target = Tenant::factory()->create();
     app(TenantContext::class)->set($target->getKey());
     app(ImportAcademyAction::class)->handle($zip);
-    $second = app(ImportAcademyAction::class)->handle($zip);
+
+    // تصدير جديد من نفس المصدر (ملف مختلف) — مش نفس الملف
+    app(TenantContext::class)->set(Tenant::query()->orderBy('id')->first()->getKey());
+    $this->travel(1)->minutes();
+    $zip2 = storage_path('app/testing/export2.zip');
+    app(ExportAcademyAction::class)->handle($zip2);
+    app(TenantContext::class)->set($target->getKey());
+    $second = app(ImportAcademyAction::class)->handle($zip2);
 
     expect(Student::query()->count())->toBe(1)
         ->and($second->tables['students']['merged'])->toBe(1)
@@ -175,4 +186,44 @@ it('درس من نوع مش مدعوم (من طفرة) بيتساب ويتسجّ
     expect($report->tables['online_lessons'])->toMatchArray(['read' => 2, 'imported' => 1, 'skipped' => 1])
         ->and(implode("\n", $report->warnings))->toContain('BunnyVideo')->toContain('scorm_packages')
         ->and(OnlineLesson::query()->count())->toBe(1);
+});
+
+it('نفس الملف مايتستوردش مرتين (والتجربة بتقول كده)', function (): void {
+    inTenant();
+    seedAcademy();
+    $zip = storage_path('app/testing/export.zip');
+    app(ExportAcademyAction::class)->handle($zip);
+
+    $target = Tenant::factory()->create();
+    app(TenantContext::class)->set($target->getKey());
+    app(ImportAcademyAction::class)->handle($zip);
+    $counts = fn (): array => [
+        (float) Student::query()->first()->balance,
+        MoneyTransaction::query()->count(),
+        Enrollment::query()->count(),
+        OnlinePassedExam::query()->count(),
+    ];
+    $first = $counts();
+
+    expect(fn () => app(ImportAcademyAction::class)->handle($zip))->toThrow(TransferException::class)
+        ->and($counts())->toBe($first);
+});
+
+it('ترتيب الأسئلة والاختيار المختار في المحاولة بيتترجموا للـ IDs الجديدة', function (): void {
+    inTenant();
+    seedAcademy();
+    $zip = storage_path('app/testing/export.zip');
+    app(ExportAcademyAction::class)->handle($zip);
+
+    $target = Tenant::factory()->create();
+    app(TenantContext::class)->set($target->getKey());
+    Question::factory()->count(5)->create(); // الأكاديمية فيها بيانات — الـ IDs بتتزحلق
+    app(ImportAcademyAction::class)->handle($zip);
+
+    $attempt = Student::query()->where('phone', '01012345678')->firstOrFail()->attempts()->first();
+    $examQuestions = Question::query()->where('online_exam_id', $attempt->online_exam_id)->pluck('id')->sort()->values()->all();
+    $chosen = $attempt->answers()->get()->firstWhere(fn ($a) => isset($a->answer['choice_id']))->answer['choice_id'];
+
+    expect(collect($attempt->question_order)->sort()->values()->all())->toBe($examQuestions)
+        ->and(Choice::query()->whereKey($chosen)->value('is_correct'))->toBeTrue();
 });

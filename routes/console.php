@@ -65,3 +65,6 @@ Schedule::command(sprintf(
     ->runInBackground()
     ->when(static fn (): bool => (bool) config('installer.scheduled_worker.enabled')
         && ! in_array(config('queue.default'), ['sync', 'redis'], true));
+
+// ═══════════ الامتحانات: تسليم المحاولات اللي وقتها خلص والطالب قفل الصفحة ═══════════
+Schedule::command('exams:finalize-expired')->everyFiveMinutes()->onOneServer()->withoutOverlapping();

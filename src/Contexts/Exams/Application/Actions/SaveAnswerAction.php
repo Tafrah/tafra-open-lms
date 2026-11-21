@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Src\Contexts\Exams\Application\Actions;
 
+use Illuminate\Support\Facades\DB;
 use Src\Contexts\Exams\Domain\Enums\GradingStatus;
 use Src\Contexts\Exams\Domain\Enums\QuestionType;
 use Src\Contexts\Exams\Domain\Exceptions\ExamsException;
@@ -43,14 +44,20 @@ final readonly class SaveAnswerAction
             $answer = ['text' => mb_substr(trim((string) $text), 0, 10000)];
         }
 
-        return StudentExamAnswer::query()->updateOrCreate(
-            ['online_passed_exam_id' => $attempt->getKey(), 'question_id' => $question->getKey()],
-            [
-                'student_id' => $student->getKey(),
-                'answer' => $answer,
-                'max_question_mark' => $question->mark,
-                'grading_status' => $question->type === QuestionType::Essay ? GradingStatus::Pending : GradingStatus::Auto,
-            ],
-        );
+        return DB::transaction(function () use ($attempt, $question, $student, $answer): StudentExamAnswer {
+            // قفل المحاولة: إجابة بتوصل في نفس لحظة التسليم مابتتكتبش بعده
+            $locked = OnlinePassedExam::query()->whereKey($attempt->getKey())->lockForUpdate()->firstOrFail();
+            throw_if($locked->finished, ExamsException::because('attempt_finished'));
+
+            return StudentExamAnswer::query()->updateOrCreate(
+                ['online_passed_exam_id' => $attempt->getKey(), 'question_id' => $question->getKey()],
+                [
+                    'student_id' => $student->getKey(),
+                    'answer' => $answer,
+                    'max_question_mark' => $question->mark,
+                    'grading_status' => $question->type === QuestionType::Essay ? GradingStatus::Pending : GradingStatus::Auto,
+                ],
+            );
+        });
     }
 }

@@ -68,6 +68,9 @@ it('عدد المشاهدات المسموح بيقفل الدرس لما يخل
 
     $this->travel(2)->hours();
     app(RecordItemViewAction::class)->handle($student, $item);
+    // جوه نفس الساعة = نفس المشاهدة (ريفرش) — مسموح
+    expect(app(ItemAccess::class)->allows($student, $item))->toBeTrue();
 
+    $this->travel(2)->hours();
     expect(app(ItemAccess::class)->denial($student, $item))->toBe('views_exhausted');
 });

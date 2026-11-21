@@ -127,14 +127,19 @@ final class AdminPanelProvider extends PanelProvider
             ->plugin(FilamentOnboardingPlugin::make())
 
             // ═══════════ الميدلوير ═══════════
+            // الكوكيز والجلسة مش persistent: مسار تحديث Livewire بيشغّل مجموعة web أصلًا،
+            // وإعادتها كانت بتفك تشفير كوكي الجلسة مرتين ← جلسة جديدة فاضية ← تسجيل خروج
+            // بعد أول طلب Livewire (ودجتس لوحة المعلومات مثلًا)
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
-                AuthenticateSession::class,
                 ShareErrorsFromSession::class,
                 PreventRequestForgery::class,
                 SubstituteBindings::class,
+            ])
+            ->middleware([
+                AuthenticateSession::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
                 SetLocale::class,

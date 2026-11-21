@@ -77,7 +77,7 @@ final readonly class ListRecordsAction
         $locales = (array) config('app.supported_locales');
 
         // Postgres: ilike. MySQL/MariaDB: like (الـ collation أصلاً مش حساس لحالة الحروف)
-        $operator = $query->getConnection()->getDriverName() === 'pgsql' ? 'ilike' : 'like';
+        $operator = $query->getModel()->getConnection()->getDriverName() === 'pgsql' ? 'ilike' : 'like';
 
         $query->where(function (Builder $group) use ($criteria, $pattern, $locales, $operator): void {
             foreach ($criteria->searchColumns as $column) {

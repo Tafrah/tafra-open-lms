@@ -101,7 +101,9 @@ final class User extends Authenticatable implements FilamentUser, HasAvatar, Has
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->is_active && Gate::allows('access.panel.'.$panel->getId());
+        // forUser مش allows(): Filament بيسأل قبل ما يسجّل الدخول — المستخدم الحالي لسه null،
+        // فـ allows() كانت بترفض أي حد بيدخل من فورم الدخول الحقيقي
+        return $this->is_active && Gate::forUser($this)->allows('access.panel.'.$panel->getId());
     }
 
     /** stancl بيرجّع مجموعاته الخاصة للمؤسسات — وهي Collection عادية فوق كده. */

@@ -173,4 +173,7 @@ return [
             'attempts' => 'Attempts and grading hold student marks — panel only.',
         ],
     ],
+    'console' => [
+        'finalized' => 'Submitted :count expired attempts.',
+    ],
 ];

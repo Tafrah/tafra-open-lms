@@ -11,7 +11,9 @@ use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Gate;
 use Src\Contexts\Billing\Domain\Models\RechargeCard;
+use Src\Contexts\Billing\Domain\Models\RechargeCardGroup;
 
 /** أكواد الدفعة: مين استخدم أنهي كود وإمتى. */
 final class CardsRelationManager extends RelationManager
@@ -34,10 +36,13 @@ final class CardsRelationManager extends RelationManager
             ->recordTitleAttribute('code')
             ->modifyQueryUsing(fn ($query) => $query->with('user:id,name,phone'))
             ->columns([
+                // الكود الخام = فلوس. بيظهر بس لصاحب صلاحية الطباعة؛ غيره بيشوف آخر ٤ أرقام
                 TextColumn::make('code')
                     ->label(__('billing::billing.card.fields.code'))
-                    ->searchable()
-                    ->copyable()
+                    ->formatStateUsing(fn (RechargeCard $record): string => $this->canSeeCodes() || $record->isUsed()
+                        ? (string) $record->code
+                        : '•••• •••• '.substr((string) $record->code, -4))
+                    ->copyable(fn (): bool => $this->canSeeCodes())
                     ->fontFamily('mono'),
                 TextColumn::make('user.name')
                     ->label(__('billing::billing.card.fields.used_by'))
@@ -50,7 +55,14 @@ final class CardsRelationManager extends RelationManager
                     ->sortable(),
                 ToggleColumn::make('is_active')
                     ->label(__('billing::billing.card.fields.is_active'))
-                    ->disabled(fn (RechargeCard $record): bool => $record->isUsed()),
+                    ->disabled(fn (RechargeCard $record): bool => $record->isUsed() || ! (auth()->user()?->can('update', $record) ?? false))
+                    // الحاجز الحقيقي: الطلب ممكن يتبعت من غير الزرار
+                    ->updateStateUsing(function (RechargeCard $record, bool $state): bool {
+                        Gate::authorize('update', $record);
+                        $record->update(['is_active' => $state]);
+
+                        return $state;
+                    }),
             ])
             ->filters([
                 TernaryFilter::make('used')
@@ -65,5 +77,12 @@ final class CardsRelationManager extends RelationManager
             ])
             ->emptyStateHeading(__('billing::billing.card.empty.heading'))
             ->emptyStateDescription(__('billing::billing.card.empty.description'));
+    }
+
+    private function canSeeCodes(): bool
+    {
+        $group = $this->getOwnerRecord();
+
+        return $group instanceof RechargeCardGroup && (auth()->user()?->can('print', $group) ?? false);
     }
 }

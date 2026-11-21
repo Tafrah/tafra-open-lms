@@ -30,6 +30,7 @@ parameters:
         - src/Contexts/Exams/Database/Migrations/Tenant
         - src/Contexts/Students/Database/Migrations/Tenant
         - src/Contexts/Billing/Database/Migrations/Tenant
+        - src/Contexts/Transfer/Database/Migrations/Tenant
         - packages/future-code/filament-onboarding/database/migrations
 
     parseModelCastsMethod: true

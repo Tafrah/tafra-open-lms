@@ -191,7 +191,8 @@ return [
             'access.dashboard', 'access.system', 'access.organization_profile',
             'access.my_devices', 'access.two_factor', 'access.notification_preferences',
             'access.panel.admin',
-            'widget.*',
+            // ملخص المنصة + قائمة البداية — ودجتس القالب (المستخدمين/الإعلانات) مالهاش لازمة للمدرس
+            'widget.lms_overview', 'widget.onboarding_checklist', 'widget.recent_activity',
         ],
 
         'editor' => [
@@ -220,7 +221,6 @@ return [
             'download.media',
             'access.dashboard', 'access.panel.admin',
             'access.my_devices', 'access.two_factor', 'access.notification_preferences',
-            'widget.stats_overview',
         ],
 
         'viewer' => [

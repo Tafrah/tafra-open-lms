@@ -63,6 +63,9 @@ return [
             'heading' => 'No students yet',
             'description' => 'Share your platform link with students — they appear here once they sign up.',
         ],
+        'validation' => [
+            'phone' => 'The mobile number must be an 11-digit Egyptian number (e.g. 01012345678).',
+        ],
     ],
     'tours' => [
         'student' => [

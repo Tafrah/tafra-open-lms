@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Src\Contexts\Students\Presentation\Filament\Resources\StudentResource\Schemas;
 
+use Closure;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Illuminate\Validation\Rules\Unique;
 use Src\Contexts\Students\Application\Actions\RegisterStudentAction;
 use Src\Contexts\Students\Domain\Enums\SchoolType;
-use Src\Support\Application\Contracts\TenantContext;
+use Src\Contexts\Students\Domain\Models\Student;
 
 final class StudentForm
 {
@@ -26,17 +26,18 @@ final class StudentForm
                         ->label(__('students::students.student.fields.name'))
                         ->required()
                         ->maxLength(255),
+                    // التحقق بعد توحيد الرقم (+20، أرقام عربية، مسافات) — مش على اللي اتكتب خام
                     TextInput::make('phone')
                         ->label(__('students::students.student.fields.phone'))
-                        ->tel()
+                        ->inputMode('tel')
                         ->required()
-                        ->regex('/^01[0125][0-9]{8}$/')
-                        ->dehydrateStateUsing(fn (?string $state): string => RegisterStudentAction::normalizePhone((string) $state))
-                        ->unique(ignoreRecord: true, modifyRuleUsing: fn (Unique $rule): Unique => $rule->where('tenant_id', app(TenantContext::class)->id())),
+                        ->rule(fn (?Student $record): Closure => self::phoneRule($record, unique: true))
+                        ->dehydrateStateUsing(fn (?string $state): string => RegisterStudentAction::normalizePhone((string) $state)),
                     TextInput::make('parent_phone')
                         ->label(__('students::students.student.fields.parent_phone'))
-                        ->tel()
-                        ->regex('/^01[0125][0-9]{8}$/'),
+                        ->inputMode('tel')
+                        ->rule(fn (): Closure => self::phoneRule(null, unique: false))
+                        ->dehydrateStateUsing(fn (?string $state): ?string => filled($state) ? RegisterStudentAction::normalizePhone((string) $state) : null),
                     TextInput::make('email')
                         ->label(__('students::students.student.fields.email'))
                         ->email()
@@ -62,5 +63,31 @@ final class StudentForm
                         ->visibleOn('create'),
                 ]),
         ]);
+    }
+
+    private static function phoneRule(?Student $record, bool $unique): Closure
+    {
+        return function (string $attribute, mixed $value, Closure $fail) use ($record, $unique): void {
+            if (blank($value)) {
+                return;
+            }
+
+            $phone = RegisterStudentAction::normalizePhone((string) $value);
+
+            if (preg_match('/^01[0125][0-9]{8}$/', $phone) !== 1) {
+                $fail(__('students::students.student.validation.phone'));
+
+                return;
+            }
+
+            $taken = $unique && Student::query()->withTrashed()
+                ->where('phone', $phone)
+                ->when($record !== null, fn ($q) => $q->whereKeyNot($record->getKey()))
+                ->exists();
+
+            if ($taken) {
+                $fail(__('students::students.errors.phone_taken'));
+            }
+        };
     }
 }

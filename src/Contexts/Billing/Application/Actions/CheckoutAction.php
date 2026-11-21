@@ -71,6 +71,11 @@ final readonly class CheckoutAction
         );
 
         return DB::transaction(function () use ($student, $bootcamp, $gateway, $quote): PaymentInvoice {
+            // قفل صف الطالب: ضغطتين ورا بعض = عملية شراء واحدة (التانية بتلاقيه مشترك)
+            Student::query()->whereKey($student->getKey())->lockForUpdate()->first();
+            $this->access->forget();
+            throw_if($this->access->has($student, $bootcamp), BillingException::because('already_enrolled'));
+
             if ($gateway === PaymentGateway::ManualTransfer) {
                 // فاتورة معلّقة واحدة لكل كورس — لو موجودة نرجّعها (بنفس السعر الجديد)
                 $pending = PaymentInvoice::query()
@@ -105,6 +110,14 @@ final readonly class CheckoutAction
                 $this->wallet->withdraw($student, (float) $invoice->amount, TransactionSource::Purchase, $invoice);
             }
 
+            // اشترى بالمحفظة/مجانًا وكان مستني تحويل لنفس الكورس — نلغي التحويل عشان مايدفعش مرتين
+            PaymentInvoice::query()
+                ->where('student_id', $student->getKey())
+                ->where('bootcamp_id', $bootcamp->getKey())
+                ->where('status', InvoiceStatus::Pending)
+                ->whereKeyNot($invoice->getKey())
+                ->update(['status' => InvoiceStatus::Canceled]);
+
             $this->markPaid($invoice, $student, $bootcamp, $gateway === PaymentGateway::Wallet ? EnrollmentSource::Wallet : EnrollmentSource::Free);
 
             return $invoice;
@@ -128,6 +141,11 @@ final readonly class CheckoutAction
             $coupon = Coupon::query()->lockForUpdate()->find($invoice->coupon_id);
 
             if ($coupon !== null) {
+                // إعادة فحص الحدود تحت القفل. التحويل اليدوي محجوز من وقت الطلب (CouponValidator
+                // بيعدّ الفواتير المعلّقة)، فالقبول مابيترفضش؛ الشراء الفوري بيترفض لو الحد خلص.
+                $exhausted = $coupon->max_redemptions !== null && $coupon->current_redemptions >= $coupon->max_redemptions;
+                throw_if($exhausted && $reviewerId === null, BillingException::because('coupon_exhausted'));
+
                 CouponRedemption::query()->create([
                     'coupon_id' => $coupon->getKey(),
                     'student_id' => $student->getKey(),

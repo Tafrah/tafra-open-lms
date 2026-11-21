@@ -48,7 +48,10 @@ return [
     'csp' => [
         'enabled' => env('CSP_ENABLED', true),
         'enforce' => env('CSP_ENFORCE', false),
-        'extra_sources' => [],
+        'extra_sources' => [
+            // مشغّل الدروس في الموقع العام (Storefront) — يوتيوب من غير كوكيز بس
+            'frame-src' => ["'self'", 'https://www.youtube-nocookie.com'],
+        ],
     ],
 
     /*

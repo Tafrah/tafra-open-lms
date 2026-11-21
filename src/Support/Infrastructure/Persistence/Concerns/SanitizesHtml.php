@@ -39,11 +39,17 @@ trait SanitizesHtml
             }
 
             // الحقول المترجمة بتتخزّن JSON — لازم نقّي كل لغة على حدة
+            // (على الـ JSON الخام مباشرة — من غير ما نعتمد على HasTranslations في الموديل)
             if ($this->isSanitizedAttributeTranslatable($attribute)) {
-                $this->setTranslations($attribute, array_map(
-                    static fn (?string $value): string => $sanitizer->clean($value),
-                    $this->getTranslations($attribute),
-                ));
+                $raw = $this->getAttributes()[$attribute];
+                $translations = is_string($raw) ? json_decode($raw, true) : $raw;
+
+                if (is_array($translations)) {
+                    $this->attributes[$attribute] = json_encode(array_map(
+                        static fn (mixed $value): string => $sanitizer->clean(is_string($value) ? $value : null),
+                        $translations,
+                    ), JSON_UNESCAPED_UNICODE);
+                }
 
                 continue;
             }
@@ -66,7 +72,6 @@ trait SanitizesHtml
     {
         // موديل من غير ترجمة (مفيش `$translatable`) = عمود نص عادي
         return property_exists($this, 'translatable')
-            && is_array($this->translatable)
-            && in_array($attribute, $this->translatable, true);
+            && in_array($attribute, (array) $this->translatable, true);
     }
 }

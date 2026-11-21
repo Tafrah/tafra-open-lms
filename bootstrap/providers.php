@@ -19,9 +19,10 @@ use Src\Contexts\Installer\InstallerServiceProvider;
 use Src\Contexts\Media\MediaServiceProvider;
 use Src\Contexts\Notifications\NotificationsServiceProvider;
 use Src\Contexts\Settings\SettingsServiceProvider;
+use Src\Contexts\Storefront\StorefrontServiceProvider;
 use Src\Contexts\Students\StudentsServiceProvider;
-use Src\Contexts\Transfer\TransferServiceProvider;
 use Src\Contexts\Tenancy\TenancyServiceProvider;
+use Src\Contexts\Transfer\TransferServiceProvider;
 
 return [
     AppServiceProvider::class,
@@ -40,6 +41,8 @@ return [
     BillingServiceProvider::class,
     // نقل الأكاديمية من وإلى طفرة (tafra:export / tafra:import)
     TransferServiceProvider::class,
+    // الموقع العام للطلبة (/ · /courses · /dashboard …) + تبويب «إعدادات الموقع»
+    StorefrontServiceProvider::class,
     ContentServiceProvider::class,
     MediaServiceProvider::class,
     NotificationsServiceProvider::class,

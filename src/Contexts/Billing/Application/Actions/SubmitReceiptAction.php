@@ -54,7 +54,9 @@ final readonly class SubmitReceiptAction
                 'status' => ReceiptStatus::Pending,
             ])->save();
 
-            $receipt->addMedia($image)->toMediaCollection('receipt', $this->disks->for('receipts'));
+            // اسم المجموعة `receipt` (مفرد) — هو اللي في `storage.private_collections`؛
+            // `receipts` كان بيرجّع الديسك العام فصور الإيصالات كانت بتتحفظ public
+            $receipt->addMedia($image)->toMediaCollection('receipt', $this->disks->for('receipt'));
 
             return $receipt;
         });

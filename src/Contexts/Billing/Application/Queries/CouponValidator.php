@@ -6,9 +6,11 @@ namespace Src\Contexts\Billing\Application\Queries;
 
 use Src\Contexts\Academy\Domain\Models\Bootcamp;
 use Src\Contexts\Billing\Domain\Enums\CouponScope;
+use Src\Contexts\Billing\Domain\Enums\InvoiceStatus;
 use Src\Contexts\Billing\Domain\Exceptions\BillingException;
 use Src\Contexts\Billing\Domain\Models\Coupon;
 use Src\Contexts\Billing\Domain\Models\CouponRedemption;
+use Src\Contexts\Billing\Domain\Models\PaymentInvoice;
 use Src\Contexts\Students\Domain\Models\Student;
 
 /**
@@ -23,8 +25,16 @@ final class CouponValidator
         throw_if($coupon === null || ! $coupon->is_active, BillingException::because('coupon_invalid'));
         throw_if($coupon->starts_at !== null && $coupon->starts_at->isFuture(), BillingException::because('coupon_not_started'));
         throw_if($coupon->expires_at !== null && $coupon->expires_at->isPast(), BillingException::because('coupon_expired'));
+        // التحويلات المعلّقة بالكوبون ده محجوزة — وإلا ١٠ طلبة يحجزوا كوبون «لأول واحد بس»
+        $reserved = PaymentInvoice::query()
+            ->where('coupon_id', $coupon->getKey())
+            ->where('status', InvoiceStatus::Pending)
+            // فاتورة الطالب نفسه المعلّقة لنفس الكورس بتتحدّث، مش بتتعد مرتين
+            ->where(fn ($q) => $q->where('student_id', '!=', $student->getKey())->orWhere('bootcamp_id', '!=', $bootcamp->getKey()));
+
         throw_if(
-            $coupon->max_redemptions !== null && $coupon->current_redemptions >= $coupon->max_redemptions,
+            $coupon->max_redemptions !== null
+                && $coupon->current_redemptions + (clone $reserved)->count() >= $coupon->max_redemptions,
             BillingException::because('coupon_exhausted'),
         );
 
@@ -32,7 +42,7 @@ final class CouponValidator
             $used = CouponRedemption::query()
                 ->where('coupon_id', $coupon->getKey())
                 ->where('student_id', $student->getKey())
-                ->count();
+                ->count() + (clone $reserved)->where('student_id', $student->getKey())->count();
 
             throw_if($used >= $coupon->max_per_user, BillingException::because('coupon_already_used'));
         }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Src\Contexts\Exams;
 
+use Src\Contexts\Exams\Presentation\Console\FinalizeExpiredAttemptsCommand;
 use Src\Support\Infrastructure\Providers\ContextServiceProvider;
 
 final class ExamsServiceProvider extends ContextServiceProvider
@@ -22,5 +23,12 @@ final class ExamsServiceProvider extends ContextServiceProvider
     protected function panelIds(): array
     {
         return ['admin'];
+    }
+
+    protected function bootContext(): void
+    {
+        if ($this->app->runningInConsole()) {
+            $this->commands([FinalizeExpiredAttemptsCommand::class]);
+        }
     }
 }

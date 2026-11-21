@@ -24,6 +24,7 @@ final class StudentExamAnswerPolicy extends StandardPolicy
     {
         return $this->owned($user, $record, 'grade')
             ->rule($record->grading_status !== GradingStatus::Auto, 'answer.auto_graded')
+            ->rule((bool) $record->attempt?->finished, 'attempt.not_finished')
             ->response();
     }
 }

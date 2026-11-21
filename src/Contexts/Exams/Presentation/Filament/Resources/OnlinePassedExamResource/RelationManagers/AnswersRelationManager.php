@@ -37,7 +37,7 @@ final class AnswersRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn ($query) => $query->with(['question.choices', 'question.essay']))
+            ->modifyQueryUsing(fn ($query) => $query->with(['question.choices', 'question.essay', 'attempt']))
             ->columns([
                 TextColumn::make('question.text')
                     ->label(__('exams::exams.answer.fields.question'))

@@ -65,7 +65,7 @@ return [
     ])),
 
     'database' => [
-        'central_connection' => env('DB_CONNECTION', 'pgsql'),
+        'central_connection' => env('DB_CONNECTION', 'mysql'),
 
         'template_tenant_connection' => null,
 

@@ -83,7 +83,7 @@ return [
      */
     'cache' => [
         'enabled' => (bool) env('SETTINGS_CACHE_ENABLED', true),
-        'store' => env('SETTINGS_CACHE_STORE', 'redis'),
+        'store' => env('SETTINGS_CACHE_STORE', 'database'),
         'prefix' => 'fc_settings',
         'ttl' => null,       // بدون انتهاء — بيتمسح عند الحفظ
 

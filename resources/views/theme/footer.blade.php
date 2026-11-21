@@ -12,7 +12,7 @@
 
         <span class="fc-footer__by">
             {{ __('common.built_by') }}
-            <span class="fc-footer__link">{{ __('common.company') }}</span>
+            <a class="fc-footer__link" href="{{ config('storefront.tafra_url') }}" target="_blank" rel="noopener">{{ __('common.company') }}</a>
         </span>
 
         <span class="fc-footer__version fc-code">v{{ config('app.version') }}</span>

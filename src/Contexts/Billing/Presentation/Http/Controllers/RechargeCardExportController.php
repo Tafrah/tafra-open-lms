@@ -67,6 +67,7 @@ final class RechargeCardExportController
     {
         $group = RechargeCardGroup::query()->with('bootcamp:id,name')->findOrFail((int) $id);
 
+        Gate::authorize('access.panel.admin');
         Gate::authorize('print', $group);
 
         return $group;

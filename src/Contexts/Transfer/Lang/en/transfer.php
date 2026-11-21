@@ -20,6 +20,7 @@ return [
         'wrong_format' => 'This is not an export from Tafra or the free platform.',
         'newer_format' => 'This file comes from a newer version (format :version) — update the platform first.',
         'checksum' => 'The file :file was changed or is corrupted — download the export again.',
+        'already_imported' => 'This file was already imported into this platform — it will not be imported twice.',
     ],
     'warnings' => [
         'unsupported_table' => 'Table :table is not supported in the free platform — skipped.',

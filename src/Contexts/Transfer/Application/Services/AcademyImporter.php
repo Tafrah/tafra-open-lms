@@ -6,6 +6,7 @@ namespace Src\Contexts\Transfer\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Src\Contexts\Academy\Domain\Enums\LessonType;
@@ -48,6 +49,9 @@ final class AcademyImporter
     /** @var array<int, float> رصيد الطلبة الجداد من extra_info */
     private array $balances = [];
 
+    /** @var list<int> الطلبة اللي اتضافوا فعلًا (مش اللي اتدمجوا) — رصيدهم بس اللي بيتحسب */
+    private array $newStudents = [];
+
     private int $tenantId = 0;
 
     private ?int $actorId = null;
@@ -71,10 +75,26 @@ final class AcademyImporter
         try {
             $this->extract($zipPath, $work);
             $manifest = $this->manifest($work);
+            $fingerprint = hash_file('sha256', $work.'/manifest.json') ?: '';
+
+            throw_if(
+                DB::table('academy_imports')->where('tenant_id', $this->tenantId)->where('manifest_hash', $fingerprint)->exists(),
+                TransferException::because('already_imported'),
+            );
 
             DB::beginTransaction();
 
             try {
+                DB::table('academy_imports')->insert([
+                    'tenant_id' => $this->tenantId,
+                    'manifest_hash' => $fingerprint,
+                    'source' => mb_substr((string) ($manifest['source'] ?? ''), 0, 64),
+                    'exported_at' => isset($manifest['exported_at']) ? date('Y-m-d H:i:s', (int) strtotime((string) $manifest['exported_at'])) : null,
+                    'imported_by' => $this->actorId,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
                 $this->loadLookups($work);
 
                 foreach (TafraSchemaMap::tables() as $file => $spec) {
@@ -112,6 +132,7 @@ final class AcademyImporter
         $this->studentUsers = [];
         $this->questionExam = [];
         $this->balances = [];
+        $this->newStudents = [];
     }
 
     private function extract(string $zipPath, string $work): void
@@ -241,6 +262,15 @@ final class AcademyImporter
                 $prepared = $this->morph($prepared);
             }
 
+            // الـ IDs المخزّنة جوه JSON (ترتيب الأسئلة والاختيار المختار) بتتترجم برضه
+            if ($file === 'online_passed_exams') {
+                $prepared['question_order'] = $this->remapJsonList($prepared['question_order'] ?? null, 'questions');
+            }
+
+            if ($file === 'student_exam_answers') {
+                $prepared['answer'] = $this->remapChoice($prepared['answer'] ?? null);
+            }
+
             // عنصر بيشاور على درس/امتحان اتساب (نوع مش مدعوم) = مالوش لازمة
             if ($file === 'bootcamp_section_items'
                 && (($prepared['type'] ?? null) === 'lesson' ? ($prepared['online_lesson_id'] ?? null) : ($prepared['online_exam_id'] ?? null)) === null) {
@@ -276,6 +306,7 @@ final class AcademyImporter
             }
 
             if ($file === 'students') {
+                $this->newStudents[] = $newId;
                 $this->map['students:user'][(int) $prepared['__user_id']] = $newId;
 
                 if (isset($prepared['__balance'])) {
@@ -338,7 +369,7 @@ final class AcademyImporter
                     'phone' => RegisterStudentAction::normalizePhone((string) $user['phone']),
                     'email' => $user['email'] ?? null,
                     // الهاش زي ما هو (bcrypt) — مابيتعادش تشفيره
-                    'password' => (string) ($user['password'] ?? Str::password(32)),
+                    'password' => filled($user['password'] ?? null) ? (string) $user['password'] : Hash::make(Str::password(32)),
                     'parent_phone' => filled($row['parent_phone'] ?? null) ? (string) $row['parent_phone'] : null,
                     'code' => (string) ($row['code'] ?? ''),
                     'educational_level_id' => $row['educational_level_id'] ?? null,
@@ -350,6 +381,13 @@ final class AcademyImporter
                     'deleted_at' => $row['deleted_at'] ?? null,
                     '__balance' => $extra['balance'] ?? null,
                 ];
+                break;
+
+            case 'online_exams':
+                // طفرة ممكن تستخدم 0 = مفتوح
+                if (isset($row['allowed_chances']) && (int) $row['allowed_chances'] <= 0) {
+                    $row['allowed_chances'] = null;
+                }
                 break;
 
             case 'payment_invoices':
@@ -393,6 +431,25 @@ final class AcademyImporter
         $id = match ($file) {
             'students' => DB::table('students')->where('tenant_id', $this->tenantId)->where('phone', $row['phone'])->value('id'),
             'educational_levels' => DB::table('educational_levels')->where('tenant_id', $this->tenantId)->where('code', $row['code'] ?? '')->value('id'),
+            // إعادة استيراد نفس الملف: الحركة/الفاتورة/المحاولة/الاشتراك الموجودين مايتكرروش
+            'money_transactions' => filled($row['uuid'] ?? null)
+                ? DB::table('money_transactions')->where('tenant_id', $this->tenantId)->where('uuid', $row['uuid'])->value('id')
+                : null,
+            'payment_invoices' => DB::table('payment_invoices')->where('tenant_id', $this->tenantId)
+                ->where('number', $row['number'] ?? '')->where('student_id', $row['student_id'] ?? 0)->value('id'),
+            'bootcamp_enrolled_students_histories' => DB::table('bootcamp_enrolled_students_histories')->where('tenant_id', $this->tenantId)
+                ->where('student_id', $row['student_id'] ?? 0)->where('bootcamp_id', $row['bootcamp_id'] ?? 0)
+                ->where('type', $row['type'] ?? 'enroll')->where('created_at', $row['created_at'] ?? null)->value('id'),
+            'online_passed_exams' => DB::table('online_passed_exams')->where('tenant_id', $this->tenantId)
+                ->where('student_id', $row['student_id'] ?? 0)->where('online_exam_id', $row['online_exam_id'] ?? 0)
+                ->where('start_at', $row['start_at'] ?? null)->value('id'),
+            'student_exam_answers' => DB::table('student_exam_answers')->where('tenant_id', $this->tenantId)
+                ->where('online_passed_exam_id', $row['online_passed_exam_id'] ?? 0)->where('question_id', $row['question_id'] ?? 0)->value('id'),
+            'section_item_views' => DB::table('section_item_views')->where('tenant_id', $this->tenantId)
+                ->where('student_id', $row['student_id'] ?? 0)->where('bootcamp_section_item_id', $row['bootcamp_section_item_id'] ?? 0)->value('id'),
+            'coupon_redemptions' => DB::table('coupon_redemptions')->where('tenant_id', $this->tenantId)
+                ->where('coupon_id', $row['coupon_id'] ?? 0)->where('student_id', $row['student_id'] ?? 0)
+                ->where('payment_invoice_id', $row['payment_invoice_id'] ?? 0)->value('id'),
             default => null,
         };
 
@@ -478,7 +535,7 @@ final class AcademyImporter
     /** الرصيد = من extra_info لو موجود، وإلا مجموع الحركات المستوردة */
     private function recalculateBalances(): void
     {
-        foreach ($this->map['students'] ?? [] as $newId) {
+        foreach ($this->newStudents as $newId) {
             $balance = $this->balances[$newId] ?? null;
 
             if ($balance === null) {
@@ -500,7 +557,8 @@ final class AcademyImporter
         }
 
         foreach ((array) json_decode((string) file_get_contents($path), true) as $group => $values) {
-            if (! in_array($group, TenantSettings::TENANT_EDITABLE_GROUPS, true) || ! is_array($values)) {
+            // الإعدادات اللي بتتنقل: الموقع والمظهر بس (مفاتيح الذكاء الاصطناعي والإشعارات لأ)
+            if (! in_array($group, ['site', 'appearance'], true) || ! is_array($values)) {
                 continue;
             }
 
@@ -519,8 +577,14 @@ final class AcademyImporter
             $table = (string) ($entry['table'] ?? '');
             $spec = $specs[$table] ?? null;
             $newId = $this->map[$table][$entry['id'] ?? 0] ?? null;
-            $file = $work.'/'.ltrim((string) ($entry['path'] ?? ''), '/');
+            $relative = (string) ($entry['path'] ?? '');
+            $file = realpath($work.'/'.ltrim($relative, '/'));
             $collection = (string) ($entry['collection'] ?? '');
+
+            // المسار لازم يفضل جوه مجلد الاستيراد — `..` كان ممكن ينسخ أي ملف على السيرفر
+            if ($file === false || str_contains($relative, '..') || ! str_starts_with($file, (string) realpath($work).DIRECTORY_SEPARATOR)) {
+                continue;
+            }
 
             if ($spec === null || $newId === null || ! is_file($file) || ! in_array($collection, $spec['collections'], true)) {
                 continue;
@@ -597,5 +661,34 @@ final class AcademyImporter
         }
 
         return true;
+    }
+
+    private function remapJsonList(mixed $value, string $table): ?string
+    {
+        $ids = is_array($value) ? $value : json_decode((string) $value, true);
+
+        if (! is_array($ids)) {
+            return null;
+        }
+
+        return (string) json_encode(array_values(array_filter(
+            array_map(fn (mixed $id): ?int => $this->map[$table][$id] ?? null, $ids),
+            static fn (?int $id): bool => $id !== null,
+        )));
+    }
+
+    private function remapChoice(mixed $value): ?string
+    {
+        $answer = is_array($value) ? $value : json_decode((string) $value, true);
+
+        if (! is_array($answer)) {
+            return null;
+        }
+
+        if (array_key_exists('choice_id', $answer) && $answer['choice_id'] !== null) {
+            $answer['choice_id'] = $this->map['choices'][$answer['choice_id']] ?? null;
+        }
+
+        return (string) json_encode($answer, JSON_UNESCAPED_UNICODE);
     }
 }
