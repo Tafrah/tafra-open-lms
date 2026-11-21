@@ -6,6 +6,7 @@ namespace Src\Contexts\Academy\Presentation\Filament\Resources\OnlineLessonResou
 
 use Filament\Resources\Pages\CreateRecord;
 use Src\Contexts\Academy\Presentation\Filament\Resources\OnlineLessonResource;
+use Src\Contexts\Academy\Presentation\Filament\Resources\OnlineLessonResource\Schemas\OnlineLessonForm;
 
 final class CreateOnlineLesson extends CreateRecord
 {
@@ -17,6 +18,6 @@ final class CreateOnlineLesson extends CreateRecord
      */
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        return [...$data, 'user_id' => auth()->id()];
+        return OnlineLessonForm::clearOtherTypes([...$data, 'user_id' => auth()->id()]);
     }
 }

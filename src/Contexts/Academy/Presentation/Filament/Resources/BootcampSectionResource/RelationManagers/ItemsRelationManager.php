@@ -13,6 +13,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -48,12 +49,16 @@ final class ItemsRelationManager extends RelationManager
                 ->label(__('academy::academy.item.fields.lesson'))
                 ->options(fn (): array => OnlineLesson::query()->latest('id')->limit(500)->pluck('name', 'id')->all())
                 ->searchable()
+                ->live()
+                ->afterStateUpdated(fn (mixed $state, mixed $old, Get $get, Set $set) => self::followName(OnlineLesson::class, $state, $old, $get, $set))
                 ->required(fn (Get $get): bool => self::type($get) === SectionItemType::Lesson)
                 ->visible(fn (Get $get): bool => self::type($get) === SectionItemType::Lesson),
             Select::make('online_exam_id')
                 ->label(__('academy::academy.item.fields.exam'))
                 ->options(fn (): array => OnlineExam::query()->latest('id')->limit(500)->pluck('name', 'id')->all())
                 ->searchable()
+                ->live()
+                ->afterStateUpdated(fn (mixed $state, mixed $old, Get $get, Set $set) => self::followName(OnlineExam::class, $state, $old, $get, $set))
                 ->required(fn (Get $get): bool => self::type($get) === SectionItemType::Exam)
                 ->visible(fn (Get $get): bool => self::type($get) === SectionItemType::Exam),
             TextInput::make('name')
@@ -127,6 +132,24 @@ final class ItemsRelationManager extends RelationManager
             ])
             ->emptyStateHeading(__('academy::academy.item.empty.heading'))
             ->emptyStateDescription(__('academy::academy.item.empty.description'));
+    }
+
+    /**
+     * تغيير الدرس/الامتحان بيغيّر اسم العنصر — إلا لو المدرس كاتب اسم مخصوص
+     * (يعني الاسم الحالي مش هو اسم الاختيار القديم).
+     *
+     * @param class-string<OnlineLesson|OnlineExam> $model
+     */
+    private static function followName(string $model, mixed $state, mixed $old, Get $get, Set $set): void
+    {
+        $current = (string) $get('name');
+        $oldName = filled($old) ? (string) $model::query()->whereKey($old)->value('name') : '';
+
+        if ($current !== '' && $current !== $oldName) {
+            return;
+        }
+
+        $set('name', filled($state) ? (string) $model::query()->whereKey($state)->value('name') : '');
     }
 
     private static function type(Get $get): ?SectionItemType

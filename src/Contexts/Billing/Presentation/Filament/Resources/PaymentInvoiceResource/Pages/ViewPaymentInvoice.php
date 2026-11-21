@@ -52,13 +52,19 @@ final class ViewPaymentInvoice extends ViewRecord
                         ->schema([
                             ImageEntry::make('image')
                                 ->label(__('billing::billing.receipt.fields.image'))
-                                ->state(fn (PaymentReceipt $record): ?string => ($media = $record->getFirstMedia('receipt')) !== null
-                                    ? app(MediaUrlResolver::class)->url($media)
-                                    : null)
+                                ->visible(fn (PaymentReceipt $record): bool => ! self::isPdf($record))
+                                ->state(fn (PaymentReceipt $record): ?string => self::receiptUrl($record))
                                 ->imageHeight(220)
-                                ->url(fn (PaymentReceipt $record): ?string => ($media = $record->getFirstMedia('receipt')) !== null
-                                    ? app(MediaUrlResolver::class)->url($media)
-                                    : null, shouldOpenInNewTab: true)
+                                ->url(fn (PaymentReceipt $record): ?string => self::receiptUrl($record), shouldOpenInNewTab: true)
+                                ->columnSpan(2),
+                            // إيصال PDF: رابط يفتح الملف بدل صورة مكسورة
+                            TextEntry::make('pdf')
+                                ->label(__('billing::billing.receipt.fields.image'))
+                                ->visible(fn (PaymentReceipt $record): bool => self::isPdf($record))
+                                ->state(fn (PaymentReceipt $record): string => $record->getFirstMedia('receipt')?->file_name ?? 'PDF')
+                                ->icon('heroicon-o-document-text')
+                                ->color('primary')
+                                ->url(fn (PaymentReceipt $record): ?string => self::receiptUrl($record), shouldOpenInNewTab: true)
                                 ->columnSpan(2),
                             TextEntry::make('method.name')->label(__('billing::billing.receipt.fields.method')),
                             TextEntry::make('sender_phone')->label(__('billing::billing.receipt.fields.sender_phone'))->placeholder('—')->copyable(),
@@ -70,12 +76,34 @@ final class ViewPaymentInvoice extends ViewRecord
         ]);
     }
 
-    /** @return array<int, Action> */
+    /**
+     * بعد القبول أو الرفض: السجل بيتحدّث عشان الحالة تتغيّر قدام المراجع
+     * والزرارين يختفوا (الـ Policy بترفضهم لفاتورة اتراجعت خلاص).
+     *
+     * @return array<int, Action>
+     */
     protected function getHeaderActions(): array
     {
         return [
-            InvoiceReviewActions::approve(),
-            InvoiceReviewActions::reject(),
+            InvoiceReviewActions::approve()->after(fn () => $this->refreshRecord()),
+            InvoiceReviewActions::reject()->after(fn () => $this->refreshRecord()),
         ];
+    }
+
+    private function refreshRecord(): void
+    {
+        $this->record->refresh()->load(['receipts.media', 'receipts.method']);
+    }
+
+    private static function receiptUrl(PaymentReceipt $record): ?string
+    {
+        $media = $record->getFirstMedia('receipt');
+
+        return $media !== null ? app(MediaUrlResolver::class)->url($media) : null;
+    }
+
+    private static function isPdf(PaymentReceipt $record): bool
+    {
+        return $record->getFirstMedia('receipt')?->mime_type === 'application/pdf';
     }
 }

@@ -189,6 +189,130 @@ jobs:
           path: tests/Browser/Screenshots
           if-no-files-found: ignore
 
+  # الحزمة اللي المدرس بيرفعها على الاستضافة المشتركة — بتتبني بنفس سكربت الـ
+  # Release، بتتفك في مكان فاضي، بتتثبّت على MySQL، وبنتأكد إن الصفحات بتفتح.
+  package:
+    name: حزمة الاستضافة المشتركة (تثبيت فعلي)
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: lms
+          MYSQL_USER: lms
+          MYSQL_PASSWORD: secret
+          MYSQL_ROOT_PASSWORD: root
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd "mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_mysql, gd, exif, intl, bcmath, zip
+          coverage: none
+          tools: composer:v2
+
+      - name: composer install (production)
+        run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --no-progress
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: npm ci && npm run build
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+
+      - name: بناء الحزمة
+        run: deploy/package-release.sh 0.0.0-ci
+
+      - name: فك الحزمة وتثبيتها
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/host && cd /tmp/host
+          unzip -q "$GITHUB_WORKSPACE/dist/tafra-open-lms-v0.0.0-ci.zip"
+          test ! -e .env
+
+          php -S 127.0.0.1:8000 -t public > /tmp/server.log 2>&1 &
+          sleep 2
+
+          # قبل التثبيت: أي صفحة بتودّي لمعالج التثبيت
+          code=$(curl -sL -o /dev/null -w '%{http_code}' http://127.0.0.1:8000/)
+          test "$code" = 200 || { echo "/install returned $code"; cat /tmp/server.log; exit 1; }
+
+          php artisan lms:install --no-interaction \
+            --db-driver=mysql --db-host=127.0.0.1 --db-port=3306 \
+            --db-database=lms --db-username=lms --db-password=secret \
+            --url=http://127.0.0.1:8000 --platform-name="CI Academy" \
+            --teacher-name="CI Teacher" --subject="Math" \
+            --admin-email=teacher@example.com --admin-phone=01000000000 \
+            --admin-password='Ci-Pass-12345'
+
+          # بعد التثبيت: المعالج مقفول والموقع ولوحة المدرس بيفتحوا
+          for path in / /admin/login /login /register /courses; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:8000$path")
+            echo "$path -> $code"
+            test "$code" = 200 || { tail -50 storage/logs/*.log || true; exit 1; }
+          done
+          code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8000/install)
+          echo "/install after install -> $code"
+          test "$code" != 200
+
+          # الأصول المبنية والكرون (الطابور بيشتغل من الجدولة على الاستضافة المشتركة)
+          css=$(curl -s http://127.0.0.1:8000/admin/login | grep -o '/build/assets/[^"]*\.css' | head -1)
+          test -n "$css"
+          test "$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:8000$css")" = 200
+          php artisan schedule:run --no-interaction
+
+  # VPS: نفس أمر التثبيت اللي في الـ README، من نسخة الـ commit ده
+  docker:
+    name: تثبيت VPS بـ install.sh (Docker)
+    runs-on: ubuntu-latest
+    # الفرع لازم يكون موجود في النسخة عشان install.sh يعمل clone منه
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install.sh
+        run: |
+          set -euo pipefail
+          sudo LMS_REPO="file://$GITHUB_WORKSPACE" LMS_BRANCH="${GITHUB_REF_NAME}" \
+            LMS_DIR=/opt/tafra-lms LMS_DOMAIN=localhost LMS_ADMIN_EMAIL=teacher@example.com \
+            LMS_PLATFORM_NAME="CI Academy" LMS_TEACHER_NAME="CI Teacher" LMS_SUBJECT="Math" \
+            bash install.sh < /dev/null
+
+      - name: المنصة شغالة
+        run: |
+          set -euo pipefail
+          cd /opt/tafra-lms
+          for i in $(seq 1 60); do
+            code=$(curl -sk -o /dev/null -w '%{http_code}' https://localhost/admin/login || true)
+            [ "$code" = 200 ] && break
+            sleep 5
+          done
+          echo "admin/login -> $code"
+          if [ "$code" != 200 ]; then
+            sudo docker compose --env-file .env.docker -f docker-compose.coolify.yml -f docker-compose.vps.yml ps
+            sudo docker compose --env-file .env.docker -f docker-compose.coolify.yml -f docker-compose.vps.yml logs --tail=200
+            exit 1
+          fi
+          for path in / /login /courses; do
+            code=$(curl -sk -o /dev/null -w '%{http_code}' "https://localhost$path")
+            echo "$path -> $code"
+            test "$code" = 200
+          done
+
   assets:
     name: بناء الأصول
     runs-on: ubuntu-latest

@@ -63,7 +63,7 @@ final class OnlineLessonForm
                         ->visibility('private')
                         ->acceptedFileTypes(['application/pdf'])
                         ->maxSize(51200)
-                        ->required(fn (Get $get, string $operation): bool => $operation === 'create' && self::type($get) === LessonType::Pdf)
+                        ->required(fn (Get $get): bool => self::type($get) === LessonType::Pdf)
                         ->visible(fn (Get $get): bool => self::type($get) === LessonType::Pdf)
                         ->columnSpanFull(),
                     RichEditor::make('text')
@@ -77,6 +77,36 @@ final class OnlineLessonForm
                         ->columnSpanFull(),
                 ]),
         ]);
+    }
+
+    /**
+     * الحقول المخفية ماتتبعتش — فلما المدرس يغيّر نوع الدرس، بقايا النوع القديم
+     * بتفضل في القاعدة. هنا بنفضّيها عشان الطالب مايشوفش لينك يوتيوب قديم في درس نصي.
+     *
+     * @param array<string, mixed> $data
+     * @return array<string, mixed>
+     */
+    public static function clearOtherTypes(array $data): array
+    {
+        $type = $data['type'] instanceof LessonType ? $data['type'] : LessonType::tryFrom((string) ($data['type'] ?? ''));
+
+        if ($type !== LessonType::YoutubeVideo) {
+            $data['external_url'] = null;
+        }
+
+        if ($type !== LessonType::Text) {
+            $data['text'] = null;
+        }
+
+        return $data;
+    }
+
+    /** ملف الـ PDF بيتشال لو الدرس بقى نوع تاني. */
+    public static function clearDocumentsUnlessPdf(OnlineLesson $lesson): void
+    {
+        if ($lesson->type !== LessonType::Pdf) {
+            $lesson->clearMediaCollection('documents');
+        }
     }
 
     private static function type(Get $get): ?LessonType

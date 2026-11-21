@@ -8,6 +8,7 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\Textarea;
 use Illuminate\Auth\Access\AuthorizationException;
 use Src\Contexts\Billing\Application\Actions\ReviewInvoiceAction;
+use Src\Contexts\Billing\Domain\Enums\InvoiceStatus;
 use Src\Contexts\Billing\Domain\Models\PaymentInvoice;
 use Src\Contexts\Identity\Domain\Models\User;
 
@@ -21,6 +22,7 @@ final class InvoiceReviewActions
             ->icon('heroicon-o-check-circle')
             ->color('success')
             ->authorize('approve')
+            ->visible(fn (PaymentInvoice $record): bool => $record->status === InvoiceStatus::Pending)
             ->requiresConfirmation()
             ->modalDescription(__('billing::billing.invoice.confirm.approve'))
             ->action(fn (PaymentInvoice $record) => app(ReviewInvoiceAction::class)->approve($record, self::actor()))
@@ -34,6 +36,7 @@ final class InvoiceReviewActions
             ->icon('heroicon-o-x-circle')
             ->color('danger')
             ->authorize('reject')
+            ->visible(fn (PaymentInvoice $record): bool => $record->status === InvoiceStatus::Pending)
             ->schema([
                 Textarea::make('reason')
                     ->label(__('billing::billing.invoice.fields.reject_reason'))
