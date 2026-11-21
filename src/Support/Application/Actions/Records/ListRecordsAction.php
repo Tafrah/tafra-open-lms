@@ -6,6 +6,7 @@ namespace Src\Support\Application\Actions\Records;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
@@ -75,17 +76,28 @@ final readonly class ListRecordsAction
         $pattern = '%'.Str::of($term)->replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_']).'%';
         $locales = (array) config('app.supported_locales');
 
-        $query->where(function (Builder $group) use ($criteria, $pattern, $locales): void {
+        // Postgres: ilike. MySQL/MariaDB: like (الـ collation أصلاً مش حساس لحالة الحروف)
+        $operator = $query->getConnection()->getDriverName() === 'pgsql' ? 'ilike' : 'like';
+
+        $query->where(function (Builder $group) use ($criteria, $pattern, $locales, $operator): void {
             foreach ($criteria->searchColumns as $column) {
                 if (in_array($column, $criteria->translatableColumns, true)) {
                     foreach ($locales as $locale) {
-                        $group->orWhere("{$column}->{$locale}", 'ilike', $pattern);
+                        if ($operator === 'ilike') {
+                            $group->orWhere("{$column}->{$locale}", $operator, $pattern);
+
+                            continue;
+                        }
+
+                        // MySQL: قيمة JSON بترجع بـ collation ثنائي (حساس لحالة الحروف) — نوحّدها بـ lower()
+                        $path = $group->getQuery()->getGrammar()->wrap("{$column}->{$locale}");
+                        $group->orWhere(new Expression("lower({$path})"), 'like', mb_strtolower($pattern));
                     }
 
                     continue;
                 }
 
-                $group->orWhere($column, 'ilike', $pattern);
+                $group->orWhere($column, $operator, $pattern);
             }
         });
     }

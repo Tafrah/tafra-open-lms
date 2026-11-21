@@ -16,7 +16,15 @@ use Src\Support\Infrastructure\Authorization\CentralRoles;
 */
 
 it('يرفض مؤسسة برقم صفر — الفريق ده محجوز للأدوار المركزية', function (): void {
-    expect(fn () => Tenant::factory()->create(['id' => 0]))->toThrow(QueryException::class);
+    // Postgres: قيد CHECK بيرفضها. MySQL: إدخال 0 في auto-increment بيولّد الرقم اللي بعده.
+    try {
+        $tenant = Tenant::factory()->create(['id' => 0]);
+    } catch (QueryException) {
+        $tenant = null;
+    }
+
+    expect($tenant === null || (int) $tenant->getKey() > 0)->toBeTrue()
+        ->and(Tenant::query()->whereKey(0)->exists())->toBeFalse();
 });
 
 it('دور المؤسسة مابيدّيش صلاحية مركزية', function (): void {
