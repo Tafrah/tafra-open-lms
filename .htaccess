@@ -1,0 +1,63 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Tafra Open LMS — root .htaccess for shared hosting (cPanel / Hostinger)
+#
+# Use this when you uploaded the WHOLE project into public_html (or the
+# domain's document root) and cannot point the document root at public/.
+# Every request is rewritten into public/, so nothing outside it is reachable
+# (.env, storage, vendor, …). Works on Apache and LiteSpeed.
+#
+# Better, if your panel allows it: point the domain's document root at
+# public/ and this file is never used. See docs/install/shared-hosting.md.
+# ─────────────────────────────────────────────────────────────────────────────
+
+Options -Indexes
+DirectoryIndex index.php
+
+# Never serve dotfiles (.env, .git, .htaccess …) — even if mod_rewrite is off
+<FilesMatch "^\.">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Never serve project files that live in the root
+<FilesMatch "^(artisan|composer\.(json|lock)|package(-lock)?\.json|phpunit\.xml|phpstan\.neon|pint\.json|vite\.config\.js|VERSION|.*\.(md|sh|yml|yaml|neon|lock|log|sql|zip))$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Let Let's Encrypt / AutoSSL validation through untouched
+    RewriteRule ^\.well-known/ - [L]
+
+    # Project folders: 404 without touching the app
+    RewriteRule ^(app|bootstrap|config|database|deploy|docker|docs|lang|node_modules|packages|resources|routes|src|tests|vendor)(/|$) - [R=404,L,NC]
+    # storage/ itself is private — public files are served from public/storage or /uploads
+    RewriteRule ^storage/(app|framework|logs|backups|oauth)  - [R=404,L,NC]
+
+    # Pass the Authorization header through (API / MCP tokens)
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Everything else goes into public/ (once — public/.htaccess takes over from there)
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L,QSA]
+</IfModule>
+
+# No mod_rewrite = we cannot hide the project files: refuse everything
+<IfModule !mod_rewrite.c>
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+</IfModule>

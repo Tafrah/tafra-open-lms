@@ -27,7 +27,9 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            // استضافة قافلة symlink(): المثبّت بيكتب PUBLIC_STORAGE_URL=<APP_URL>/uploads
+            // والتطبيق بيقدّم الملفات بنفسه (Installer → ServePublicFileController)
+            'url' => env('PUBLIC_STORAGE_URL') ?: env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => true,
             'report' => false,

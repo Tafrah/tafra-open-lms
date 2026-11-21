@@ -1,0 +1,105 @@
+# Tafra Open LMS — الإنتاج على Coolify (أو أي Docker).
+#
+# Coolify: New Resource → Docker Compose → المستودع ده → الملف ده.
+# المتغيّرات السحرية (SERVICE_*) Coolify بيولّدها لوحده: الدومين وكلمات السر.
+# المطلوب منك بس: LMS_ADMIN_EMAIL (واختياري اسم المنصة والمدرّس والمادة).
+# كلمة سر المدير = SERVICE_PASSWORD_ADMIN — بتلاقيها في تبويب Environment.
+#
+# من غير Coolify: install.sh بيشغّل الملف ده + docker-compose.vps.yml (Caddy + HTTPS).
+# التفاصيل: docs/install/coolify.md و docs/install/vps.md
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/coolify/Dockerfile
+    restart: unless-stopped
+    environment:
+      # Coolify: بيعمل دومين وبيوجّهه لبورت 80 في الحاوية
+      - SERVICE_FQDN_APP_80
+      - APP_URL=${SERVICE_FQDN_APP:-http://localhost}
+      - APP_NAME=${LMS_PLATFORM_NAME:-Tafra LMS}
+      - APP_ENV=production
+      - APP_DEBUG=false
+      # فاضي = بيتولّد أول تشغيل ويتحفظ في storage (entrypoint)
+      - APP_KEY=${APP_KEY:-}
+      - APP_LOCALE=ar
+      - APP_FALLBACK_LOCALE=en
+      - APP_TIMEZONE=Africa/Cairo
+      - TRUSTED_PROXIES=*
+
+      - DB_CONNECTION=mysql
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=${DB_DATABASE:-tafra_lms}
+      - DB_USERNAME=${SERVICE_USER_DB}
+      - DB_PASSWORD=${SERVICE_PASSWORD_DB}
+
+      - TENANCY_MODE=single
+      - CACHE_STORE=database
+      - QUEUE_CONNECTION=database
+      # فيه عامل طابور دايم في الحاوية (supervisord) — مش محتاجين عامل الجدولة
+      - QUEUE_WORKER_VIA_SCHEDULER=false
+      - SESSION_DRIVER=database
+      - SESSION_ENCRYPT=true
+      - SESSION_SECURE_COOKIE=${SESSION_SECURE_COOKIE:-true}
+      - BROADCAST_CONNECTION=log
+      - PERMISSION_CACHE_STORE=database
+      - SETTINGS_CACHE_STORE=database
+      - PULSE_ENABLED=false
+      - TELESCOPE_ENABLED=false
+      - FILESYSTEM_DISK=public
+      - MEDIA_DISK=public
+      - BACKUP_DISKS=backups-local
+      - LOG_CHANNEL=stderr
+      - LOG_LEVEL=warning
+
+      - MAIL_MAILER=${MAIL_MAILER:-log}
+      - MAIL_HOST=${MAIL_HOST:-}
+      - MAIL_PORT=${MAIL_PORT:-587}
+      - MAIL_USERNAME=${MAIL_USERNAME:-}
+      - MAIL_PASSWORD=${MAIL_PASSWORD:-}
+      - MAIL_FROM_ADDRESS=${LMS_ADMIN_EMAIL:?LMS_ADMIN_EMAIL is required}
+      - MAIL_FROM_NAME=${LMS_PLATFORM_NAME:-Tafra LMS}
+
+      # التثبيت أول مرة (entrypoint → php artisan lms:install --skip-env)
+      - LMS_PLATFORM_NAME=${LMS_PLATFORM_NAME:-Tafra LMS}
+      - LMS_TEACHER_NAME=${LMS_TEACHER_NAME:-Teacher}
+      - LMS_SUBJECT=${LMS_SUBJECT:--}
+      - LMS_ADMIN_EMAIL=${LMS_ADMIN_EMAIL:?LMS_ADMIN_EMAIL is required}
+      - LMS_ADMIN_PHONE=${LMS_ADMIN_PHONE:-}
+      - LMS_ADMIN_PASSWORD=${SERVICE_PASSWORD_ADMIN}
+    volumes:
+      # الصور والملفات والنسخ الاحتياطية والمفاتيح — لازم تفضل بعد كل نشر
+      - lms-storage:/var/www/html/storage
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/up >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      start_period: 120s
+      retries: 3
+
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE:-tafra_lms}
+      - MYSQL_USER=${SERVICE_USER_DB}
+      - MYSQL_PASSWORD=${SERVICE_PASSWORD_DB}
+      - MYSQL_ROOT_PASSWORD=${SERVICE_PASSWORD_ROOT}
+    volumes:
+      - lms-mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 10s
+      timeout: 5s
+      start_period: 30s
+      retries: 10
+
+volumes:
+  lms-storage: {}
+  lms-mysql: {}

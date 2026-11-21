@@ -1,0 +1,29 @@
+# VPS من غير Coolify — إضافة فوق docker-compose.coolify.yml:
+# Caddy قدّام التطبيق بشهادة Let's Encrypt تلقائية.
+#
+#   docker compose --env-file .env.docker \
+#       -f docker-compose.coolify.yml -f docker-compose.vps.yml up -d --build
+#
+# install.sh بيكتب .env.docker ويشغّل الأمر ده.
+
+services:
+  app:
+    environment:
+      - APP_URL=https://${LMS_DOMAIN:?LMS_DOMAIN is required}
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    command: caddy reverse-proxy --from ${LMS_DOMAIN:?LMS_DOMAIN is required} --to app:80
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - app
+
+volumes:
+  caddy-data: {}
+  caddy-config: {}

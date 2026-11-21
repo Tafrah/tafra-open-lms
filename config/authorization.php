@@ -214,6 +214,8 @@ return [
             'view_any.online_lessons', 'view.online_lessons',
             'view_any.educational_levels', 'view.educational_levels',
             'view_any.recharge_cards', 'view.recharge_cards',
+            // صور الإيصالات ملفات خاصة — بتتفتح برابط موقّع بيسأل عن الصلاحية دي
+            'download.media',
             'access.dashboard', 'access.panel.admin',
             'access.my_devices', 'access.two_factor', 'access.notification_preferences',
             'widget.stats_overview',

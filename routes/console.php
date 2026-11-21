@@ -29,7 +29,9 @@ Schedule::command('notifications:prune')->dailyAt('03:00')->onOneServer();
 // وسجلات `security` و`financial` بتتحفظ للأبد (docs/20 بند ١٣).
 Schedule::command('activitylog:prune')->weeklyOn(1, '03:30')->onOneServer();
 Schedule::command('queue:prune-failed --hours=168')->weekly()->onOneServer();
-Schedule::command('horizon:snapshot')->everyFiveMinutes()->onOneServer();
+// Horizon محتاج Redis — على الاستضافة المشتركة الطابور على القاعدة ومفيش Horizon
+Schedule::command('horizon:snapshot')->everyFiveMinutes()->onOneServer()
+    ->when(static fn (): bool => config('queue.default') === 'redis');
 
 // ═══════════ الصحة ═══════════
 Schedule::command('health:check')->everyFifteenMinutes()->onOneServer();
@@ -45,3 +47,21 @@ Schedule::call(function (TenantContext $context): void {
 
 // ═══════════ الإصدار المجدول للإعلانات ═══════════
 Schedule::command('announcements:publish-scheduled')->everyFiveMinutes()->onOneServer()->withoutOverlapping();
+
+// ═══════════ عامل الطابور من غير supervisor (الاستضافة المشتركة) ═══════════
+// مفيش عامل دايم: كل دقيقة الكرون بيشغّل عامل بيفضّي الطابور ويقفل قبل
+// الدقيقة الجاية (`--max-time` أقل من ٦٠). `withoutOverlapping` عشان لو
+// دورة طوّلت ماتتفتحش اتنين. على VPS فيه Horizon/supervisor:
+// QUEUE_WORKER_VIA_SCHEDULER=false (config/installer.php).
+Schedule::command(sprintf(
+    'queue:work --queue=%s --stop-when-empty --max-time=%d --tries=%d',
+    (string) config('installer.scheduled_worker.queues'),
+    (int) config('installer.scheduled_worker.max_time'),
+    (int) config('installer.scheduled_worker.tries'),
+))
+    ->everyMinute()
+    ->withoutOverlapping(5)
+    ->onOneServer()
+    ->runInBackground()
+    ->when(static fn (): bool => (bool) config('installer.scheduled_worker.enabled')
+        && ! in_array(config('queue.default'), ['sync', 'redis'], true));

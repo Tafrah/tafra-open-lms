@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 return [
     'groups' => [
+        'learning' => 'المحتوى التعليمي',
+        'exams' => 'الامتحانات',
+        'students' => 'الطلبة',
+        'finance' => 'المالية',
         'dashboard' => 'لوحة المعلومات',
         'identity' => 'الهوية والوصول',
         'content' => 'المحتوى',

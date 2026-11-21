@@ -1,6 +1,11 @@
 <?php
 
 declare(strict_types=1);
+use Src\Contexts\Academy\Presentation\Filament\Resources\BootcampSectionResource;
+use Src\Contexts\Billing\Presentation\Filament\Resources\EnrollmentResource;
+use Src\Contexts\Billing\Presentation\Filament\Resources\MoneyTransactionResource;
+use Src\Contexts\Billing\Presentation\Filament\Resources\RechargeCardGroupResource;
+use Src\Contexts\Exams\Presentation\Filament\Resources\OnlinePassedExamResource;
 
 /*
 |--------------------------------------------------------------------------
@@ -113,6 +118,11 @@ return [
     */
     'exempt' => [
         // 'Src\Contexts\X\Presentation\Filament\Resources\YResource' => 'x::mcp.exempt.reason',
+        BootcampSectionResource::class => 'academy::academy.mcp.exempt.sections',
+        OnlinePassedExamResource::class => 'exams::exams.mcp.exempt.attempts',
+        RechargeCardGroupResource::class => 'billing::billing.mcp.exempt.cards',
+        MoneyTransactionResource::class => 'billing::billing.mcp.exempt.transactions',
+        EnrollmentResource::class => 'billing::billing.mcp.exempt.enrollments',
     ],
 
     /*

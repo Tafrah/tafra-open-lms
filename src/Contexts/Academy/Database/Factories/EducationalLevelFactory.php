@@ -18,7 +18,7 @@ final class EducationalLevelFactory extends Factory
         return [
             'name' => $this->faker->randomElement(['الصف الأول الثانوي', 'الصف الثاني الثانوي', 'الصف الثالث الثانوي']),
             'code' => Str::upper(Str::random(6)),
-            'color' => '#419DF1',
+            'color' => $this->faker->hexColor(),
             'order' => $this->faker->numberBetween(1, 3),
         ];
     }

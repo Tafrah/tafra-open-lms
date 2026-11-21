@@ -1,0 +1,259 @@
+/*
+ * المثبّت — CSS ثابت من غير build (الاستضافة المشتركة مافيهاش Node).
+ * خصائص منطقية بس (inline-start / inline-end) — نفس الملف بيشتغل RTL و LTR.
+ */
+:root {
+    --primary: #419DF1;
+    --primary-ink: #0B4F8C;
+    --ink: #0F172A;
+    --muted: #64748B;
+    --line: #E2E8F0;
+    --surface: #FFFFFF;
+    --canvas: #F4F8FC;
+    --ok: #15803D;
+    --ok-soft: #F0FDF4;
+    --warn: #B45309;
+    --warn-soft: #FFFBEB;
+    --fail: #B91C1C;
+    --fail-soft: #FEF2F2;
+    --info-soft: #EFF6FF;
+    --radius: 16px;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; }
+
+body {
+    font-family: 'Almarai', system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;
+    background: var(--canvas);
+    background-image: radial-gradient(circle at 15% 0%, color-mix(in srgb, var(--primary) 14%, transparent), transparent 45%);
+    color: var(--ink);
+    line-height: 1.7;
+    font-size: 15px;
+}
+
+.shell {
+    max-width: 760px;
+    margin-inline: auto;
+    padding: 32px 16px 48px;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-block-end: 24px;
+}
+
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand strong { display: block; font-size: 18px; font-weight: 800; }
+
+.brand-mark {
+    display: grid;
+    place-items: center;
+    inline-size: 44px;
+    block-size: 44px;
+    border-radius: 12px;
+    background: var(--primary);
+    color: #FFFFFF;
+    font-weight: 800;
+    font-size: 22px;
+}
+
+.muted { color: var(--muted); font-size: 13px; }
+
+.lang {
+    color: var(--primary-ink);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+}
+
+.steps {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    padding: 0;
+    margin: 0 0 20px;
+}
+
+.steps li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.steps .bullet {
+    display: grid;
+    place-items: center;
+    flex: none;
+    inline-size: 28px;
+    block-size: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--line);
+    background: var(--surface);
+    font-weight: 700;
+}
+
+.steps .current { color: var(--ink); font-weight: 700; }
+.steps .current .bullet { border-color: var(--primary); color: var(--primary-ink); }
+.steps .done .bullet { background: var(--primary); border-color: var(--primary); color: #FFFFFF; }
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px;
+    box-shadow: 0 10px 30px -18px rgba(15, 23, 42, 0.25);
+}
+
+h1 { font-size: 24px; margin: 0 0 4px; font-weight: 800; }
+.lead { margin: 0 0 20px; color: var(--muted); }
+
+.group {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 24px 0 10px;
+    padding-block-end: 6px;
+    border-block-end: 1px solid var(--line);
+}
+
+.checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+
+.checks li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 10px;
+}
+
+.checks .ok { background: var(--ok-soft); }
+.checks .warn { background: var(--warn-soft); }
+.checks .fail { background: var(--fail-soft); }
+
+.icon {
+    display: grid;
+    place-items: center;
+    inline-size: 22px;
+    block-size: 22px;
+    border-radius: 50%;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.ok .icon { background: var(--ok); }
+.warn .icon { background: var(--warn); }
+.fail .icon { background: var(--fail); }
+
+.check-label { font-weight: 700; }
+
+.badge {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+}
+
+.hint { flex-basis: 100%; font-size: 13px; color: var(--muted); margin: 0; }
+
+.alert { padding: 12px 16px; border-radius: 12px; margin: 0 0 16px; }
+.alert ul { margin: 0; padding-inline-start: 18px; }
+.alert-error { background: var(--fail-soft); color: var(--fail); border: 1px solid color-mix(in srgb, var(--fail) 25%, transparent); }
+.alert-info { background: var(--info-soft); color: var(--primary-ink); border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent); }
+.alert details { margin-block-start: 8px; color: var(--ink); }
+.alert code { display: block; white-space: pre-wrap; word-break: break-word; font-size: 12px; text-align: start; }
+
+.form { display: grid; gap: 14px; }
+.row { display: flex; gap: 14px; flex-wrap: wrap; }
+.grow { flex: 1 1 220px; }
+.narrow { flex: 0 1 140px; }
+
+.field { display: grid; gap: 6px; }
+.field > span { font-weight: 700; font-size: 14px; }
+
+input, select {
+    font: inherit;
+    inline-size: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--ink);
+}
+
+input:focus, select:focus {
+    outline: 3px solid color-mix(in srgb, var(--primary) 30%, transparent);
+    border-color: var(--primary);
+}
+
+input[dir='ltr'] { text-align: start; }
+
+.actions {
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-block-start: 20px;
+}
+
+.actions-start { justify-content: flex-start; margin-block-start: 0; }
+
+.button {
+    appearance: none;
+    border: 0;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 11px 22px;
+    border-radius: 12px;
+    background: var(--primary);
+    color: #FFFFFF;
+    transition: filter 0.15s ease;
+}
+
+.button:hover { filter: brightness(0.94); }
+.button:disabled { opacity: 0.6; cursor: progress; }
+
+.button-ghost {
+    background: var(--surface);
+    color: var(--primary-ink);
+    border: 1px solid var(--line);
+}
+
+.code {
+    background: var(--ink);
+    color: #E2E8F0;
+    padding: 14px 16px;
+    border-radius: 12px;
+    overflow-x: auto;
+    font-size: 13px;
+    text-align: start;
+}
+
+.list { margin: 0; padding-inline-start: 20px; }
+
+.busy-note { display: none; text-align: center; }
+.busy .busy-note { display: block; }
+
+.footer { text-align: center; margin-block-start: 24px; }
+
+@media (max-width: 560px) {
+    .card { padding: 20px; }
+    .steps { grid-template-columns: repeat(4, auto); }
+    .steps li span:last-child { display: none; }
+    .steps .current span:last-child { display: inline; }
+}

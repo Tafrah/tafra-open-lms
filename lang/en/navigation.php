@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 return [
     'groups' => [
+        'learning' => 'Learning',
+        'exams' => 'Exams',
+        'students' => 'Students',
+        'finance' => 'Finance',
         'dashboard' => 'Dashboard',
         'identity' => 'Identity & access',
         'content' => 'Content',

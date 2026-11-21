@@ -57,12 +57,16 @@ final class AuditServiceProvider extends ContextServiceProvider
             return;
         }
 
-        Health::checks([
+        // الاستضافة المشتركة مافيهاش Redis ولا Horizon (docs/install) — الفحصين
+        // دول كانوا هيفشلوا دايماً ويغطّوا على أي فحص حقيقي فشل
+        $usesRedis = config('queue.default') === 'redis' || config('cache.default') === 'redis';
+
+        Health::checks(array_values(array_filter([
             DatabaseCheck::new(),
             CacheCheck::new(),
-            RedisCheck::new(),
+            $usesRedis ? RedisCheck::new() : null,
             QueueCheck::new()->onQueue(['default', 'notifications']),
-            HorizonCheck::new(),
+            config('queue.default') === 'redis' ? HorizonCheck::new() : null,
             ScheduleCheck::new(),
             DatabaseConnectionCountCheck::new()->warnWhenMoreConnectionsThan(50),
             UsedDiskSpaceCheck::new()
@@ -81,6 +85,6 @@ final class AuditServiceProvider extends ContextServiceProvider
             BackupsCheck::new()
                 ->onDisk($this->backupDisk())
                 ->youngestBackShouldHaveBeenMadeBefore(now()->subDay()),
-        ]);
+        ])));
     }
 }

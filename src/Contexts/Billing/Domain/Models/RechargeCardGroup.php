@@ -60,6 +60,16 @@ final class RechargeCardGroup extends Model
         return $this->belongsTo(User::class, 'creator_id');
     }
 
+    /** القيمة اللي بتتطبع على الكارت: اسم المحاضرة أو المبلغ */
+    public function valueLabel(): string
+    {
+        $bootcamp = $this->getRelationValue('bootcamp');
+
+        return $bootcamp instanceof Bootcamp
+            ? (string) $bootcamp->getAttribute('name')
+            : fc_number((float) $this->amount).' '.__('academy::academy.currency');
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()

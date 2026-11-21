@@ -1,0 +1,123 @@
+name: Release
+
+# كل tag بيبدأ بـ v (v1.2.3) = zip جاهز للرفع على استضافة مشتركة:
+# vendor (من غير dev) + public/build + .htaccess في الجذر، من غير .env ولا
+# اختبارات ولا node_modules. الخطوات بعد الرفع: docs/install/shared-hosting.md
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  package:
+    name: حزمة الاستضافة المشتركة
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_mysql, gd, exif, intl, bcmath, zip
+          coverage: none
+          tools: composer:v2
+
+      - name: composer install (production)
+        run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --no-progress
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: npm ci && npm run build
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+
+      - name: تجميع الحزمة
+        id: package
+        run: |
+          set -euo pipefail
+          VERSION="${GITHUB_REF_NAME#v}"
+          NAME="tafra-open-lms-v${VERSION}"
+          STAGE="dist/${NAME}"
+          mkdir -p "$STAGE"
+
+          # rsync بيتبع الـ symlinks (-L): vendor/future-code/filament-onboarding
+          # رابط لـ packages/ — الاستضافة لازم تاخد ملفات حقيقية
+          rsync -aL \
+            --exclude='/.git/' \
+            --exclude='/.github/' \
+            --exclude='/node_modules/' \
+            --exclude='/tests/' \
+            --exclude='/docs/' \
+            --exclude='/dist/' \
+            --exclude='/docker/' \
+            --exclude='/deploy/' \
+            --exclude='/src/Contexts/*/Tests/' \
+            --exclude='/packages/*/*/tests/' \
+            --exclude='/.env' \
+            --exclude='/.env.backup' \
+            --exclude='/.env.production' \
+            --exclude='/.env.docker' \
+            --exclude='/phpunit.xml' \
+            --exclude='/phpstan.neon' \
+            --exclude='/pint.json' \
+            --exclude='/Caddyfile' \
+            --exclude='/docker-compose*.yml' \
+            --exclude='/.dockerignore' \
+            --exclude='/.gitleaks.toml' \
+            --exclude='/.editorconfig' \
+            --exclude='/deploy.sh' \
+            --exclude='/rollback.sh' \
+            --exclude='/install.sh' \
+            --exclude='/public/hot' \
+            --exclude='/public/storage' \
+            --exclude='/storage/logs/*.log' \
+            --exclude='/storage/app/installed.json' \
+            --exclude='/storage/framework/cache/data/*' \
+            --exclude='/storage/framework/sessions/*' \
+            --exclude='/storage/framework/views/*.php' \
+            --exclude='/bootstrap/cache/config.php' \
+            --exclude='/bootstrap/cache/routes-*.php' \
+            --exclude='/bootstrap/cache/events.php' \
+            ./ "$STAGE/"
+
+          # الطريقة التانية (public_html منفصل) — index.php جاهز جوه الحزمة
+          mkdir -p "$STAGE/deploy/shared-hosting"
+          cp deploy/shared-hosting/index.php "$STAGE/deploy/shared-hosting/index.php"
+          cp docs/install/shared-hosting.md "$STAGE/INSTALL-shared-hosting.md"
+
+          echo "v${VERSION}" > "$STAGE/VERSION"
+
+          # مفيش .env ولا أسرار جوه الحزمة — آخر خط دفاع
+          test ! -e "$STAGE/.env"
+          test -f "$STAGE/public/build/manifest.json"
+          test -f "$STAGE/vendor/autoload.php"
+          test -f "$STAGE/.htaccess"
+
+          (cd "$STAGE" && zip -qr -X "../${NAME}.zip" .)
+          echo "zip=dist/${NAME}.zip" >> "$GITHUB_OUTPUT"
+          ls -lh "dist/${NAME}.zip"
+
+      - name: GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.package.outputs.zip }}
+          generate_release_notes: true
+          body: |
+            ## التثبيت
+
+            - **استضافة مشتركة (cPanel / Hostinger):** نزّل `tafra-open-lms-${{ github.ref_name }}.zip`، ارفعه وفكّه، وافتح `/install` — الخطوات في `INSTALL-shared-hosting.md` جوه الحزمة.
+            - **VPS:** `curl -fsSL https://raw.githubusercontent.com/${{ github.repository }}/main/install.sh | sudo bash`
+            - **Coolify:** Docker Compose → `docker-compose.coolify.yml`.

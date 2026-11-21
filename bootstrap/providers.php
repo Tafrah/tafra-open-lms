@@ -9,16 +9,17 @@ use App\Providers\Filament\CentralPanelProvider;
 use App\Providers\HorizonServiceProvider;
 use App\Providers\ThemeServiceProvider;
 use Src\Contexts\Academy\AcademyServiceProvider;
-use Src\Contexts\Exams\ExamsServiceProvider;
-use Src\Contexts\Students\StudentsServiceProvider;
-use Src\Contexts\Billing\BillingServiceProvider;
 use Src\Contexts\Ai\AiServiceProvider;
 use Src\Contexts\Audit\AuditServiceProvider;
+use Src\Contexts\Billing\BillingServiceProvider;
 use Src\Contexts\Content\ContentServiceProvider;
+use Src\Contexts\Exams\ExamsServiceProvider;
 use Src\Contexts\Identity\IdentityServiceProvider;
+use Src\Contexts\Installer\InstallerServiceProvider;
 use Src\Contexts\Media\MediaServiceProvider;
 use Src\Contexts\Notifications\NotificationsServiceProvider;
 use Src\Contexts\Settings\SettingsServiceProvider;
+use Src\Contexts\Students\StudentsServiceProvider;
 use Src\Contexts\Tenancy\TenancyServiceProvider;
 
 return [
@@ -42,6 +43,8 @@ return [
     SettingsServiceProvider::class,
     AuditServiceProvider::class,
     AiServiceProvider::class,
+    // المثبّت (/install + lms:install) — مالوش شاشات Filament
+    InstallerServiceProvider::class,
 
     // اللوحات آخر حاجة — بتقرا من ContextPanelRegistry
     AdminPanelProvider::class,

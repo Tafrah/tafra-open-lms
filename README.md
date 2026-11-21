@@ -1,3 +1,21 @@
+# طفرة — منصة تعليمية مجانية ومفتوحة المصدر للمدرّسين
+
+منصة واحدة لكل مدرّس: كورسات، امتحانات، طلاب، ومدفوعات — على استضافتك أنت.
+
+## التثبيت — اختار طريقة
+
+| الطريقة | لمين | الدليل |
+|---|---|---|
+| **استضافة مشتركة** (cPanel / Hostinger) | أي مدرّس — من غير SSH ولا خبرة تقنية. ارفع الـ zip من [Releases](https://github.com/Tafrah/tafra-open-lms/releases)، اعمل قاعدة MySQL، وافتح `/install`. | [`docs/install/shared-hosting.md`](docs/install/shared-hosting.md) |
+| **VPS بأمر واحد** | سيرفر Ubuntu/Debian: `curl -fsSL https://raw.githubusercontent.com/Tafrah/tafra-open-lms/main/install.sh \| sudo bash` (Docker + MySQL + HTTPS تلقائي). | [`docs/install/vps.md`](docs/install/vps.md) |
+| **Coolify** | Docker Compose ← `docker-compose.coolify.yml` — الدومين وكلمات السر بتتولّد لوحدها. | [`docs/install/coolify.md`](docs/install/coolify.md) |
+
+بعد التثبيت: لوحة التحكم على `/admin`، وسطر Cron واحد (`php artisan schedule:run` كل دقيقة) بيشغّل الإشعارات ومعالجة الصور والنسخ الاحتياطي — مفيش Redis ولا عامل طابور مطلوب. من غير واجهة: `php artisan lms:install --help`.
+
+**English:** Tafra is a free, open-source LMS for teachers (one teacher per install). Install it on **shared hosting** (upload the release zip, create a MySQL database, open `/install`), on a **VPS** with one command (`install.sh`, Docker + MySQL + automatic HTTPS), or on **Coolify** (`docker-compose.coolify.yml`). Headless: `php artisan lms:install`. Guides: `docs/install/`.
+
+---
+
 # قالب لوحة التحكم — كود المستقبل (Future Code Admin Template)
 
 > **الهدف:** بناء قالب Laravel + Filament جاهز للإنتاج، نستنسخه في أي مشروع جديد فنكسب من أول يوم: صلاحيات كاملة، تعدد مستأجرين، ملفات، إعدادات ديناميكية، إشعارات، ترجمة، ثيم كود المستقبل، ولوجينج محترم.

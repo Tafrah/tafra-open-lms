@@ -26,6 +26,12 @@ arch('طبقة Domain نظيفة من الإطار')
         'Src\Contexts\Settings\Presentation',
         'Src\Contexts\Audit\Presentation',
         'Src\Contexts\Ai\Presentation',
+        'Src\Contexts\Academy\Presentation',
+        'Src\Contexts\Exams\Presentation',
+        'Src\Contexts\Students\Presentation',
+        'Src\Contexts\Billing\Presentation',
+        'Src\Contexts\Storefront\Presentation',
+        'Src\Contexts\Installer\Presentation',
     ]);
 
 // ملاحظة: الـ wildcard هنا مقصود — القواعد دي كانت مكتوبة لسياقين

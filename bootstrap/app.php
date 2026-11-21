@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 use Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests;
 use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Src\Contexts\Installer\Infrastructure\Environment\PreInstallEnvironment;
+use Src\Contexts\Installer\Presentation\Http\Middleware\RedirectToInstaller;
 use Src\Support\Presentation\Http\Middleware\AssignRequestContext;
 use Src\Support\Presentation\Http\Middleware\EndTenancy;
 use Src\Support\Presentation\Http\Middleware\InitializeTenantContext;
 use Src\Support\Presentation\Http\Middleware\SecurityHeaders;
 use Src\Support\Presentation\Http\Middleware\SetLocale;
 
-return Application::configure(basePath: dirname(__DIR__))
+$app = Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
         commands: __DIR__.'/../routes/console.php',
@@ -44,6 +47,10 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // ملاحظة: `append` مش `use` — `use()` بيستبدل الستاك كله
         // فـ TrustProxies وغيره مايشتغلوش.
+        // قبل التثبيت أي صفحة بتروح لـ /install (docs/install). عام مش على `web`:
+        // لوحات Filament ليها ستاك ميدلوير خاص بيها ومابتعدّيش على مجموعة `web`
+        $middleware->prepend(RedirectToInstaller::class);
+
         $middleware->web(append: [
             SetLocale::class,
             AssignRequestContext::class,
@@ -78,5 +85,19 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->dontFlash([
             'current_password', 'password', 'password_confirmation',
             'two_factor_secret', 'two_factor_recovery_codes', 'code',
+            'db_password', 'admin_password', 'admin_password_confirmation',
         ]);
     })->create();
+
+/*
+| نسخة مرفوعة على استضافة مشتركة لسه من غير `.env`: نكتب واحد مؤقت بمفتاح
+| **قبل** ما المتغيّرات تتحمّل — وإلا أول صفحة (المثبّت نفسه) بتطلع ٥٠٠
+| لأن الكوكيز مش لاقية APP_KEY. مابيعملش حاجة لو الملف موجود أو المفتاح
+| جاي من البيئة (Docker) أو في سطر الأوامر.
+*/
+$app->beforeBootstrapping(
+    LoadEnvironmentVariables::class,
+    static fn (Application $app) => PreInstallEnvironment::prepare($app->environmentFilePath()),
+);
+
+return $app;

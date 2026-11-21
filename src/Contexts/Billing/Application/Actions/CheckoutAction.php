@@ -59,6 +59,12 @@ final readonly class CheckoutAction
             $gateway = PaymentGateway::Free;
         }
 
+        // «مجاني» بيتقرر من السعر بس — مش من اللي جاي من برا (وإلا كورس مدفوع بيتفتح ببلاش)
+        throw_if(
+            $gateway === PaymentGateway::Free && $quote['total'] > 0.0,
+            BillingException::because('course_unavailable'),
+        );
+
         throw_if(
             $gateway === PaymentGateway::RechargeCard,
             BillingException::because('use_redeem_for_cards'),

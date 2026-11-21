@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Src\Contexts\Identity\Domain\Models\User;
+use Src\Contexts\Students\Domain\Models\Student;
 
 return [
 
@@ -83,7 +84,7 @@ return [
 
         'students' => [
             'driver' => 'eloquent',
-            'model' => Src\Contexts\Students\Domain\Models\Student::class,
+            'model' => Student::class,
         ],
 
         // 'users' => [

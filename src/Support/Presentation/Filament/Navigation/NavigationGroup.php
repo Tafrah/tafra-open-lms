@@ -16,6 +16,11 @@ use Filament\Support\Contracts\HasLabel;
 enum NavigationGroup: string implements HasIcon, HasLabel
 {
     case Dashboard = 'dashboard';
+    // المنصة التعليمية — أول حاجة المدرس بيدوّر عليها
+    case Learning = 'learning';
+    case Exams = 'exams';
+    case Students = 'students';
+    case Finance = 'finance';
     case Identity = 'identity';
     case Content = 'content';
     case Operations = 'operations';
@@ -32,6 +37,10 @@ enum NavigationGroup: string implements HasIcon, HasLabel
     {
         return match ($this) {
             self::Dashboard => 'heroicon-o-home',
+            self::Learning => 'heroicon-o-academic-cap',
+            self::Exams => 'heroicon-o-clipboard-document-check',
+            self::Students => 'heroicon-o-user-group',
+            self::Finance => 'heroicon-o-banknotes',
             self::Identity => 'heroicon-o-users',
             self::Content => 'heroicon-o-document-text',
             self::Operations => 'heroicon-o-cog-6-tooth',
@@ -45,6 +54,10 @@ enum NavigationGroup: string implements HasIcon, HasLabel
     {
         return match ($this) {
             self::Dashboard => 0,
+            self::Learning => 2,
+            self::Exams => 4,
+            self::Students => 6,
+            self::Finance => 8,
             self::Identity => 10,
             self::Content => 20,
             self::Operations => 30,

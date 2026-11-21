@@ -65,5 +65,9 @@
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>
         <env name="CSP_ENABLED" value="false"/>
+
+        <!-- التطبيق «متثبّت» في الاختبارات — من غيرها كل طلب بيتحوّل لـ /install.
+             اختبارات المثبّت بتقفلها صراحةً (src/Contexts/Installer/Tests). -->
+        <env name="INSTALLER_ASSUME_INSTALLED" value="true"/>
     </php>
 </phpunit>

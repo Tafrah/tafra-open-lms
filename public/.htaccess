@@ -13,6 +13,12 @@
     RewriteCond %{HTTP:x-xsrf-token} .
     RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
 
+    # Let Let's Encrypt / AutoSSL validation through untouched
+    RewriteRule ^\.well-known/ - [L]
+
+    # Dotfiles (.htaccess inside storage, .gitignore …) are never served
+    RewriteRule (^|/)\. - [R=404,L]
+
     # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
@@ -22,4 +28,23 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
+</IfModule>
+
+DirectoryIndex index.php
+
+# Static assets are fingerprinted by Vite (public/build) — cache them hard
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+# PHP limits for uploads on hosts that run PHP as an Apache module.
+# (LiteSpeed / PHP-FPM hosts ignore this — set them in "Select PHP Version" → Options.)
+<IfModule mod_php.c>
+    php_value upload_max_filesize 64M
+    php_value post_max_size 64M
+    php_value memory_limit 256M
+    php_value max_execution_time 300
 </IfModule>
