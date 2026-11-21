@@ -164,6 +164,8 @@ return [
         'widget.users_chart' => 'dashboard',
         'widget.recent_activity' => 'dashboard',
         'widget.onboarding_checklist' => 'dashboard',
+        // ملخص المنصة: الطلبة، الدخل، الإيصالات والمقالي المستنية
+        'widget.lms_overview' => 'dashboard',
     ],
 
     /*

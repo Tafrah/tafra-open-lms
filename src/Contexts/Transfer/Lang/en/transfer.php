@@ -39,4 +39,35 @@ return [
         'dry_run_done' => 'This was a dry run — nothing was saved. Run without --dry-run to import.',
         'imported_done' => 'Import finished. Files transferred: :media',
     ],
+    'page' => [
+        'title' => 'Data transfer',
+        'description' => 'Download a full copy of your platform, or import one — from the free platform or from Tafra.',
+        'export' => 'Export academy',
+        'import' => 'Import file',
+        'file' => 'Export file (zip)',
+        'try' => 'Try first',
+        'confirm' => 'Import for real',
+        'confirm_help' => 'The data will be added to your platform. Existing students with the same mobile are merged, not duplicated.',
+        'import_help' => 'Upload a zip from “Export academy” here or from Tafra. We do a dry run first and show what will move — nothing is saved until you confirm.',
+        'done' => 'Import finished.',
+        'export_card' => 'Backup / move to Tafra',
+        'export_body' => 'One file with everything: courses, lessons, exams, students (with passwords), enrollments, wallets, codes and images. Upload it to Tafra and students log in with the same mobile and password.',
+        'import_card' => 'Import',
+        'import_body' => 'Coming from Tafra or another copy of the platform: upload the file, check the report, then confirm.',
+        'dry_run_report' => 'Dry-run report',
+        'import_report' => 'Import report',
+        'dry_run_note' => 'This is a dry run — nothing has been saved yet. If the report looks right, press “Import for real”.',
+    ],
+    'tours' => [
+        'page' => [
+            'purpose' => [
+                'title' => 'Data transfer',
+                'body' => 'Take a full copy of your platform or import one — the same format Tafra understands.',
+            ],
+            'actions' => [
+                'title' => 'Export and import',
+                'body' => 'Export downloads a zip. Import does a dry run first and shows you the report before saving.',
+            ],
+        ],
+    ],
 ];

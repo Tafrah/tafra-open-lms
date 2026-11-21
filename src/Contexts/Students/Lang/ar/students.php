@@ -87,4 +87,14 @@ return [
             'account' => 'كلمة السر وإيقاف الحساب إجراءات أمان — من اللوحة بس.',
         ],
     ],
+    'widget' => [
+        'students' => 'الطلبة',
+        'new_students' => ':count جديد آخر ٧ أيام',
+        'revenue' => 'دخل الشهر',
+        'revenue_hint' => 'الفواتير المدفوعة من أول الشهر',
+        'pending_receipts' => 'إيصالات مستنياك',
+        'pending_receipts_hint' => 'راجعها عشان الكورس يتفتح للطالب',
+        'pending_essays' => 'مقالي مستني تصحيح',
+        'pending_essays_hint' => 'محاولات فيها أسئلة مقالي',
+    ],
 ];

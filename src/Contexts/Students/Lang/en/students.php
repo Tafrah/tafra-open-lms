@@ -87,4 +87,14 @@ return [
             'account' => 'Passwords and blocking are security actions — panel only.',
         ],
     ],
+    'widget' => [
+        'students' => 'Students',
+        'new_students' => ':count new in the last 7 days',
+        'revenue' => 'This month',
+        'revenue_hint' => 'Paid invoices since the start of the month',
+        'pending_receipts' => 'Receipts waiting',
+        'pending_receipts_hint' => 'Review them so the course opens for the student',
+        'pending_essays' => 'Essays to grade',
+        'pending_essays_hint' => 'Attempts with essay questions',
+    ],
 ];

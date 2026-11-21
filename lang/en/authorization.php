@@ -102,6 +102,7 @@ return [
         'widget.users_chart' => 'Users chart widget',
         'widget.recent_activity' => 'Recent activity widget',
         'widget.onboarding_checklist' => 'Getting-started checklist widget',
+        'widget.lms_overview' => 'Learning platform overview',
     ],
 
     'roles' => [

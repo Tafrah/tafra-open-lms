@@ -102,6 +102,7 @@ return [
         'widget.users_chart' => 'ودجت المستخدمين',
         'widget.recent_activity' => 'ودجت آخر النشاطات',
         'widget.onboarding_checklist' => 'ودجت قائمة البداية',
+        'widget.lms_overview' => 'ملخص المنصة التعليمية',
     ],
 
     'roles' => [

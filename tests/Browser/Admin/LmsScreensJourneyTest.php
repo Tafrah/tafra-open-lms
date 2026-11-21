@@ -15,6 +15,7 @@ use Src\Contexts\Billing\Presentation\Filament\Resources\RechargeCardGroupResour
 use Src\Contexts\Exams\Presentation\Filament\Resources\OnlineExamResource;
 use Src\Contexts\Exams\Presentation\Filament\Resources\OnlinePassedExamResource;
 use Src\Contexts\Students\Presentation\Filament\Resources\StudentResource;
+use Src\Contexts\Transfer\Presentation\Filament\Pages\DataTransfer;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +37,7 @@ dataset('lms_screens', [
     'coupon' => [CouponResource::class, 'billing.coupon', 'sidebar'],
     'transaction' => [MoneyTransactionResource::class, 'billing.transaction', 'sidebar'],
     'enrollment' => [EnrollmentResource::class, 'billing.enrollment', 'sidebar'],
+    'data transfer' => [DataTransfer::class, 'transfer.page', 'sidebar'],
 ]);
 
 it('المدير بيوصل لشاشة المنصة والجولة بتبدأ وبتتقفل', function (string $screen, string $tour, string $area): void {
