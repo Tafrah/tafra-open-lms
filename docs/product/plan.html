@@ -97,7 +97,7 @@ footer{padding:30px 0 56px;color:var(--muted);font-size:14px}
     <h2>١. النموذج التجاري</h2>
     <p class="sub">البرنامج نفسه مجاني، والفلوس بتيجي من حاجتين: الدعم الفني، والانتقال لطفرة.</p>
     <div class="grid">
-      <div class="card"><h3>المجاني (تسطيب ذاتي)</h3><p>المدرس ينزّله على VPS بتاعه. بياخد الأساسيات كاملة، بدون دعم، وهو المسؤول عن السيرفر والنسخ الاحتياطي.</p><p><span class="pill yes">٠ جنيه</span></p></div>
+      <div class="card"><h3>المجاني (تسطيب ذاتي)</h3><p>المدرس ينزّله على استضافة مشتركة (cPanel/Hostinger) أو VPS بتاعه. بياخد الأساسيات كاملة، بدون دعم، وهو المسؤول عن السيرفر والنسخ الاحتياطي.</p><p><span class="pill yes">٠ جنيه</span></p></div>
       <div class="card"><h3>الدعم الفني</h3><p>نفس النسخة المجانية + دعم على واتساب، تسطيب وتحديث ونسخ احتياطي بالنيابة عنه، وإزالة «مدعوم من طفرة» من الفوتر.</p><p><span class="pill paid">≈ ١٥٠٠ جنيه / شهر</span></p></div>
       <div class="card"><h3>طفرة (SaaS)</h3><p>كل المميزات (أكواد، بوابات دفع، رسايل ولي الأمر، سنتر، تطبيق، لايف…) + استضافة + دعم. المدرس مش بيدفع سيرفرات.</p><p><span class="pill paid">باقات طفرة</span></p></div>
     </div>
@@ -499,7 +499,7 @@ footer{padding:30px 0 56px;color:var(--muted);font-size:14px}
     environment:
       - SERVICE_FQDN_APP
       - DB_PASSWORD=${SERVICE_PASSWORD_DB}
-  db:      # MySQL / Postgres
+  db:      # MySQL 8 (أو MariaDB)
   worker:  # الطوابير
 </pre></div>
       <div class="card"><h3>من غير Coolify</h3><p>أمر واحد على VPS جديد (Ubuntu):</p>
@@ -530,8 +530,8 @@ footer{padding:30px 0 56px;color:var(--muted);font-size:14px}
         <tr><td>الباك إند</td><td>Laravel 12 + PHP 8.4</td><td>نفس عيلة طفرة، وطوابير وجدولة جاهزة</td></tr>
         <tr><td>لوحة المدرس</td><td>Filament 5 (عربي RTL)</td><td>نفس نسخة طفرة، وجداول ونماذج وفلاتر جاهزة</td></tr>
         <tr><td>موقع الطالب</td><td>Blade + Livewire + Tailwind</td><td>سريع على الموبايل، من غير API منفصل، ومن غير ما نكشف كود تطبيقات طفرة (React)</td></tr>
-        <tr><td>قاعدة البيانات</td><td>PostgreSQL</td><td>نفس طفرة بالظبط، عشان النقل يبقى نسخ صفوف</td></tr>
-        <tr><td>التشغيل</td><td>image واحدة (FrankenPHP) + worker + db</td><td>SSL تلقائي وتسطيب بسيط</td></tr>
+        <tr><td>قاعدة البيانات</td><td>MySQL / MariaDB (وPostgreSQL كمان)</td><td>عشان تشتغل على الاستضافة المشتركة. نفس أسماء جداول وأعمدة طفرة، والنقل بصيغة NDJSON مستقلة عن نوع القاعدة — فطفرة تفضل على Postgres عادي</td></tr>
+        <tr><td>التشغيل</td><td>استضافة مشتركة: zip + معالج <code>/install</code> + سطر كرون واحد (الطابور بيشتغل من الكرون، من غير Redis ولا supervisor). VPS/Coolify: Docker + MySQL</td><td>أي مدرس معاه استضافة بـ ٥٠ جنيه في الشهر يقدر يشغّلها</td></tr>
         <tr><td>سيرفر التسجيل والتحديثات</td><td>جزء صغير جوه طفرة</td><td>نفس قاعدة العملاء، والـ lead يدخل CRM طفرة على طول</td></tr>
         <tr><td>الكود والتوزيع</td><td>GitHub (AGPL-3.0) + GitHub Container Registry</td><td>مجاني، والـ image بتتبني تلقائي مع كل إصدار</td></tr>
       </tbody>
@@ -557,7 +557,7 @@ footer{padding:30px 0 56px;color:var(--muted);font-size:14px}
         <tr><td>٨</td><td>الواجهة (الهيرو والكروت)، الهوية من الإعدادات، الإشعارات، الرئيسية</td><td>منصة شكلها جاهز</td></tr>
         <tr><td>٩</td><td>سيرفر التسجيل والتحديثات، معالج التسطيب، صفحة «مميزات طفرة»</td><td>دايرة التسويق كاملة</td></tr>
         <tr><td>١٠</td><td>التصدير والاستيراد في المجاني (<code>tafra:export</code> / <code>tafra:import</code>) + اختبار round-trip في CI. وبالتوازي في طفرة: <code>AcademyImporter</code>/<code>AcademyExporter</code>، شاشة <code>LMS-Admin-ReactJS</code>، والدفع بالإيصال</td><td>أكاديمية تجريبية تتنقل لطفرة وترجع من غير ما حاجة تضيع</td></tr>
-        <tr><td>١١</td><td>Docker image، ملف Coolify، سكربت التسطيب، النسخ الاحتياطي، التحديث، README ودليل المساهمة</td><td>تسطيب على VPS جديد في أقل من ١٠ دقايق</td></tr>
+        <tr><td>١١</td><td>Docker image، ملف Coolify، سكربت التسطيب، النسخ الاحتياطي، التحديث، README ودليل المساهمة</td><td>تسطيب على استضافة مشتركة أو VPS جديد في أقل من ١٠ دقايق</td></tr>
         <tr><td>١٢</td><td>تجربة مع ٣ مدرسين حقيقيين (واحد منهم ينقل لطفرة فعلًا)، إصلاحات، نشر الريبو، صفحة تحميل وفيديو شرح</td><td>الإطلاق</td></tr>
       </tbody>
     </table></div>
