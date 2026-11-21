@@ -20,6 +20,7 @@ use Src\Contexts\Media\MediaServiceProvider;
 use Src\Contexts\Notifications\NotificationsServiceProvider;
 use Src\Contexts\Settings\SettingsServiceProvider;
 use Src\Contexts\Students\StudentsServiceProvider;
+use Src\Contexts\Transfer\TransferServiceProvider;
 use Src\Contexts\Tenancy\TenancyServiceProvider;
 
 return [
@@ -37,6 +38,8 @@ return [
     ExamsServiceProvider::class,
     StudentsServiceProvider::class,
     BillingServiceProvider::class,
+    // نقل الأكاديمية من وإلى طفرة (tafra:export / tafra:import)
+    TransferServiceProvider::class,
     ContentServiceProvider::class,
     MediaServiceProvider::class,
     NotificationsServiceProvider::class,
