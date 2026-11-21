@@ -30,6 +30,13 @@ return [
         'manage_security' => 'Manage security',
         'manage_notifications' => 'Manage notifications',
         'manage_ai' => 'Manage AI access',
+        'grade' => 'Grade',
+        'adjust_wallet' => 'Adjust wallet balance',
+        'enroll' => 'Enroll in a course',
+        'block' => 'Block',
+        'approve' => 'Approve',
+        'reject' => 'Reject',
+        'print' => 'Print',
     ],
 
     'resources' => [
@@ -41,6 +48,18 @@ return [
         'settings' => 'Settings',
         'activity_logs' => 'Activity log',
         'ai_connections' => 'Connected AI apps',
+        'educational_levels' => 'Grades',
+        'online_lessons' => 'Lessons',
+        'bootcamps' => 'Courses',
+        'online_exams' => 'Exams',
+        'exam_attempts' => 'Exam attempts',
+        'students' => 'Students',
+        'enrollments' => 'Enrollments',
+        'payment_methods' => 'Payment methods',
+        'payment_invoices' => 'Invoices & receipts',
+        'money_transactions' => 'Wallet transactions',
+        'recharge_cards' => 'Recharge cards',
+        'coupons' => 'Coupons',
     ],
 
     'groups' => [
@@ -51,6 +70,10 @@ return [
         'system' => 'System',
         'dashboard' => 'Dashboard',
         'ai' => 'AI access',
+        'academy' => 'Learning content',
+        'exams' => 'Exams',
+        'students' => 'Students',
+        'billing' => 'Finance',
     ],
 
     'pages' => [
@@ -70,6 +93,8 @@ return [
         'access.my_devices' => 'My devices',
         'access.two_factor' => 'Two-factor authentication',
         'access.ai' => 'Connect AI apps (Claude, ChatGPT)',
+        'access.data_transfer' => 'Data transfer with Tafra',
+        'access.site_settings' => 'Site settings',
     ],
 
     'widgets' => [
@@ -85,6 +110,7 @@ return [
         'admin' => 'Admin',
         'editor' => 'Editor',
         'viewer' => 'Viewer',
+        'assistant' => 'Assistant',
     ],
 
     'sync' => [
@@ -162,6 +188,26 @@ return [
             'pin_requires_published' => 'You cannot pin an unpublished announcement.',
             'pin_limit_reached' => 'You have reached the maximum of :limit pinned announcements.',
             'published_needs_publish_permission' => 'This announcement is published — editing it requires the publish permission.',
+        ],
+        // Learning platform
+        'bootcamp' => [
+            'already_published' => 'This course is already published.',
+        ],
+        'exam' => [
+            'already_published' => 'This exam is already published.',
+            'no_questions' => 'Add at least one question before publishing the exam.',
+        ],
+        'attempt' => [
+            'not_finished' => 'The student has not finished this attempt yet.',
+        ],
+        'answer' => [
+            'auto_graded' => 'This question is graded automatically.',
+        ],
+        'invoice' => [
+            'not_pending' => 'This invoice has already been reviewed.',
+        ],
+        'recharge_card' => [
+            'used' => 'This code has been used — it cannot be edited or deleted.',
         ],
     ],
 ];

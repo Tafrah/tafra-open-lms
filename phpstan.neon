@@ -26,6 +26,10 @@ parameters:
         - src/Contexts/Notifications/Database/Migrations
         - src/Contexts/Content/Database/Migrations/Tenant
         - src/Contexts/Ai/Database/Migrations
+        - src/Contexts/Academy/Database/Migrations/Tenant
+        - src/Contexts/Exams/Database/Migrations/Tenant
+        - src/Contexts/Students/Database/Migrations/Tenant
+        - src/Contexts/Billing/Database/Migrations/Tenant
         - packages/future-code/filament-onboarding/database/migrations
 
     parseModelCastsMethod: true

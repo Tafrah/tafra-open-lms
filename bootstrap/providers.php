@@ -8,6 +8,10 @@ use App\Providers\Filament\AdminPanelProvider;
 use App\Providers\Filament\CentralPanelProvider;
 use App\Providers\HorizonServiceProvider;
 use App\Providers\ThemeServiceProvider;
+use Src\Contexts\Academy\AcademyServiceProvider;
+use Src\Contexts\Exams\ExamsServiceProvider;
+use Src\Contexts\Students\StudentsServiceProvider;
+use Src\Contexts\Billing\BillingServiceProvider;
 use Src\Contexts\Ai\AiServiceProvider;
 use Src\Contexts\Audit\AuditServiceProvider;
 use Src\Contexts\Content\ContentServiceProvider;
@@ -27,6 +31,11 @@ return [
     // السياقات — الترتيب هنا هو ترتيب ظهور الموارد في السايدبار
     TenancyServiceProvider::class,
     IdentityServiceProvider::class,
+    // المنصة التعليمية
+    AcademyServiceProvider::class,
+    ExamsServiceProvider::class,
+    StudentsServiceProvider::class,
+    BillingServiceProvider::class,
     ContentServiceProvider::class,
     MediaServiceProvider::class,
     NotificationsServiceProvider::class,

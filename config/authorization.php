@@ -80,6 +80,42 @@ return [
             'extra' => ['prune'],
         ],
 
+        // ═══════════ المنصة التعليمية ═══════════
+        'educational_levels' => ['group' => 'academy', 'actions' => null],
+        'online_lessons' => ['group' => 'academy', 'actions' => null],
+        'bootcamps' => ['group' => 'academy', 'actions' => null, 'extra' => ['publish']],
+        'online_exams' => ['group' => 'exams', 'actions' => null, 'extra' => ['publish']],
+        'exam_attempts' => [
+            'group' => 'exams',
+            'actions' => ['view_any', 'view', 'delete', 'export'],
+            'extra' => ['grade'],
+        ],
+        'students' => [
+            'group' => 'students',
+            'actions' => null,
+            'extra' => ['adjust_wallet', 'enroll', 'reset_password', 'block'],
+        ],
+        'enrollments' => [
+            'group' => 'students',
+            'actions' => ['view_any', 'view', 'create', 'delete', 'export'],
+        ],
+        'payment_methods' => ['group' => 'billing', 'actions' => null],
+        'payment_invoices' => [
+            'group' => 'billing',
+            'actions' => ['view_any', 'view', 'export'],
+            'extra' => ['approve', 'reject'],
+        ],
+        'money_transactions' => [
+            'group' => 'billing',
+            'actions' => ['view_any', 'view', 'export'],
+        ],
+        'recharge_cards' => [
+            'group' => 'billing',
+            'actions' => ['view_any', 'view', 'create', 'update', 'delete', 'export'],
+            'extra' => ['print'],
+        ],
+        'coupons' => ['group' => 'billing', 'actions' => null],
+
         // تطبيقات الذكاء الاصطناعي المربوطة (docs/23) — المستخدم بيشوف ويلغي
         // روابطه هو من غير أي صلاحية؛ دي لمدير المؤسسة على روابط الكل
         'ai_connections' => [
@@ -112,6 +148,10 @@ return [
         'access.two_factor' => 'identity',
         // ربط Claude / ChatGPT بالحساب عن طريق MCP (docs/23)
         'access.ai' => 'ai',
+        // نقل البيانات من/إلى طفرة (docs/product/plan.html#sync)
+        'access.data_transfer' => 'system',
+        // إعدادات الموقع العام (الواجهة، صورة المدرس، السوشيال)
+        'access.site_settings' => 'system',
     ],
 
     /*
@@ -138,6 +178,10 @@ return [
         // التخزين، الأمان) وأدوات النظام بتاعة فريق التشغيل (docs/24 بند ٦)
         'admin' => [
             'users.*', 'roles.*', 'media.*', 'announcements.*',
+            'educational_levels.*', 'online_lessons.*', 'bootcamps.*', 'online_exams.*',
+            'exam_attempts.*', 'students.*', 'enrollments.*', 'payment_methods.*',
+            'payment_invoices.*', 'money_transactions.*', 'recharge_cards.*', 'coupons.*',
+            'access.data_transfer', 'access.site_settings',
             // مظهر المؤسسة وإشعاراتها بس — بتتكتب في `tenant_settings` مش في العام
             'manage_appearance.settings', 'manage_notifications.settings', 'manage_ai.settings',
             'view_any.activity_logs', 'view.activity_logs',
@@ -154,6 +198,23 @@ return [
             'view_any.announcements', 'view.announcements',
             'create.announcements', 'update.announcements', 'export.announcements',
             'access.dashboard', 'access.panel.admin', 'access.ai',
+            'access.my_devices', 'access.two_factor', 'access.notification_preferences',
+            'widget.stats_overview',
+        ],
+
+        // المساعد: بيراجع الإيصالات ويصحح المقالي ويتابع الطلبة — من غير فلوس ولا إعدادات
+        'assistant' => [
+            'view_any.students', 'view.students', 'create.students', 'update.students',
+            'enroll.students', 'reset_password.students', 'block.students',
+            'view_any.enrollments', 'view.enrollments', 'create.enrollments',
+            'view_any.payment_invoices', 'view.payment_invoices', 'approve.payment_invoices', 'reject.payment_invoices',
+            'view_any.exam_attempts', 'view.exam_attempts', 'grade.exam_attempts',
+            'view_any.online_exams', 'view.online_exams',
+            'view_any.bootcamps', 'view.bootcamps',
+            'view_any.online_lessons', 'view.online_lessons',
+            'view_any.educational_levels', 'view.educational_levels',
+            'view_any.recharge_cards', 'view.recharge_cards',
+            'access.dashboard', 'access.panel.admin',
             'access.my_devices', 'access.two_factor', 'access.notification_preferences',
             'widget.stats_overview',
         ],

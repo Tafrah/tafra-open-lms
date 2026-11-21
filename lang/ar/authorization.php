@@ -30,6 +30,13 @@ return [
         'manage_security' => 'إدارة الأمان',
         'manage_notifications' => 'إدارة الإشعارات',
         'manage_ai' => 'إدارة وصول الذكاء الاصطناعي',
+        'grade' => 'تصحيح',
+        'adjust_wallet' => 'تعديل رصيد المحفظة',
+        'enroll' => 'اشتراك في كورس',
+        'block' => 'حظر',
+        'approve' => 'قبول',
+        'reject' => 'رفض',
+        'print' => 'طباعة',
     ],
 
     'resources' => [
@@ -41,6 +48,18 @@ return [
         'settings' => 'الإعدادات',
         'activity_logs' => 'سجل النشاط',
         'ai_connections' => 'تطبيقات الذكاء الاصطناعي المربوطة',
+        'educational_levels' => 'الصفوف الدراسية',
+        'online_lessons' => 'الدروس',
+        'bootcamps' => 'الكورسات',
+        'online_exams' => 'الامتحانات',
+        'exam_attempts' => 'محاولات الامتحانات',
+        'students' => 'الطلبة',
+        'enrollments' => 'الاشتراكات',
+        'payment_methods' => 'طرق الدفع',
+        'payment_invoices' => 'الفواتير والإيصالات',
+        'money_transactions' => 'حركات المحفظة',
+        'recharge_cards' => 'أكواد الشحن',
+        'coupons' => 'الكوبونات',
     ],
 
     'groups' => [
@@ -51,6 +70,10 @@ return [
         'system' => 'النظام',
         'dashboard' => 'لوحة المعلومات',
         'ai' => 'وصول الذكاء الاصطناعي',
+        'academy' => 'المحتوى التعليمي',
+        'exams' => 'الامتحانات',
+        'students' => 'الطلبة',
+        'billing' => 'المالية',
     ],
 
     'pages' => [
@@ -70,6 +93,8 @@ return [
         'access.my_devices' => 'أجهزتي',
         'access.two_factor' => 'المصادقة الثنائية',
         'access.ai' => 'ربط تطبيقات الذكاء الاصطناعي (Claude وChatGPT)',
+        'access.data_transfer' => 'نقل البيانات من وإلى طفرة',
+        'access.site_settings' => 'إعدادات الموقع',
     ],
 
     'widgets' => [
@@ -85,6 +110,7 @@ return [
         'admin' => 'مدير',
         'editor' => 'محرّر',
         'viewer' => 'مشاهد',
+        'assistant' => 'مساعد',
     ],
 
     'sync' => [
@@ -162,6 +188,26 @@ return [
             'pin_requires_published' => 'مينفعش تثبّت إعلان مش منشور.',
             'pin_limit_reached' => 'وصلت للحد الأقصى (:limit) من الإعلانات المثبّتة.',
             'published_needs_publish_permission' => 'الإعلان منشور — تعديله محتاج صلاحية النشر.',
+        ],
+        // المنصة التعليمية
+        'bootcamp' => [
+            'already_published' => 'الكورس ده منشور بالفعل.',
+        ],
+        'exam' => [
+            'already_published' => 'الامتحان ده منشور بالفعل.',
+            'no_questions' => 'ضيف سؤال واحد على الأقل قبل ما تنشر الامتحان.',
+        ],
+        'attempt' => [
+            'not_finished' => 'الطالب لسه ماخلّصش المحاولة دي.',
+        ],
+        'answer' => [
+            'auto_graded' => 'السؤال ده بيتصحح تلقائي.',
+        ],
+        'invoice' => [
+            'not_pending' => 'الفاتورة دي اتراجعت قبل كده.',
+        ],
+        'recharge_card' => [
+            'used' => 'الكود ده اتستخدم — مينفعش يتعدّل أو يتحذف.',
         ],
     ],
 ];
