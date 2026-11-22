@@ -7,6 +7,7 @@ use Src\Contexts\Storefront\Presentation\Http\Controllers\AuthController;
 use Src\Contexts\Storefront\Presentation\Http\Controllers\CheckoutController;
 use Src\Contexts\Storefront\Presentation\Http\Controllers\CourseController;
 use Src\Contexts\Storefront\Presentation\Http\Controllers\ExamController;
+use Src\Contexts\Storefront\Presentation\Http\Controllers\ExamMediaController;
 use Src\Contexts\Storefront\Presentation\Http\Controllers\HomeController;
 use Src\Contexts\Storefront\Presentation\Http\Controllers\LearnController;
 use Src\Contexts\Storefront\Presentation\Http\Controllers\LocaleController;
@@ -79,5 +80,6 @@ Route::middleware(['web', ResolveStorefrontTenant::class])->name('site.')->group
         Route::post('/exams/{item}/start', [ExamController::class, 'begin'])->whereNumber('item')->middleware('throttle:storefront-forms')->name('exams.begin');
         Route::get('/attempts/{attempt}', [ExamController::class, 'attempt'])->whereNumber('attempt')->name('attempts.show');
         Route::get('/attempts/{attempt}/result', [ExamController::class, 'result'])->whereNumber('attempt')->name('attempts.result');
+        Route::get('/attempts/{attempt}/media/{media}', ExamMediaController::class)->whereNumber(['attempt', 'media'])->middleware('signed')->name('attempts.media');
     });
 });

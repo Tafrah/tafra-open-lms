@@ -43,6 +43,7 @@ final class OnlineExam extends Model
         'min_percentage',
         'published',
         'show_correct_answers_after_finish',
+        'show_answers_at',
         'show_explanation',
         'random_questions',
         'random_choices',
@@ -88,6 +89,21 @@ final class OnlineExam extends Model
             && ($this->end_at === null || $this->end_at->gte($now));
     }
 
+    /** الإجابات الصح تظهر للطالب دلوقتي؟ (مقفولة · بعد التسليم · بعد تاريخ) */
+    public function answersVisibleNow(): bool
+    {
+        return $this->show_correct_answers_after_finish
+            && ($this->show_answers_at === null || $this->show_answers_at->lte(now()));
+    }
+
+    /** الإجابات هتظهر بعدين (التاريخ لسه ماجاش) */
+    public function answersScheduled(): bool
+    {
+        return $this->show_correct_answers_after_finish
+            && $this->show_answers_at !== null
+            && $this->show_answers_at->isFuture();
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -108,6 +124,7 @@ final class OnlineExam extends Model
         return [
             'published' => 'boolean',
             'show_correct_answers_after_finish' => 'boolean',
+            'show_answers_at' => 'datetime',
             'show_explanation' => 'boolean',
             'random_questions' => 'boolean',
             'random_choices' => 'boolean',

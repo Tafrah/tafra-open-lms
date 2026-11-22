@@ -8,10 +8,13 @@ use Filament\Actions\ActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Text;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
@@ -84,6 +87,20 @@ final class ItemsRelationManager extends RelationManager
                 ->nullable(),
             Toggle::make('is_free_preview')
                 ->label(__('academy::academy.item.fields.is_free_preview')),
+            Fieldset::make(__('academy::academy.item.fields.visibility'))
+                ->columns(2)
+                ->columnSpanFull()
+                ->schema([
+                    DateTimePicker::make('visible_from')
+                        ->label(__('academy::academy.item.fields.visible_from'))
+                        ->seconds(false),
+                    DateTimePicker::make('visible_until')
+                        ->label(__('academy::academy.item.fields.visible_until'))
+                        ->seconds(false)
+                        ->after('visible_from'),
+                    Text::make(__('academy::academy.item.help.visibility'))
+                        ->columnSpanFull(),
+                ]),
         ]);
     }
 
@@ -109,6 +126,11 @@ final class ItemsRelationManager extends RelationManager
                 IconColumn::make('is_free_preview')
                     ->label(__('academy::academy.item.fields.is_free_preview'))
                     ->boolean(),
+                TextColumn::make('visible_from')
+                    ->label(__('academy::academy.item.fields.visibility'))
+                    ->state(fn (BootcampSectionItem $record): ?string => self::window($record))
+                    ->color(fn (BootcampSectionItem $record): string => $record->isVisibleNow() ? 'gray' : 'warning')
+                    ->placeholder('—'),
             ])
             ->defaultSort('order')
             ->reorderable('order')
@@ -150,6 +172,15 @@ final class ItemsRelationManager extends RelationManager
         }
 
         $set('name', filled($state) ? (string) $model::query()->whereKey($state)->value('name') : '');
+    }
+
+    private static function window(BootcampSectionItem $record): ?string
+    {
+        if ($record->visible_from === null && $record->visible_until === null) {
+            return null;
+        }
+
+        return ($record->visible_from?->format('d M Y H:i') ?? '…').' – '.($record->visible_until?->format('d M Y H:i') ?? '…');
     }
 
     private static function type(Get $get): ?SectionItemType

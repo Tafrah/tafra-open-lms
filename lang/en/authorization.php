@@ -38,6 +38,8 @@ return [
         'reject' => 'Reject',
         'print' => 'Print',
         'manage_devices' => 'Manage student devices',
+        'reset' => 'Reset attempts',
+        'grant_views' => 'Grant extra views to a student',
     ],
 
     'resources' => [

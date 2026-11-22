@@ -8,6 +8,7 @@ use Src\Contexts\Academy\Application\Actions\RecordItemViewAction;
 use Src\Contexts\Academy\Domain\Enums\PublishStatus;
 use Src\Contexts\Academy\Domain\Models\BootcampSectionItem;
 use Src\Contexts\Academy\Domain\Models\SectionItemView;
+use Src\Contexts\Academy\Domain\Models\StudentItemViewGrant;
 use Src\Contexts\Billing\Application\Queries\BootcampAccess;
 use Src\Contexts\Exams\Domain\Models\OnlinePassedExam;
 use Src\Contexts\Students\Domain\Models\Student;
@@ -15,7 +16,8 @@ use Src\Contexts\Students\Domain\Models\Student;
 /**
  * يقدر الطالب يفتح العنصر ده؟ بيرجّع سبب المنع (مفتاح ترجمة) أو null لو مسموح.
  *
- * الترتيب: منشور ← مشترك (أو معاينة مجانية) ← الامتحان القبلي اتنجح فيه ← عدد المشاهدات.
+ * الترتيب: منشور وفي مواعيد ظهوره ← مشترك (أو معاينة مجانية) ← الامتحان القبلي اتنجح فيه
+ * ← عدد المشاهدات (+ استثناء الطالب لو المدرس اداله مشاهدات زيادة).
  */
 final readonly class ItemAccess
 {
@@ -31,6 +33,10 @@ final readonly class ItemAccess
             || $section->publish_status !== PublishStatus::Published
             || ! $bootcamp->isPublished()) {
             return 'item_unavailable';
+        }
+
+        if (! $item->isVisibleNow()) {
+            return 'item_not_visible';
         }
 
         $preview = $item->is_free_preview || $section->is_free_preview;
@@ -58,7 +64,7 @@ final readonly class ItemAccess
             // نفس المشاهدة (ريفرش/رجوع خلال الساعة) مابتتحسبش — زي RecordItemViewAction بالظبط
             $sameView = $view !== null && $view->viewed_at->gte(now()->subMinutes(RecordItemViewAction::SAME_VIEW_MINUTES));
 
-            if ($view !== null && $view->views_count >= $item->allowed_views_number && ! $sameView) {
+            if ($view !== null && $view->views_count >= $this->allowedViews($student, $item) && ! $sameView) {
                 return 'views_exhausted';
             }
         }
@@ -69,6 +75,17 @@ final readonly class ItemAccess
     public function allows(?Student $student, BootcampSectionItem $item): bool
     {
         return $this->denial($student, $item) === null;
+    }
+
+    /** حد العنصر + مشاهدات الطالب الزيادة (استثناء من المدرس) */
+    private function allowedViews(Student $student, BootcampSectionItem $item): int
+    {
+        $extra = (int) StudentItemViewGrant::query()
+            ->where('student_id', $student->getKey())
+            ->where('bootcamp_section_item_id', $item->getKey())
+            ->value('extra_views');
+
+        return (int) $item->allowed_views_number + $extra;
     }
 
     private function passed(Student $student, int $examId): bool

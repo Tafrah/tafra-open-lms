@@ -8,16 +8,19 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Components\Text;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\HtmlString;
 use Src\Contexts\Exams\Application\Actions\GradeEssayAnswerAction;
 use Src\Contexts\Exams\Domain\Enums\GradingStatus;
 use Src\Contexts\Exams\Domain\Enums\QuestionType;
 use Src\Contexts\Exams\Domain\Models\StudentExamAnswer;
 use Src\Contexts\Identity\Domain\Models\User;
+use Src\Support\Infrastructure\Filesystem\MediaUrlResolver;
 
 /** إجابات المحاولة — والمقالي بيتصحح من هنا (درجة + ملاحظة للطالب). */
 final class AnswersRelationManager extends RelationManager
@@ -37,7 +40,7 @@ final class AnswersRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn ($query) => $query->with(['question.choices', 'question.essay', 'attempt']))
+            ->modifyQueryUsing(fn ($query) => $query->with(['question.choices', 'question.essay', 'attempt', 'media']))
             ->columns([
                 TextColumn::make('question.text')
                     ->label(__('exams::exams.answer.fields.question'))
@@ -47,6 +50,10 @@ final class AnswersRelationManager extends RelationManager
                     ->label(__('exams::exams.answer.fields.answer'))
                     ->state(fn (StudentExamAnswer $record): string => self::answerText($record))
                     ->wrap(),
+                TextColumn::make('images')
+                    ->label(__('exams::exams.answer.fields.images'))
+                    ->state(fn (StudentExamAnswer $record): ?HtmlString => self::thumbnails($record, 'size-12'))
+                    ->placeholder('—'),
                 IconColumn::make('is_correct')
                     ->label(__('exams::exams.answer.fields.is_correct'))
                     ->boolean(),
@@ -70,6 +77,8 @@ final class AnswersRelationManager extends RelationManager
                         'feedback' => $record->grader_feedback,
                     ])
                     ->schema(fn (StudentExamAnswer $record): array => [
+                        Text::make(self::thumbnails($record, 'size-32') ?? '')
+                            ->visible($record->getMedia('answer_images')->isNotEmpty()),
                         TextInput::make('mark')
                             ->label(__('exams::exams.answer.fields.mark'))
                             ->helperText(__('exams::exams.answer.help.max', ['max' => fc_number((float) $record->max_question_mark)]))
@@ -94,6 +103,28 @@ final class AnswersRelationManager extends RelationManager
             ])
             ->emptyStateHeading(__('exams::exams.answer.empty.heading'))
             ->emptyStateDescription(__('exams::exams.answer.empty.description'));
+    }
+
+    /**
+     * صور إجابة الطالب — روابط مؤقتة من `MediaUrlResolver` (المجموعة خاصة، والرابط بيسأل `download`).
+     */
+    private static function thumbnails(StudentExamAnswer $record, string $size): ?HtmlString
+    {
+        $media = $record->getMedia('answer_images');
+
+        if ($media->isEmpty()) {
+            return null;
+        }
+
+        $resolver = app(MediaUrlResolver::class);
+        $html = $media->map(function ($item) use ($resolver, $size): string {
+            $url = e($resolver->url($item));
+            $alt = e(__('exams::exams.answer.fields.images'));
+
+            return "<a href=\"{$url}\" target=\"_blank\" rel=\"noopener\"><img src=\"{$url}\" alt=\"{$alt}\" class=\"{$size} rounded-lg border object-cover\"></a>";
+        })->implode('');
+
+        return new HtmlString('<div class="flex flex-wrap gap-2">'.$html.'</div>');
     }
 
     private static function answerText(StudentExamAnswer $record): string

@@ -45,7 +45,7 @@
     <nav class="flex flex-wrap gap-2" aria-label="{{ __('storefront::storefront.exams.navigator') }}">
         @foreach ($questions as $index => $q)
             @php
-                $isAnswered = $q['type'] === \Src\Contexts\Exams\Domain\Enums\QuestionType::MultipleChoice ? ($choices[$q['id']] ?? null) !== null : trim((string) ($texts[$q['id']] ?? '')) !== '';
+                $isAnswered = $q['type'] === \Src\Contexts\Exams\Domain\Enums\QuestionType::MultipleChoice ? ($choices[$q['id']] ?? null) !== null : (trim((string) ($texts[$q['id']] ?? '')) !== '' || $q['images'] !== []);
                 $isFlagged = in_array($q['id'], $flagged, true);
             @endphp
             <button type="button" wire:click="goTo({{ $index }})" @if ($index === $current) aria-current="step" @endif
@@ -69,7 +69,7 @@
             </div>
             <div class="sf-prose text-lg">{!! app(\Src\Support\Infrastructure\Html\HtmlSanitizer::class)->clean($question['text']) !!}</div>
             @if ($question['image'])
-                <img src="{{ $question['image'] }}" alt="" class="max-h-80 rounded-card border border-line">
+                <img src="{{ $question['image'] }}" alt="{{ __('storefront::storefront.exams.question_image') }}" class="max-h-80 rounded-card border border-line" loading="lazy">
             @endif
 
             @if ($question['type'] === \Src\Contexts\Exams\Domain\Enums\QuestionType::MultipleChoice)
@@ -83,7 +83,12 @@
                             <span class="grid size-6 shrink-0 place-items-center rounded-full border-2 {{ $selected ? 'border-white' : 'border-line' }}" aria-hidden="true">
                                 @if ($selected)<span class="size-2.5 rounded-full bg-white"></span>@endif
                             </span>
-                            <span>{{ $choice['text'] }}</span>
+                            <span class="flex flex-col gap-2">
+                                <span>{{ $choice['text'] }}</span>
+                                @if ($choice['image'])
+                                    <img src="{{ $choice['image'] }}" alt="{{ __('storefront::storefront.exams.choice_image') }}" class="max-h-40 rounded-lg border border-line bg-white" loading="lazy">
+                                @endif
+                            </span>
                         </label>
                     @endforeach
                 </fieldset>
@@ -93,6 +98,30 @@
                     <textarea id="essay-{{ $question['id'] }}" rows="7" maxlength="10000" class="sf-input leading-7" wire:model.live.debounce.1000ms="texts.{{ $question['id'] }}" placeholder="{{ __('storefront::storefront.exams.essay_placeholder') }}"></textarea>
                     <p class="mt-1 text-xs text-muted" wire:loading wire:target="texts.{{ $question['id'] }}">{{ __('storefront::storefront.exams.saving') }}</p>
                 </div>
+                @if ($question['allow_images'])
+                    <div class="space-y-3 rounded-lg border-2 border-dashed border-line p-4">
+                        <p class="text-sm font-bold text-ink">{{ __('storefront::storefront.exams.answer_images', ['max' => fc_number($maxImages)]) }}</p>
+                        @if ($question['images'] !== [])
+                            <ul class="flex flex-wrap gap-3">
+                                @foreach ($question['images'] as $image)
+                                    <li class="relative" wire:key="img-{{ $image['id'] }}">
+                                        <a href="{{ $image['url'] }}" target="_blank" rel="noopener"><img src="{{ $image['url'] }}" alt="{{ __('storefront::storefront.exams.answer_image_n', ['n' => $loop->iteration]) }}" class="size-24 rounded-lg border border-line object-cover"></a>
+                                        <button type="button" class="absolute -end-2 -top-2 grid size-7 place-items-center rounded-full bg-danger text-white shadow" wire:click="removeImage({{ $question['id'] }}, {{ $image['id'] }})" wire:confirm="{{ __('storefront::storefront.exams.remove_image_confirm') }}" aria-label="{{ __('storefront::storefront.exams.remove_image') }}">
+                                            <x-storefront::icon name="x" class="size-4" />
+                                        </button>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
+                        @if (count($question['images']) < $maxImages)
+                            <label class="sf-btn-outline inline-flex cursor-pointer rounded-xl">
+                                <x-storefront::icon name="upload" class="size-4" /> {{ __('storefront::storefront.exams.add_images') }}
+                                <input type="file" class="sr-only" accept="image/jpeg,image/png,image/webp" multiple wire:model="uploads.{{ $question['id'] }}">
+                            </label>
+                        @endif
+                        <p class="text-xs text-muted" wire:loading wire:target="uploads.{{ $question['id'] }}">{{ __('storefront::storefront.exams.uploading') }}</p>
+                    </div>
+                @endif
             @endif
 
             <div class="flex items-center justify-between gap-3 border-t border-line pt-4">

@@ -9,6 +9,7 @@ use Src\Contexts\Academy\Domain\Models\OnlineLesson;
 use Src\Contexts\Billing\Domain\Models\PaymentInvoice;
 use Src\Contexts\Billing\Domain\Models\PaymentReceipt;
 use Src\Contexts\Billing\Domain\Models\RechargeCard;
+use Src\Contexts\Exams\Domain\Models\Choice;
 use Src\Contexts\Exams\Domain\Models\Question;
 
 /**
@@ -124,7 +125,8 @@ final class TafraSchemaMap
         return [
             'bootcamps' => ['model' => Bootcamp::class, 'collections' => ['thumbnail']],
             'online_lessons' => ['model' => OnlineLesson::class, 'collections' => ['documents']],
-            'questions' => ['model' => Question::class, 'collections' => ['image']],
+            'questions' => ['model' => Question::class, 'collections' => ['image', 'explanation_image']],
+            'choices' => ['model' => Choice::class, 'collections' => ['choice_image']],
             'payment_receipts' => ['model' => PaymentReceipt::class, 'collections' => ['receipt']],
         ];
     }

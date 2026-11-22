@@ -48,6 +48,7 @@ final class OnlineLesson extends Model implements HasMedia
         'external_url',
         'duration_in_seconds',
         'number_of_pages',
+        'allow_download',
     ];
 
     /** @var list<string> */
@@ -105,6 +106,7 @@ final class OnlineLesson extends Model implements HasMedia
             'type' => LessonType::class,
             'duration_in_seconds' => 'integer',
             'number_of_pages' => 'integer',
+            'allow_download' => 'boolean',
         ];
     }
 }

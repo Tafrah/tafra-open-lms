@@ -38,6 +38,8 @@ return [
         'reject' => 'رفض',
         'print' => 'طباعة',
         'manage_devices' => 'إدارة أجهزة الطالب',
+        'reset' => 'إعادة المحاولات',
+        'grant_views' => 'مشاهدات زيادة لطالب',
     ],
 
     'resources' => [

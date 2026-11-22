@@ -8,7 +8,10 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Livewire\WithFileUploads;
 use Src\Contexts\Exams\Application\Actions\SaveAnswerAction;
+use Src\Contexts\Exams\Application\Actions\SaveAnswerImagesAction;
 use Src\Contexts\Exams\Application\Actions\SubmitAttemptAction;
 use Src\Contexts\Exams\Domain\Enums\QuestionType;
 use Src\Contexts\Exams\Domain\Exceptions\ExamsException;
@@ -17,6 +20,7 @@ use Src\Contexts\Exams\Domain\Models\OnlinePassedExam;
 use Src\Contexts\Exams\Domain\Models\Question;
 use Src\Contexts\Exams\Domain\Models\StudentExamAnswer;
 use Src\Contexts\Storefront\Presentation\Livewire\Concerns\ResolvesStorefrontTenant;
+use Src\Contexts\Storefront\Presentation\Support\ExamMediaLinks;
 use Src\Contexts\Students\Domain\Models\Student;
 
 /**
@@ -30,6 +34,7 @@ use Src\Contexts\Students\Domain\Models\Student;
 final class ExamRunner extends Component
 {
     use ResolvesStorefrontTenant;
+    use WithFileUploads;
 
     #[Locked]
     public int $attemptId;
@@ -44,6 +49,9 @@ final class ExamRunner extends Component
 
     /** @var list<int> أسئلة متعلّم عليها للمراجعة */
     public array $flagged = [];
+
+    /** @var array<int|string, mixed> رقم السؤال ← صور لسه مترفعة (بتتحفظ وتتفضّى على طول) */
+    public array $uploads = [];
 
     public function mount(int $attemptId): void
     {
@@ -75,6 +83,28 @@ final class ExamRunner extends Component
         $this->save((int) $key, null, is_string($value) ? $value : '');
     }
 
+    /** الطالب اختار صور لإجابة المقالي — بتتحفظ فورًا زي النص */
+    public function updatedUploads(mixed $value, string $key): void
+    {
+        $questionId = (int) explode('.', $key)[0];
+        $files = array_values(array_filter(
+            (array) ($this->uploads[$questionId] ?? []),
+            fn (mixed $file): bool => $file instanceof TemporaryUploadedFile,
+        ));
+        unset($this->uploads[$questionId]);
+
+        if ($files === []) {
+            return;
+        }
+
+        $this->guarded(fn () => app(SaveAnswerImagesAction::class)->handle($this->student(), $this->attempt(), $questionId, $files));
+    }
+
+    public function removeImage(int $questionId, int $mediaId): void
+    {
+        $this->guarded(fn () => app(SaveAnswerImagesAction::class)->remove($this->student(), $this->attempt(), $questionId, $mediaId));
+    }
+
     public function goTo(int $index): void
     {
         $count = count((array) $this->attempt()->question_order);
@@ -99,7 +129,8 @@ final class ExamRunner extends Component
     {
         $attempt = $this->attempt();
         $ids = array_map('intval', (array) $attempt->question_order);
-        $models = Question::query()->with(['choices', 'media'])->whereIn('id', $ids)->get()->keyBy('id');
+        $models = Question::query()->with(['choices.media', 'media', 'essay'])->whereIn('id', $ids)->get()->keyBy('id');
+        $answerModels = StudentExamAnswer::query()->with('media')->where('online_passed_exam_id', $attempt->getKey())->get()->keyBy('question_id');
         $exam = $attempt->exam;
 
         $questions = [];
@@ -112,7 +143,11 @@ final class ExamRunner extends Component
             }
 
             $choices = $question->choices
-                ->map(fn (Choice $c): array => ['id' => (int) $c->getKey(), 'text' => (string) $c->text])
+                ->map(fn (Choice $c): array => [
+                    'id' => (int) $c->getKey(),
+                    'text' => (string) $c->text,
+                    'image' => ExamMediaLinks::first($this->attemptId, $c, 'choice_image'),
+                ])
                 ->values()
                 ->all();
 
@@ -127,9 +162,11 @@ final class ExamRunner extends Component
                 'id' => $id,
                 'type' => $question->type,
                 'text' => (string) $question->text,
-                'image' => $question->getFirstMediaUrl('image') ?: null,
+                'image' => ExamMediaLinks::first($this->attemptId, $question, 'image'),
                 'mark' => (float) $question->mark,
                 'choices' => $choices,
+                'allow_images' => $question->type === QuestionType::Essay && $question->essay?->allow_images === true,
+                'images' => ExamMediaLinks::all($this->attemptId, $answerModels->get($id), 'answer_images'),
             ];
         }
 
@@ -138,7 +175,7 @@ final class ExamRunner extends Component
         foreach ($questions as $q) {
             $answered += $q['type'] === QuestionType::MultipleChoice
                 ? (($this->choices[$q['id']] ?? null) !== null ? 1 : 0)
-                : (trim((string) ($this->texts[$q['id']] ?? '')) !== '' ? 1 : 0);
+                : (trim((string) ($this->texts[$q['id']] ?? '')) !== '' || $q['images'] !== [] ? 1 : 0);
         }
 
         $this->current = max(0, min($this->current, count($questions) - 1));
@@ -148,14 +185,21 @@ final class ExamRunner extends Component
             'questions' => $questions,
             'question' => $questions[$this->current] ?? null,
             'answered' => $answered,
+            'maxImages' => (int) config('exams.answer_images.max', 3),
             'remaining' => $attempt->deadline_at !== null ? max(0, (int) now()->diffInSeconds($attempt->deadline_at, false)) : null,
         ]);
     }
 
     private function save(int $questionId, ?int $choiceId, ?string $text): bool
     {
+        return $this->guarded(fn () => app(SaveAnswerAction::class)->handle($this->student(), $this->attempt(), $questionId, $choiceId, $text));
+    }
+
+    /** أي كتابة في المحاولة: الوقت خلص = تسليم، غير كده رسالة للطالب */
+    private function guarded(callable $write): bool
+    {
         try {
-            app(SaveAnswerAction::class)->handle($this->student(), $this->attempt(), $questionId, $choiceId, $text);
+            $write();
         } catch (ExamsException $e) {
             $attempt = $this->attempt();
 

@@ -5,15 +5,25 @@ declare(strict_types=1);
 namespace Src\Contexts\Exams\Presentation\Filament\Resources\OnlineExamResource\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Src\Contexts\Exams\Domain\Models\OnlineExam;
 
 final class OnlineExamForm
 {
+    private const NEVER = 'never';
+
+    private const AFTER_FINISH = 'after_finish';
+
+    private const AFTER_DATE = 'after_date';
+
     public static function configure(Schema $schema): Schema
     {
         return $schema->components([
@@ -71,9 +81,31 @@ final class OnlineExamForm
                 ->columnSpanFull()
                 ->columns(2)
                 ->schema([
-                    Toggle::make('show_correct_answers_after_finish')
-                        ->label(__('exams::exams.exam.fields.show_correct_answers'))
+                    // ٣ حالات فوق عمودين: show_correct_answers_after_finish (عمود طفرة) + show_answers_at
+                    Select::make('show_answers_mode')
+                        ->label(__('exams::exams.exam.fields.show_answers'))
+                        ->options(self::answerModes())
+                        ->default(self::AFTER_FINISH)
+                        ->native(false)
+                        ->live()
+                        ->dehydrated(false)
+                        ->afterStateHydrated(function (Select $component, ?OnlineExam $record): void {
+                            if ($record !== null) {
+                                $component->state(self::modeOf($record));
+                            }
+                        })
+                        ->afterStateUpdated(fn (?string $state, Set $set) => $set('show_correct_answers_after_finish', $state !== self::NEVER))
+                        ->required(),
+                    Hidden::make('show_correct_answers_after_finish')
                         ->default(true),
+                    DateTimePicker::make('show_answers_at')
+                        ->label(__('exams::exams.exam.fields.show_answers_at'))
+                        ->helperText(__('exams::exams.exam.help.show_answers_at'))
+                        ->seconds(false)
+                        ->visible(fn (Get $get): bool => $get('show_answers_mode') === self::AFTER_DATE)
+                        ->required(fn (Get $get): bool => $get('show_answers_mode') === self::AFTER_DATE)
+                        ->dehydratedWhenHidden()
+                        ->dehydrateStateUsing(fn (mixed $state, Get $get): mixed => $get('show_answers_mode') === self::AFTER_DATE ? $state : null),
                     Toggle::make('show_explanation')
                         ->label(__('exams::exams.exam.fields.show_explanation'))
                         ->default(true),
@@ -83,5 +115,24 @@ final class OnlineExamForm
                         ->label(__('exams::exams.exam.fields.random_choices')),
                 ]),
         ]);
+    }
+
+    /** @return array<string, string> */
+    private static function answerModes(): array
+    {
+        return [
+            self::NEVER => __('exams::exams.exam.show_answers.never'),
+            self::AFTER_FINISH => __('exams::exams.exam.show_answers.after_finish'),
+            self::AFTER_DATE => __('exams::exams.exam.show_answers.after_date'),
+        ];
+    }
+
+    private static function modeOf(OnlineExam $exam): string
+    {
+        return match (true) {
+            ! $exam->show_correct_answers_after_finish => self::NEVER,
+            $exam->show_answers_at !== null => self::AFTER_DATE,
+            default => self::AFTER_FINISH,
+        };
     }
 }

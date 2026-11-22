@@ -86,10 +86,14 @@
                 <iframe class="size-full" src="https://www.youtube-nocookie.com/embed/{{ $youtubeId }}?rel=0&modestbranding=1&playsinline=1" title="{{ $current->name }}" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
             </div>
         @elseif ($documentUrl)
-            <div class="overflow-hidden rounded-banner border border-line bg-surface">
-                <iframe class="h-[75vh] w-full" src="{{ $documentUrl }}" title="{{ $current->name }}"></iframe>
+            {{-- من غير تنزيل: شريط أدوات عارض المتصفح مقفول ومفيش لينك للملف. ده بيصعّب التنزيل بس
+                 مايمنعوش ١٠٠٪ (أي حاجة على الشاشة ممكن تتحفظ) — مكتوب للمدرس في الفورم --}}
+            <div class="overflow-hidden rounded-banner border border-line bg-surface" @unless ($downloadUrl) oncontextmenu="return false" @endunless>
+                <iframe class="h-[75vh] w-full" src="{{ $documentUrl }}{{ $downloadUrl ? '' : '#toolbar=0&navpanes=0' }}" title="{{ $current->name }}"></iframe>
             </div>
-            <a href="{{ $documentUrl }}" target="_blank" rel="noopener" class="sf-btn-outline"><x-storefront::icon name="document" /> {{ __('storefront::storefront.learn.open_pdf') }}</a>
+            @if ($downloadUrl)
+                <a href="{{ $downloadUrl }}" class="sf-btn-outline" download><x-storefront::icon name="document" /> {{ __('storefront::storefront.learn.download_pdf') }}</a>
+            @endif
         @elseif ($lesson?->type === LessonType::Text)
             <article class="sf-card sf-prose p-6 lg:p-8">
                 {!! app(\Src\Support\Infrastructure\Html\HtmlSanitizer::class)->clean($lesson->text) !!}

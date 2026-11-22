@@ -46,6 +46,7 @@ final class StudentMcp extends McpResource
             'resetPassword' => 'students::students.mcp.omitted.account',
             'block' => 'students::students.mcp.omitted.account',
             'manageDevices' => 'students::students.mcp.omitted.account',
+            'grantViews' => 'students::students.mcp.omitted.access',
         ];
     }
 

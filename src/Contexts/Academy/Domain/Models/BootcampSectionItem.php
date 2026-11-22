@@ -38,6 +38,8 @@ final class BootcampSectionItem extends Model
         'allowed_views_number',
         'publish_status',
         'is_free_preview',
+        'visible_from',
+        'visible_until',
     ];
 
     /** @return BelongsTo<BootcampSection, $this> */
@@ -64,6 +66,21 @@ final class BootcampSectionItem extends Model
         return $this->hasMany(SectionItemView::class);
     }
 
+    /** @return HasMany<StudentItemViewGrant, $this> */
+    public function viewGrants(): HasMany
+    {
+        return $this->hasMany(StudentItemViewGrant::class);
+    }
+
+    /** العنصر ظاهر للطلبة دلوقتي؟ (مواعيد الظهور — المدرس بيشوفه دايمًا) */
+    public function isVisibleNow(): bool
+    {
+        $now = now();
+
+        return ($this->visible_from === null || $this->visible_from->lte($now))
+            && ($this->visible_until === null || $this->visible_until->gte($now));
+    }
+
     protected static function newFactory(): BootcampSectionItemFactory
     {
         return BootcampSectionItemFactory::new();
@@ -78,6 +95,8 @@ final class BootcampSectionItem extends Model
             'is_free_preview' => 'boolean',
             'order' => 'integer',
             'allowed_views_number' => 'integer',
+            'visible_from' => 'datetime',
+            'visible_until' => 'datetime',
         ];
     }
 }

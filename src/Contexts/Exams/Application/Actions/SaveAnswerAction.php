@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Src\Contexts\Exams\Application\Actions;
 
 use Illuminate\Support\Facades\DB;
+use Src\Contexts\Exams\Application\Services\OpenAttemptGuard;
 use Src\Contexts\Exams\Domain\Enums\GradingStatus;
 use Src\Contexts\Exams\Domain\Enums\QuestionType;
 use Src\Contexts\Exams\Domain\Exceptions\ExamsException;
@@ -18,18 +19,11 @@ use Src\Contexts\Students\Domain\Models\Student;
  */
 final readonly class SaveAnswerAction
 {
-    /** سماحية بسيطة لفرق التوقيت بين الموبايل والسيرفر */
-    private const GRACE_SECONDS = 20;
+    public function __construct(private OpenAttemptGuard $guard) {}
 
     public function handle(Student $student, OnlinePassedExam $attempt, int $questionId, ?int $choiceId = null, ?string $text = null): StudentExamAnswer
     {
-        throw_unless((int) $attempt->student_id === (int) $student->getKey(), ExamsException::because('attempt_not_yours'));
-        throw_if($attempt->finished, ExamsException::because('attempt_finished'));
-        throw_if(
-            $attempt->deadline_at !== null && $attempt->deadline_at->copy()->addSeconds(self::GRACE_SECONDS)->isPast(),
-            ExamsException::because('time_up'),
-        );
-        throw_unless(in_array($questionId, (array) $attempt->question_order, true), ExamsException::because('question_not_in_exam'));
+        $this->guard->assertWritable($student, $attempt, $questionId);
 
         /** @var Question $question */
         $question = Question::query()->findOrFail($questionId);

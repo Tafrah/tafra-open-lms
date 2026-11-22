@@ -31,7 +31,7 @@ final readonly class SubmitAttemptAction
 
             $ids = array_map('intval', (array) $locked->question_order);
             $questions = Question::query()->with('choices')->whereIn('id', $ids)->get()->keyBy('id');
-            $answers = StudentExamAnswer::query()->where('online_passed_exam_id', $locked->getKey())->get()->keyBy('question_id');
+            $answers = StudentExamAnswer::query()->with('media')->where('online_passed_exam_id', $locked->getKey())->get()->keyBy('question_id');
 
             foreach ($ids as $id) {
                 $question = $questions->get($id);
@@ -59,8 +59,9 @@ final readonly class SubmitAttemptAction
                 }
 
                 $text = trim((string) ($answer?->answer['text'] ?? ''));
-                $this->store($locked, $question, $answer, $text === ''
-                    // مقالي متسابش فاضي = صفر، مفيش داعي يستنى تصحيح
+                $blank = $text === '' && ($answer === null || $answer->getMedia('answer_images')->isEmpty());
+                $this->store($locked, $question, $answer, $blank
+                    // مقالي متسابش فاضي (لا نص ولا صور) = صفر، مفيش داعي يستنى تصحيح
                     ? ['is_correct' => false, 'student_awarded_mark' => 0, 'max_question_mark' => $max, 'grading_status' => GradingStatus::Graded]
                     : ['max_question_mark' => $max, 'grading_status' => GradingStatus::Pending]);
             }
