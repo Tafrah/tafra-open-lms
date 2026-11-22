@@ -70,11 +70,15 @@ final class StorefrontServiceProvider extends ContextServiceProvider
          * فالمرة التانية بتفشل ← جلسة جديدة مابتتحفظش ← الطالب بيطلع برا بعد
          * أول ضغطة. فبنوجّه الـ memo لـ route فاضي من غير ميدلوير، والمكوّن
          * بيحدد المؤسسة ويتأكد من الطالب بنفسه (`ResolvesStorefrontTenant`).
+         * `WalletTest` بيتأكد إن الـ route ده موجود ومن غير ميدلوير.
          */
         on('dehydrate', static function (object $component, ComponentContext $context): void {
             if (str_starts_with($component::class, 'Src\\Contexts\\Storefront\\')) {
                 $context->addMemo('path', self::LIVEWIRE_CONTEXT_PATH);
                 $context->addMemo('method', 'GET');
+                // Livewire 4.4.9+ بيتأكد إن الـ route في الـ memo هو نفس اللي الـ path
+                // بيطابقه — من غير السطر ده كل طلبات مكوّنات الموقع بترجع 404
+                $context->addMemo('route', ['uri' => self::LIVEWIRE_CONTEXT_PATH, 'domain' => null]);
             }
         });
     }
