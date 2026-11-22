@@ -32,7 +32,7 @@ function confirmModal(object $page, string $labelKey = 'filament-actions::modal.
  */
 function rowAction(object $page, string $rowText, string $label): object
 {
-    $item = buttonNamed($label, '.fi-dropdown-panel');
+    $item = menuItemNamed($label);
 
     return $page->click(buttonNamed(__('common.actions'), ".fi-ta-row:has-text(\"{$rowText}\")"))
         ->assertAttributeMissing($item, 'aria-disabled')

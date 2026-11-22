@@ -35,6 +35,7 @@ final class SiteSettings
             'hero_headline' => null,
             'hero_description' => null,
             'teacher_photo' => null,
+            'logo' => null,
             'hero_chip_1' => null,
             'hero_chip_2' => null,
             'hero_chip_3' => null,

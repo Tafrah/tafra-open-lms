@@ -55,6 +55,12 @@ function buttonNamed(string $label, string $scope = ''): string
     return $scope === '' ? $selector : "{$scope} >> {$selector}";
 }
 
+/** عنصر قائمة منسدلة بالاسم — Filament 5.11+ بيدّي عناصر القوايم role=menuitem مش button. */
+function menuItemNamed(string $label, string $scope = '.fi-dropdown-panel'): string
+{
+    return "{$scope} >> ".'internal:role=menuitem[name="'.addslashes($label).'"s]';
+}
+
 /** رابط بالاسم الظاهر بالظبط — إجراء فيه `url()` (زي زرار الإنشاء) بيترندر `<a>` مش `<button>`. */
 function linkNamed(string $label, string $scope = ''): string
 {

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use FutureCode\Onboarding\Facades\Onboarding;
 use Src\Contexts\Ai\Presentation\Filament\Pages\AiConnections;
 use Src\Contexts\Audit\Presentation\Filament\Resources\ActivityLogResource;
 use Src\Contexts\Identity\Presentation\Filament\Pages\MyDevices;
@@ -26,6 +27,11 @@ use Src\Contexts\Tenancy\Presentation\Filament\Pages\EditOrganization;
 | [الشاشة، مفتاح الجولة، مكان الرابط، دور ممنوع أو null]
 */
 
+/** تبويبات الإعدادات اللي ليها جولة لوحدها: [الشاشة => مفتاح الجولة] */
+const TAB_TOURS = [
+    ManageSiteSettings::class => 'storefront.site_settings',
+];
+
 dataset('admin_screens', [
     'users' => [UserResource::class, 'users.list', 'sidebar', null],
     'organization profile' => [EditOrganization::class, 'tenancy.organization_profile', 'user-menu', 'viewer'],
@@ -38,7 +44,7 @@ dataset('admin_screens', [
     'organization appearance' => [ManageTenantAppearance::class, 'settings.organization', 'sidebar', 'editor'],
     'organization notifications' => [ManageTenantNotifications::class, 'settings.organization', 'sidebar', 'editor'],
     'organization ai access' => [ManageTenantAi::class, 'settings.organization', 'sidebar', 'editor'],
-    'site settings' => [ManageSiteSettings::class, 'storefront.site_settings', 'sidebar', 'editor'],
+    'site settings' => [ManageSiteSettings::class, 'settings.organization', 'sidebar', 'editor'],
     'connected ai apps' => [AiConnections::class, 'ai.connections', 'user-menu', null],
 ]);
 
@@ -53,6 +59,16 @@ it('المدير بيوصل للشاشة والجولة بتبدأ وبتتقف�
 
     if ($nav !== $path) {
         $page->click(tabLinkSelector($path))->assertPathBeginsWith($path);
+
+        // تبويب ليه جولة خاصة بيه (السايدبار بيودّي لأول تبويب وجولته)
+        $tabTour = TAB_TOURS[$screen] ?? null;
+
+        if ($tabTour !== null) {
+            $page->assertVisible('.driver-popover')->click('.driver-popover-close-btn')->wait(1);
+
+            expect(Onboarding::progress()->fresh()?->hasCompletedTour($tabTour))
+                ->toBeTrue("الجولة {$tabTour} ماتسجّلتش بعد الإغلاق");
+        }
     }
 })->with('admin_screens');
 

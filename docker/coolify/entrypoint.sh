@@ -49,7 +49,12 @@ until php -r '
     sleep 2
 done
 
-as_app php artisan optimize:clear >/dev/null
+# كاش الملفات بس — `optimize:clear` بيمسح كاش القاعدة كمان، وجدول `cache`
+# مش موجود قبل أول migrate ← الحاوية كانت بتقع وتعيد التشغيل للأبد
+as_app php artisan config:clear >/dev/null
+as_app php artisan route:clear >/dev/null
+as_app php artisan view:clear >/dev/null
+as_app php artisan event:clear >/dev/null
 
 if [ -n "${LMS_ADMIN_EMAIL:-}" ]; then
     as_app php artisan lms:install --no-interaction --skip-env --if-not-installed \

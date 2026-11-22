@@ -7,6 +7,7 @@ namespace Src\Contexts\Transfer\Application\Actions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
 use Src\Contexts\Identity\Domain\Models\User;
@@ -14,6 +15,7 @@ use Src\Contexts\Settings\Application\Services\TenantSettings;
 use Src\Contexts\Settings\Domain\Models\TenantSetting;
 use Src\Contexts\Transfer\Application\Schema\TafraSchemaMap;
 use Src\Contexts\Transfer\Domain\Exceptions\TransferException;
+use Src\Support\Application\Contracts\DiskResolver;
 use Src\Support\Application\Contracts\TenantContext;
 use ZipArchive;
 
@@ -26,6 +28,9 @@ use ZipArchive;
  */
 final readonly class ExportAcademyAction
 {
+    /** إعدادات الموقع اللي قيمتها مسار ملف على قرص الهوية */
+    public const BRANDING_KEYS = ['teacher_photo', 'logo'];
+
     private const CHUNK = 500;
 
     public function __construct(
@@ -69,6 +74,8 @@ final readonly class ExportAcademyAction
                     ->all(),
                 JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES,
             ));
+
+            $this->exportBrandingFiles($work);
 
             $checksums = [];
             foreach (File::allFiles($work.'/data') as $file) {
@@ -370,5 +377,25 @@ final readonly class ExportAcademyAction
         }
 
         $zip->close();
+    }
+
+    /**
+     * صورة المدرس واللوجو ملفات على قرص الهوية مش في مكتبة الوسائط — من غير
+     * النسخ ده الإعدادات بتتنقل بمسار لملف مش موجود والصورة بتظهر مكسورة.
+     */
+    private function exportBrandingFiles(string $work): void
+    {
+        $disk = Storage::disk(app(DiskResolver::class)->for('branding'));
+
+        foreach (self::BRANDING_KEYS as $key) {
+            $path = $this->settings->get('site', $key);
+
+            if (! is_string($path) || $path === '' || str_contains($path, '..') || ! $disk->exists($path)) {
+                continue;
+            }
+
+            File::ensureDirectoryExists($work.'/branding');
+            File::put($work.'/branding/'.$key.'_'.basename($path), (string) $disk->get($path));
+        }
     }
 }

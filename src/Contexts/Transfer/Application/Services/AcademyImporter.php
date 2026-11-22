@@ -8,10 +8,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Src\Contexts\Academy\Domain\Enums\LessonType;
 use Src\Contexts\Settings\Application\Services\TenantSettings;
 use Src\Contexts\Students\Application\Actions\RegisterStudentAction;
+use Src\Contexts\Transfer\Application\Actions\ExportAcademyAction;
 use Src\Contexts\Transfer\Application\DataObjects\ImportReport;
 use Src\Contexts\Transfer\Application\Schema\TafraSchemaMap;
 use Src\Contexts\Transfer\Domain\Exceptions\TransferException;
@@ -563,9 +565,39 @@ final class AcademyImporter
             }
 
             foreach ($values as $key => $value) {
+                if ($group === 'site' && in_array($key, ExportAcademyAction::BRANDING_KEYS, true)) {
+                    $value = $this->importBrandingFile($work, (string) $key, $value);
+                }
+
                 $this->settings->set((string) $group, (string) $key, $value);
             }
         }
+    }
+
+    /** الملف بيتنسخ لقرص الهوية بمسار جديد — ولو مش في الملف، الإعداد بيتفضّى بدل مسار مكسور. */
+    private function importBrandingFile(string $work, string $key, mixed $path): ?string
+    {
+        if (! is_string($path) || $path === '') {
+            return null;
+        }
+
+        $source = $work.'/branding/'.$key.'_'.basename($path);
+
+        if (! is_file($source)) {
+            return null;
+        }
+
+        $extension = strtolower(pathinfo($source, PATHINFO_EXTENSION));
+
+        if (! in_array($extension, ['png', 'jpg', 'jpeg', 'webp'], true)) {
+            return null;
+        }
+
+        $target = 'site/'.Str::random(32).'.'.$extension;
+        Storage::disk(app(DiskResolver::class)->for('branding'))
+            ->put($target, (string) file_get_contents($source), 'public');
+
+        return $target;
     }
 
     private function importMedia(string $work, ImportReport $report): int

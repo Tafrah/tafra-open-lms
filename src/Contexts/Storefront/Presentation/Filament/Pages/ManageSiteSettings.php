@@ -92,6 +92,15 @@ final class ManageSiteSettings extends Page
                     TextInput::make('platform_name')->label($t('fields.platform_name'))->helperText($t('help.platform_name'))->maxLength(80),
                     TextInput::make('teacher_name')->label($t('fields.teacher_name'))->maxLength(80),
                     TextInput::make('subject')->label($t('fields.subject'))->placeholder($t('placeholders.subject'))->maxLength(60),
+                    FileUpload::make('logo')
+                        ->label($t('fields.logo'))
+                        ->helperText($t('help.logo'))
+                        ->image()
+                        ->disk(fn (): string => app(DiskResolver::class)->for('branding'))
+                        ->directory('site')
+                        ->visibility('public')
+                        ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
+                        ->maxSize(1024),
                     FileUpload::make('teacher_photo')
                         ->label($t('fields.teacher_photo'))
                         ->helperText($t('help.teacher_photo'))
@@ -131,6 +140,7 @@ final class ManageSiteSettings extends Page
                 ]),
 
             Section::make($t('sections.look'))
+                ->description($t('sections.look_body'))
                 ->columns(3)
                 ->columnSpanFull()
                 ->schema([

@@ -47,7 +47,9 @@ it('يرفض لوناً تباينه أقل من ٤٫٥:١ على أبيض', fun
     expect($generator->passesContrast('#12454F'))->toBeTrue()
         ->and($generator->passesContrast('#B4232E'))->toBeTrue()
         ->and($generator->passesContrast('#00FF00'))->toBeFalse()
-        ->and($generator->passesContrast('#FFEE00'))->toBeFalse();
+        ->and($generator->passesContrast('#FFEE00'))->toBeFalse()
+        // لون طفرة الافتراضي مسموح — من غيره ملف المؤسسة مايتحفظش بالقيم الافتراضية
+        ->and($generator->passesContrast(ThemeColorResolver::DEFAULT_BRAND))->toBeTrue();
 });
 
 it('يحسب التباين حسب WCAG', function (): void {

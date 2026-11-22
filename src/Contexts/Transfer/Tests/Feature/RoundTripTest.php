@@ -28,11 +28,13 @@ use Src\Contexts\Exams\Domain\Models\Choice;
 use Src\Contexts\Exams\Domain\Models\OnlineExam;
 use Src\Contexts\Exams\Domain\Models\OnlinePassedExam;
 use Src\Contexts\Exams\Domain\Models\Question;
+use Src\Contexts\Settings\Application\Services\TenantSettings;
 use Src\Contexts\Students\Domain\Models\Student;
 use Src\Contexts\Tenancy\Domain\Models\Tenant;
 use Src\Contexts\Transfer\Application\Actions\ExportAcademyAction;
 use Src\Contexts\Transfer\Application\Actions\ImportAcademyAction;
 use Src\Contexts\Transfer\Domain\Exceptions\TransferException;
+use Src\Support\Application\Contracts\DiskResolver;
 use Src\Support\Application\Contracts\TenantContext;
 
 beforeEach(function (): void {
@@ -226,4 +228,27 @@ it('ترتيب الأسئلة والاختيار المختار في المحا�
 
     expect(collect($attempt->question_order)->sort()->values()->all())->toBe($examQuestions)
         ->and(Choice::query()->whereKey($chosen)->value('is_correct'))->toBeTrue();
+});
+
+it('اللوجو وصورة المدرس بيتنقلوا مع الملف (مش مسار لملف مش موجود)', function (): void {
+    inTenant();
+    $disk = Storage::disk(app(DiskResolver::class)->for('branding'));
+    $disk->put('site/logo-old.png', UploadedFile::fake()->image('logo.png', 120, 40)->getContent());
+    app(TenantSettings::class)->set('site', 'logo', 'site/logo-old.png');
+    app(TenantSettings::class)->set('site', 'teacher_photo', 'site/missing.png');
+
+    $zip = storage_path('app/testing/export-branding.zip');
+    app(ExportAcademyAction::class)->handle($zip);
+
+    $target = Tenant::factory()->create();
+    app(TenantContext::class)->set($target->getKey());
+    app(ImportAcademyAction::class)->handle($zip);
+
+    $settings = app(TenantSettings::class);
+    $logo = $settings->get('site', 'logo');
+
+    expect($logo)->toBeString()->not->toBe('site/logo-old.png')
+        ->and($disk->exists((string) $logo))->toBeTrue()
+        // الصورة اللي ملفها مش موجود أصلاً بتتفضّى بدل ما تفضل مكسورة
+        ->and($settings->get('site', 'teacher_photo'))->toBeNull();
 });

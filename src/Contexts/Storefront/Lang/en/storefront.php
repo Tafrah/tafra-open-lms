@@ -425,6 +425,7 @@ return [
             'hero' => 'Home page',
             'contact' => 'Social & contact',
             'look' => 'Colours & font',
+            'look_body' => 'These style the student website. The admin panel colour is set in the organization profile.',
             'registration' => 'Sign-up form',
             'registration_body' => 'What a student fills in when creating an account.',
             'footer' => 'Footer',
@@ -433,6 +434,7 @@ return [
             'platform_name' => 'Platform name',
             'teacher_name' => 'Teacher name',
             'subject' => 'Subject',
+            'logo' => 'Logo',
             'teacher_photo' => 'Teacher photo',
             'hero_headline' => 'Headline',
             'hero_description' => 'Line under the headline',
@@ -458,6 +460,7 @@ return [
         ],
         'help' => [
             'platform_name' => 'Leave empty to use the organisation name.',
+            'logo' => 'Shown in the site header and on printed recharge cards. Transparent PNG about 120 px tall, up to 1 MB. Without it the first letter of the platform name is shown.',
             'teacher_photo' => 'Cut-out or light background, 4:3 — PNG / JPG / WebP up to 2 MB.',
             'hero_headline' => 'Leave empty for “Discover your path with” + the platform name.',
             'show_stats' => 'Numbers are counted automatically and refresh every few minutes.',

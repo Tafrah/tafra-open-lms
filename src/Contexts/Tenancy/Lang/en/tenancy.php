@@ -41,7 +41,7 @@ return [
         'sections' => [
             'identity' => 'Organization details',
             'brand' => 'Brand',
-            'brand_help' => 'The primary colour is expanded into a full scale automatically. The darker shades must pass the contrast check so text stays readable.',
+            'brand_help' => 'This colours this admin panel only. The student website colours and font are under Settings → Site settings. The primary colour is expanded into a full scale automatically. The darker shades must pass the contrast check so text stays readable.',
         ],
 
         'fields' => [
