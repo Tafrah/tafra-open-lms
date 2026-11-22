@@ -14,6 +14,7 @@ return [
         'operations' => 'Operations',
         'reports' => 'Reports',
         'tenancy' => 'Organizations',
+        'tafra' => 'Tafra features',
         'system' => 'System',
     ],
 

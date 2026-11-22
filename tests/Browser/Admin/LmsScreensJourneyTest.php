@@ -16,6 +16,7 @@ use Src\Contexts\Exams\Presentation\Filament\Resources\OnlineExamResource;
 use Src\Contexts\Exams\Presentation\Filament\Resources\OnlinePassedExamResource;
 use Src\Contexts\Students\Presentation\Filament\Resources\StudentResource;
 use Src\Contexts\Transfer\Presentation\Filament\Pages\DataTransfer;
+use Src\Contexts\Transfer\Presentation\Filament\Pages\TafraFeatures;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +39,7 @@ dataset('lms_screens', [
     'transaction' => [MoneyTransactionResource::class, 'billing.transaction', 'sidebar'],
     'enrollment' => [EnrollmentResource::class, 'billing.enrollment', 'sidebar'],
     'data transfer' => [DataTransfer::class, 'transfer.page', 'sidebar'],
+    'tafra features' => [TafraFeatures::class, 'transfer.tafra', 'sidebar'],
 ]);
 
 it('المدير بيوصل لشاشة المنصة والجولة بتبدأ وبتتقفل', function (string $screen, string $tour, string $area): void {

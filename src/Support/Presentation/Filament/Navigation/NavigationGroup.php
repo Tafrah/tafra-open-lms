@@ -27,6 +27,8 @@ enum NavigationGroup: string implements HasIcon, HasLabel
     case Reports = 'reports';
     case Tenancy = 'tenancy';
     case System = 'system';
+    // «مميزات طفرة» — آخر حاجة في السايدبار (docs/product/plan.html بند ٩)
+    case Tafra = 'tafra';
 
     public function getLabel(): string
     {
@@ -47,6 +49,7 @@ enum NavigationGroup: string implements HasIcon, HasLabel
             self::Reports => 'heroicon-o-chart-bar',
             self::Tenancy => 'heroicon-o-building-office-2',
             self::System => 'heroicon-o-server-stack',
+            self::Tafra => 'heroicon-o-sparkles',
         };
     }
 
@@ -64,6 +67,7 @@ enum NavigationGroup: string implements HasIcon, HasLabel
             self::Reports => 40,
             self::Tenancy => 80,
             self::System => 90,
+            self::Tafra => 95,
         };
     }
 

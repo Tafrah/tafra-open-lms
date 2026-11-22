@@ -60,6 +60,16 @@ return [
         'dry_run_note' => 'This is a dry run — nothing has been saved yet. If the report looks right, press “Import for real”.',
     ],
     'tours' => [
+        'tafra' => [
+            'purpose' => [
+                'title' => 'Tafra features',
+                'body' => 'Things that are in Tafra but not in the open edition — not ads, just here if you need one.',
+            ],
+            'contact' => [
+                'title' => 'Contact us',
+                'body' => 'Each feature has a contact button if you want to know more.',
+            ],
+        ],
         'page' => [
             'purpose' => [
                 'title' => 'Data transfer',
@@ -69,6 +79,32 @@ return [
                 'title' => 'Export and import',
                 'body' => 'Export downloads a zip. Import does a dry run first and shows you the report before saving.',
             ],
+        ],
+    ],
+    'tafra' => [
+        'title' => 'Tafra features',
+        'subheading' => 'The open edition has everything a teacher needs to start. When you need more, these are in Tafra.',
+        'contact' => 'Contact us',
+        'whatsapp_message' => 'Hi, I am a teacher using the open edition of Tafra and want to know more about: :feature',
+        'features' => [
+            'payments' => ['title' => 'Online payments that activate by themselves', 'body' => 'Fawry, bank cards and wallets through payment gateways — the student pays and the lecture opens instantly, no receipts to review.'],
+            'whatsapp' => ['title' => 'WhatsApp messages to parents', 'body' => 'Exam grades, absences and payment reminders reach parents automatically on WhatsApp.'],
+            'app' => ['title' => 'A mobile app with your name', 'body' => 'Android and iOS apps with your logo, push notifications and stronger video protection.'],
+            'paper_exams' => ['title' => 'Paper exams with automatic marking', 'body' => 'Print the answer sheet, scan it, and every student\'s marks are recorded.'],
+            'attendance' => ['title' => 'Centre attendance and schedules', 'body' => 'Class timetable, attendance by code, and absent lists messaged to parents.'],
+            'ai' => ['title' => 'AI essay grading', 'body' => 'A suggested mark and comment for each essay answer — you review and approve.'],
+            'store' => ['title' => 'Books and notes store', 'body' => 'Sell books and notes online with shipping and pickup points.'],
+            'support' => ['title' => 'Support and managed hosting', 'body' => 'We host, update and back up the platform; you focus on teaching.'],
+        ],
+        'move' => [
+            'title' => 'Want to move to Tafra?',
+            'body' => 'Export all your data in one file — students, courses, exams and wallets — Tafra imports it and students log in with the same passwords.',
+            'action' => 'Export data',
+        ],
+        'nudge' => [
+            'students' => 'Your platform passed :count students 🎉 — in Tafra online payments activate lectures by themselves and parent messages go out automatically.',
+            'receipts' => 'You reviewed :count receipts this week — taking your time? In Tafra payments activate automatically.',
+            'action' => 'Learn more',
         ],
     ],
 ];

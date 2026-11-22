@@ -14,6 +14,7 @@ return [
         'operations' => 'التشغيل',
         'reports' => 'التقارير',
         'tenancy' => 'المؤسسات',
+        'tafra' => 'مميزات طفرة',
         'system' => 'النظام',
     ],
 

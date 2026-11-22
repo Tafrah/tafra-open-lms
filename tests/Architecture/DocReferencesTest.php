@@ -72,7 +72,7 @@ it('كل إحالة لبند في الوثائق بتوصل لبند موجود 
     $problems = [];
     $checked = 0;
 
-    // `docs/21 بند ١٦` · `` `docs/21` بند ١٦ `` · `docs/21-implementation-notes.md بند ٨` · `README بند ٢`
+    // `docs/21 بند ١٦` · `` `docs/21` بند ١٦ `` · `docs/21-implementation-notes.md بند ٨`
     $pattern = '/`?(docs\/\d{2}[\w\-.]*|README(?:\.md)?)`?\s+بند\s+([٠-٩]+)/u';
 
     foreach (documentedFiles() as $path) {
