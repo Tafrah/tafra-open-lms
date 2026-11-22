@@ -159,6 +159,15 @@ final class StudentsTable
                         ->authorize('block')
                         ->requiresConfirmation()
                         ->action(fn (Student $record) => app(ManageStudentAction::class)->toggleBlock($record, self::actor())),
+                    Action::make('disconnect_devices')
+                        ->label(__('students::students.student.actions.disconnect_devices'))
+                        ->icon('heroicon-o-device-phone-mobile')
+                        ->color('warning')
+                        ->authorize('manageDevices')
+                        ->requiresConfirmation()
+                        ->modalDescription(__('students::students.student.confirm.disconnect_devices'))
+                        ->action(fn (Student $record) => app(ManageStudentAction::class)->disconnectDevices($record, self::actor()))
+                        ->successNotificationTitle(__('students::students.student.notifications.devices_disconnected')),
                     DeleteAction::make()->authorizationTooltip(),
                     RestoreAction::make(),
                 ])

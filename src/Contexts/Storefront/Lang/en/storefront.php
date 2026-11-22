@@ -31,6 +31,7 @@ return [
         'invoices' => 'My invoices',
         'wallet' => 'Wallet',
         'profile' => 'My account',
+        'notifications' => 'Notifications',
     ],
 
     'theme' => [
@@ -368,6 +369,10 @@ return [
         'transactions_body' => 'Redeem a code to start using your wallet.',
         'methods_title' => 'No payment methods available',
         'methods_body' => 'Ask your teacher to add a transfer number.',
+        'notifications_title' => 'No notifications yet',
+        'notifications_body' => 'When your receipt is reviewed or your exam is graded, you will find it here.',
+        'announcements_title' => 'No announcements',
+        'announcements_body' => 'Your teacher’s announcements appear here as soon as they are published.',
     ],
 
     'errors' => [
@@ -377,6 +382,8 @@ return [
         'phone_format' => 'Enter a valid Egyptian mobile number (11 digits starting with 010, 011, 012 or 015).',
         'login_required' => 'Please log in first.',
         'wrong_password' => 'Your current password is incorrect.',
+        'device_limit' => 'Your account is already open on the maximum number of devices (:count). To sign in from this device, ask your teacher to disconnect your old devices.',
+        'device_disconnected' => 'Your teacher disconnected your devices — please sign in again.',
     ],
 
     'no_academy' => [
@@ -414,6 +421,32 @@ return [
         'south_sinai' => 'South Sinai',
     ],
 
+    'notifications' => [
+        'mine' => 'My notifications',
+        'announcements' => 'Teacher announcements',
+        'new' => 'New',
+        'pinned' => 'Pinned',
+        'bell_unread' => 'Notifications — :count new',
+        'reason' => 'Reason: :reason',
+        'kinds' => [
+            'invoice_approved' => [
+                'title' => 'Your receipt was approved',
+                'body' => 'The course “:course” is now open for you — start studying.',
+            ],
+            'invoice_rejected' => [
+                'title' => 'Your receipt was rejected',
+                'body' => 'The receipt for “:course” was not accepted.',
+            ],
+            'attempt_graded' => [
+                'title' => 'Your exam was graded',
+                'body' => 'Your final result in “:exam”: :percentage%.',
+            ],
+            'generic' => [
+                'title' => 'New notification',
+                'body' => 'There is an update on your account.',
+            ],
+        ],
+    ],
     'settings' => [
         'page' => 'Site settings',
         'subheading' => 'What students see on your site: the hero, teacher photo, social links and colours.',
@@ -428,6 +461,8 @@ return [
             'look_body' => 'These style the student website. The admin panel colour is set in the organization profile.',
             'registration' => 'Sign-up form',
             'registration_body' => 'What a student fills in when creating an account.',
+            'devices' => 'Student devices',
+            'devices_body' => 'How many devices a student can sign in from with the same account — so accounts are not shared.',
             'footer' => 'Footer',
         ],
         'fields' => [
@@ -456,6 +491,7 @@ return [
             'parent_phone_required' => 'Parent’s mobile is required',
             'ask_governorate' => 'Ask for governorate',
             'ask_school_type' => 'Ask general or Azhar',
+            'max_devices_per_student' => 'Max devices per student',
             'footer_text' => 'Footer text',
         ],
         'help' => [
@@ -466,6 +502,7 @@ return [
             'show_stats' => 'Numbers are counted automatically and refresh every few minutes.',
             'whatsapp_number' => 'Shown on “forgot password” and the floating button — e.g. 01012345678.',
             'tafra_credit' => 'The “Developed by Tafra” badge appears in the footer of every page — it is what keeps this edition free.',
+            'max_devices_per_student' => 'Default is one device. 0 = unlimited. You can disconnect any student’s devices from their page under “Students”.',
         ],
         'placeholders' => [
             'subject' => 'Chemistry',

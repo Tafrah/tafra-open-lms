@@ -45,6 +45,7 @@ final class StudentMcp extends McpResource
             'enroll' => 'students::students.mcp.omitted.access',
             'resetPassword' => 'students::students.mcp.omitted.account',
             'block' => 'students::students.mcp.omitted.account',
+            'manageDevices' => 'students::students.mcp.omitted.account',
         ];
     }
 

@@ -16,4 +16,7 @@ use Stancl\Tenancy\Database\Concerns\CentralConnection;
 final class CentralImport extends Import
 {
     use CentralConnection;
+
+    /** الاسم صريح: من غيره Eloquent بيخمّن الجدول من اسم الكلاس (`central_imports`) */
+    protected $table = 'imports';
 }

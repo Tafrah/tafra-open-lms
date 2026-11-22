@@ -11,10 +11,13 @@
             ['site.my-courses', 'book', 'nav.my_courses', ['site.my-courses']],
             ['site.exams', 'exam', 'nav.exams', ['site.exams', 'site.attempts.*']],
             ['site.invoices', 'document', 'nav.invoices', ['site.invoices', 'site.checkout.*']],
+            ['site.notifications', 'bell', 'nav.notifications', ['site.notifications']],
             ['site.wallet', 'wallet', 'nav.wallet', ['site.wallet']],
             ['site.profile', 'user', 'nav.profile', ['site.profile']],
         ];
-        $bottom = [$menu[0], $menu[1], $menu[4], $menu[5]];
+        $bottom = [$menu[0], $menu[1], $menu[5], $menu[6]];
+        // عدّاد الجرس — صفحة الإشعارات بتعلّمهم مقروءين قبل ما الـ layout يترسم
+        $unreadCount = $me->unreadNotifications()->count();
     @endphp
 
     {{-- السايدبار العائم (ديسكتوب) --}}
@@ -52,6 +55,14 @@
                 <div class="lg:hidden">@include('storefront::partials.logo')</div>
                 <a href="{{ route('site.courses') }}" class="sf-btn-ghost ms-auto hidden sm:inline-flex">{{ __('storefront::storefront.nav.courses') }}</a>
                 <div class="ms-auto flex items-center gap-1 sm:ms-0">
+                    <a href="{{ route('site.notifications') }}" class="relative grid size-10 place-items-center rounded-full text-body hover:bg-surface-alt hover:text-ink"
+                       aria-label="{{ $unreadCount > 0 ? __('storefront::storefront.notifications.bell_unread', ['count' => fc_number($unreadCount)]) : __('storefront::storefront.nav.notifications') }}"
+                       data-testid="notifications-bell">
+                        <x-storefront::icon name="bell" class="size-6" />
+                        @if ($unreadCount > 0)
+                            <span class="absolute -top-0.5 -end-0.5 grid min-w-5 place-items-center rounded-full bg-danger px-1 text-[11px] font-bold leading-5 text-white" aria-hidden="true">{{ $unreadCount > 99 ? '99+' : fc_number($unreadCount) }}</span>
+                        @endif
+                    </a>
                     @include('storefront::partials.locale-switch')
                     @include('storefront::partials.theme-toggle')
                     <form method="POST" action="{{ route('site.logout') }}" class="lg:hidden">

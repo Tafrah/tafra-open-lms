@@ -166,6 +166,19 @@ final class ManageSiteSettings extends Page
                     Toggle::make('ask_school_type')->label($t('fields.ask_school_type')),
                 ]),
 
+            Section::make($t('sections.devices'))
+                ->description($t('sections.devices_body'))
+                ->columnSpanFull()
+                ->schema([
+                    TextInput::make('max_devices_per_student')
+                        ->label($t('fields.max_devices_per_student'))
+                        ->helperText($t('help.max_devices_per_student'))
+                        ->integer()
+                        ->minValue(0)
+                        ->maxValue((int) config('storefront.devices.max_limit', 20))
+                        ->required(),
+                ]),
+
             Section::make($t('sections.footer'))
                 ->columnSpanFull()
                 ->schema([

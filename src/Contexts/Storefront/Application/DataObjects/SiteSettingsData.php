@@ -40,6 +40,8 @@ final readonly class SiteSettingsData
         public bool $parentPhoneRequired,
         public bool $askGovernorate,
         public bool $askSchoolType,
+        /** أقصى عدد أجهزة لكل طالب — 0 = مفتوح */
+        public int $maxDevicesPerStudent = 1,
     ) {}
 
     /** @param array<string, mixed> $values */
@@ -89,6 +91,7 @@ final readonly class SiteSettingsData
             parentPhoneRequired: (bool) ($values['parent_phone_required'] ?? false),
             askGovernorate: (bool) ($values['ask_governorate'] ?? true),
             askSchoolType: (bool) ($values['ask_school_type'] ?? true),
+            maxDevicesPerStudent: self::deviceLimit($values['max_devices_per_student'] ?? null),
         );
     }
 
@@ -101,6 +104,16 @@ final readonly class SiteSettingsData
     public function fontQuery(): string
     {
         return (string) config("storefront.fonts.{$this->fontFamily}", config('storefront.fonts.Almarai'));
+    }
+
+    /** رقم صحيح بين 0 (مفتوح) والحد الأقصى في الكونفيج — أي قيمة غريبة ترجع للافتراضي */
+    private static function deviceLimit(mixed $value): int
+    {
+        if (! is_numeric($value)) {
+            return (int) config('storefront.devices.default_limit', 1);
+        }
+
+        return max(0, min((int) $value, (int) config('storefront.devices.max_limit', 20)));
     }
 
     private static function color(mixed $value, string $key): string

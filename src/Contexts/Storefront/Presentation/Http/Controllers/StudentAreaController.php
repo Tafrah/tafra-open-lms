@@ -15,6 +15,7 @@ use Src\Contexts\Billing\Domain\Models\PaymentInvoice;
 use Src\Contexts\Exams\Domain\Models\OnlinePassedExam;
 use Src\Contexts\Storefront\Application\Actions\UpdateStudentProfileAction;
 use Src\Contexts\Storefront\Application\Queries\CourseCatalog;
+use Src\Contexts\Storefront\Application\Queries\StudentAnnouncements;
 use Src\Contexts\Storefront\Application\Queries\StudentProgress;
 use Src\Contexts\Storefront\Domain\Exceptions\StorefrontException;
 use Src\Contexts\Storefront\Presentation\Http\Controllers\Concerns\ResolvesStudent;
@@ -27,12 +28,13 @@ final class StudentAreaController
 
     public function __construct(private readonly StudentProgress $progress) {}
 
-    public function dashboard(): View
+    public function dashboard(StudentAnnouncements $announcements): View
     {
         $student = $this->student();
 
         return view('storefront::pages.student.dashboard', [
             'student' => $student,
+            'announcements' => $announcements->latest(3),
             'courses' => $this->progress->courses($student)->take(6),
             'pendingInvoices' => PaymentInvoice::query()
                 ->with('bootcamp:id,name,slug')

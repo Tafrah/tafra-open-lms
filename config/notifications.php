@@ -60,6 +60,25 @@ return [
             'default' => [],
             'required' => [],
         ],
+
+        // ═══ إشعارات الطالب على الموقع (الجرس) ═══
+        // `audience => students`: مش بتظهر في تفضيلات مستخدمي اللوحة —
+        // الطالب مالوش شاشة تفضيلات، والقناة دايمًا database.
+        'student_invoice_reviewed' => [
+            'group' => 'students',
+            'audience' => 'students',
+            'channels' => ['database'],
+            'default' => ['database'],
+            'required' => ['database'],
+        ],
+
+        'student_attempt_graded' => [
+            'group' => 'students',
+            'audience' => 'students',
+            'channels' => ['database'],
+            'default' => ['database'],
+            'required' => ['database'],
+        ],
     ],
 
     /** الطابور اللي كل الإشعارات بتروح عليه */
