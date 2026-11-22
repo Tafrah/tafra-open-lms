@@ -25,6 +25,7 @@
 
 - خريطة المنصة التعليمية: `src/Contexts/{Academy,Exams,Students,Billing,Storefront,Transfer,Installer}` — والقواعد في `CLAUDE.md`.
 - النقل من/إلى طفرة: [`docs/transfer/format.md`](docs/transfer/format.md).
+- إزاي تساهم: [`CONTRIBUTING.md`](CONTRIBUTING.md).
 - الخطة والميزات: [`docs/product/plan.html`](docs/product/plan.html) · [`docs/product/features.html`](docs/product/features.html) · التصميم: [`docs/product/design-spec.md`](docs/product/design-spec.md).
 
 ---
