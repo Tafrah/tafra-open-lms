@@ -275,6 +275,13 @@ jobs:
           test "$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:8000$css")" = 200
           php artisan schedule:run --no-interaction
 
+          # التحديث من غير SSH: إصدار جديد اترفع ← أول زيارة بتطبّقه
+          echo "0.0.1-ci" > VERSION
+          code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8000/)
+          echo "/ after upload of new version -> $code"
+          test "$code" = 200
+          grep -q '"version": "0.0.1-ci"' storage/app/installed.json
+
   # VPS: نفس أمر التثبيت اللي في الـ README، من نسخة الـ commit ده
   docker:
     name: تثبيت VPS بـ install.sh (Docker)

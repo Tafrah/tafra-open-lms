@@ -77,6 +77,17 @@ return [
         'max_age' => 604800,
     ],
 
+    /*
+    | فحص الإصدارات الجديدة: مرة في اليوم من الجدولة، طلب GET واحد لـ GitHub
+    | (مفيش أي بيانات عن المنصة بتتبعت). النتيجة بتظهر كشريط في لوحة التحكم
+    | للمدير بس. اقفله بـ LMS_UPDATE_CHECK=false.
+    */
+    'updates' => [
+        'enabled' => (bool) env('LMS_UPDATE_CHECK', true),
+        'url' => env('LMS_UPDATE_URL', 'https://api.github.com/repos/Tafrah/tafra-open-lms/releases/latest'),
+        'guide' => 'https://github.com/Tafrah/tafra-open-lms/blob/main/docs/install/shared-hosting.md#التحديث',
+    ],
+
     // ثابت من GitHub Actions في ملف `VERSION` جوه الـ zip — وإلا من APP_VERSION
     'version_file' => base_path('VERSION'),
 ];

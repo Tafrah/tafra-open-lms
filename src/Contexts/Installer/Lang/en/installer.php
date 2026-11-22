@@ -142,4 +142,20 @@ return [
         'already_installed' => 'The platform is already installed — nothing to do.',
         'done' => 'The platform is installed. Sign in with :email.',
     ],
+    'update' => [
+        'available' => [
+            'title' => 'A new version is available: :version',
+            'body' => 'You are on :current. Updates include security fixes — download it, upload it over the old files, and the platform finishes the update by itself on the next visit.',
+            'download' => 'Download',
+            'how' => 'How to update',
+        ],
+        'busy' => [
+            'title' => 'Updating the platform',
+            'body' => 'A new version is being applied right now. This page refreshes itself in a few seconds.',
+        ],
+        'failed' => [
+            'title' => 'The update did not finish',
+            'body' => 'Something went wrong while applying the new version. Your data is safe. Send the last lines of storage/logs to support, or re-upload the previous zip.',
+        ],
+    ],
 ];

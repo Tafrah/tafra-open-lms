@@ -9,6 +9,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Src\Contexts\Installer\Infrastructure\Environment\PreInstallEnvironment;
+use Src\Contexts\Installer\Presentation\Http\Middleware\ApplyPendingUpdate;
 use Src\Contexts\Installer\Presentation\Http\Middleware\RedirectToInstaller;
 use Src\Support\Presentation\Http\Middleware\AssignRequestContext;
 use Src\Support\Presentation\Http\Middleware\EndTenancy;
@@ -50,6 +51,8 @@ $app = Application::configure(basePath: dirname(__DIR__))
         // قبل التثبيت أي صفحة بتروح لـ /install (docs/install). عام مش على `web`:
         // لوحات Filament ليها ستاك ميدلوير خاص بيها ومابتعدّيش على مجموعة `web`
         $middleware->prepend(RedirectToInstaller::class);
+        // إصدار جديد اترفع (استضافة مشتركة من غير SSH): أول طلب بيطبّق التحديث
+        $middleware->append(ApplyPendingUpdate::class);
 
         $middleware->web(append: [
             SetLocale::class,

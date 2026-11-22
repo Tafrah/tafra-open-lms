@@ -46,6 +46,7 @@ rsync -aL \
   --exclude='/public/storage' \
   --exclude='/storage/logs/*.log' \
   --exclude='/storage/app/installed.json' \
+  --exclude='/storage/app/latest-release.json' \
   --exclude='/storage/framework/cache/data/*' \
   --exclude='/storage/framework/sessions/*' \
   --exclude='/storage/framework/views/*.php' \

@@ -68,3 +68,8 @@ Schedule::command(sprintf(
 
 // ═══════════ الامتحانات: تسليم المحاولات اللي وقتها خلص والطالب قفل الصفحة ═══════════
 Schedule::command('exams:finalize-expired')->everyFiveMinutes()->onOneServer()->withoutOverlapping();
+
+// فحص إصدار جديد على GitHub (طلب GET واحد، مفيش بيانات بتتبعت) — LMS_UPDATE_CHECK=false بيقفله
+if ((bool) config('installer.updates.enabled')) {
+    Schedule::command('lms:check-update')->dailyAt('04:10')->onOneServer();
+}
