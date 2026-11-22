@@ -31,7 +31,7 @@ final class CourseController
         // الطالب بيشوف كورسات سنته الدراسية أول ما يفتح (plan: «الكورسات بتاعة سنته بس»)،
         // و«كل السنين» (`level=all`) بيوريه الباقي
         if ($levelId === false && $request->query('level') !== 'all') {
-            $levelId = $this->optionalStudent()?->educational_level_id ?? false;
+            $levelId = $this->optionalStudent()->educational_level_id ?? false;
         }
 
         $activeLevel = $levelId !== false ? $levels->firstWhere('id', $levelId) : null;
