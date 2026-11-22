@@ -6,6 +6,7 @@ namespace Src\Contexts\Storefront\Presentation\Http\Controllers;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
@@ -71,13 +72,16 @@ final class LearnController
         $lesson = $current->lesson;
 
         $documentUrl = null;
+        $downloadUrl = null;
 
         if ($denial === null && $lesson !== null && $lesson->type === LessonType::Pdf && $lesson->getFirstMedia('documents') !== null) {
-            $documentUrl = URL::temporarySignedRoute(
-                'site.learn.document',
-                now()->addMinutes((int) config('storefront.pdf_link_minutes', 30)),
-                [$course->slug, $current->getKey()],
-            );
+            $expires = now()->addMinutes((int) config('storefront.pdf_link_minutes', 30));
+            $documentUrl = URL::temporarySignedRoute('site.learn.document', $expires, [$course->slug, $current->getKey()]);
+
+            // التنزيل بس لو المدرس سامح — غير كده العرض جوه الصفحة من غير زرار
+            if ($lesson->allow_download) {
+                $downloadUrl = URL::temporarySignedRoute('site.learn.document', $expires, [$course->slug, $current->getKey(), 'download' => 1]);
+            }
         }
 
         return response()->view('storefront::pages.learn.player', [
@@ -91,6 +95,7 @@ final class LearnController
             'next' => is_int($index) && $index < count($items) - 1 ? $items[$index + 1] : null,
             'progress' => $items === [] ? 0 : (int) round($completed / count($items) * 100),
             'documentUrl' => $documentUrl,
+            'downloadUrl' => $downloadUrl,
             'youtubeId' => $denial === null && $lesson?->type === LessonType::YoutubeVideo ? $lesson->youtubeId() : null,
         ], $denial === null ? 200 : 403);
     }
@@ -114,7 +119,7 @@ final class LearnController
     }
 
     /** ملف الـ PDF: رابط موقّع **و** الطالب لسه مسموحله — مفيش رابط عام للملف */
-    public function document(string $slug, int $item): StreamedResponse
+    public function document(Request $request, string $slug, int $item): StreamedResponse
     {
         $student = $this->student();
         [, $sections, , $current] = $this->locate($slug, $item);
@@ -128,12 +133,16 @@ final class LearnController
         $path = $media->getPathRelativeToRoot();
         abort_unless($disk->exists($path), 404);
 
+        // `attachment` بس لو الدرس مسموح تنزيله؛ غير كده `inline` دايمًا (حتى لو الطالب زوّد ?download=1
+        // — التوقيع بيرفض أي تعديل في الرابط أصلًا، ده حزام زيادة)
+        $download = $request->boolean('download') && $current->lesson->allow_download;
+
         return $disk->response($path, $media->file_name, [
             'Content-Type' => 'application/pdf',
             'Cache-Control' => 'private, no-store, max-age=0',
             'X-Content-Type-Options' => 'nosniff',
             'X-Robots-Tag' => 'noindex',
-        ], 'inline');
+        ], $download ? 'attachment' : 'inline');
     }
 
     /**

@@ -37,6 +37,8 @@ return [
         'approve' => 'Approve',
         'reject' => 'Reject',
         'print' => 'Print',
+        'reset' => 'Reset attempts',
+        'grant_views' => 'Grant extra views to a student',
     ],
 
     'resources' => [

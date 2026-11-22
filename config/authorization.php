@@ -88,12 +88,14 @@ return [
         'exam_attempts' => [
             'group' => 'exams',
             'actions' => ['view_any', 'view', 'delete', 'export'],
-            'extra' => ['grade'],
+            // reset = مسح محاولات طالب في امتحان عشان يعيده (استثناء من عدد المحاولات)
+            'extra' => ['grade', 'reset'],
         ],
         'students' => [
             'group' => 'students',
             'actions' => null,
-            'extra' => ['adjust_wallet', 'enroll', 'reset_password', 'block'],
+            // grant_views = مشاهدات زيادة لطالب واحد في درس محدود المشاهدات
+            'extra' => ['adjust_wallet', 'enroll', 'reset_password', 'block', 'grant_views'],
         ],
         'enrollments' => [
             'group' => 'students',
@@ -208,10 +210,10 @@ return [
         // المساعد: بيراجع الإيصالات ويصحح المقالي ويتابع الطلبة — من غير فلوس ولا إعدادات
         'assistant' => [
             'view_any.students', 'view.students', 'create.students', 'update.students',
-            'enroll.students', 'reset_password.students', 'block.students',
+            'enroll.students', 'reset_password.students', 'block.students', 'grant_views.students',
             'view_any.enrollments', 'view.enrollments', 'create.enrollments',
             'view_any.payment_invoices', 'view.payment_invoices', 'approve.payment_invoices', 'reject.payment_invoices',
-            'view_any.exam_attempts', 'view.exam_attempts', 'grade.exam_attempts',
+            'view_any.exam_attempts', 'view.exam_attempts', 'grade.exam_attempts', 'reset.exam_attempts',
             'view_any.online_exams', 'view.online_exams',
             'view_any.bootcamps', 'view.bootcamps',
             'view_any.online_lessons', 'view.online_lessons',

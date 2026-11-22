@@ -101,8 +101,8 @@ final class ExamController
 
         $exam = $record->exam;
         $ids = array_map('intval', (array) $record->question_order);
-        $questions = Question::query()->with(['choices', 'media'])->whereIn('id', $ids)->get()->keyBy('id');
-        $answers = StudentExamAnswer::query()->where('online_passed_exam_id', $record->getKey())->get()->keyBy('question_id');
+        $questions = Question::query()->with(['choices.media', 'media'])->whereIn('id', $ids)->get()->keyBy('id');
+        $answers = StudentExamAnswer::query()->with('media')->where('online_passed_exam_id', $record->getKey())->get()->keyBy('question_id');
 
         $ordered = collect($ids)->map(fn (int $id): ?Question => $questions->get($id))->filter()->values();
 
@@ -116,8 +116,10 @@ final class ExamController
             $given = $question->type === QuestionType::MultipleChoice
                 ? ($answer?->answer['choice_id'] ?? null)
                 : trim((string) ($answer?->answer['text'] ?? ''));
+            // مقالي بالصور بس (من غير نص) = متجاوب
+            $photos = $answer !== null && $answer->getMedia('answer_images')->isNotEmpty();
 
-            if ($given === null || $given === '') {
+            if (($given === null || $given === '') && ! $photos) {
                 $unanswered++;
             } elseif ($answer?->grading_status === GradingStatus::Pending) {
                 continue;
@@ -135,7 +137,9 @@ final class ExamController
             'answers' => $answers,
             'counts' => ['correct' => $correct, 'wrong' => $wrong, 'unanswered' => $unanswered],
             'pending' => $record->grading_status === GradingStatus::Pending,
-            'showAnswers' => (bool) $exam?->show_correct_answers_after_finish,
+            // «بعد تاريخ»: قبل التاريخ الطالب بيشوف درجته بس
+            'showAnswers' => (bool) $exam?->answersVisibleNow(),
+            'answersOn' => $exam?->answersScheduled() ? $exam->show_answers_at : null,
             'showExplanation' => (bool) $exam?->show_explanation,
             'item' => $record->bootcamp_section_item_id !== null
                 ? BootcampSectionItem::query()->with('section.bootcamp')->find($record->bootcamp_section_item_id)

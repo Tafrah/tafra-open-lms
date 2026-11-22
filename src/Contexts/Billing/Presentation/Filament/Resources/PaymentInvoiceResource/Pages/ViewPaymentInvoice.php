@@ -61,7 +61,7 @@ final class ViewPaymentInvoice extends ViewRecord
                             TextEntry::make('pdf')
                                 ->label(__('billing::billing.receipt.fields.image'))
                                 ->visible(fn (PaymentReceipt $record): bool => self::isPdf($record))
-                                ->state(fn (PaymentReceipt $record): string => $record->getFirstMedia('receipt')?->file_name ?? 'PDF')
+                                ->state(fn (PaymentReceipt $record): string => $record->getFirstMedia('receipt')->file_name ?? 'PDF')
                                 ->icon('heroicon-o-document-text')
                                 ->color('primary')
                                 ->url(fn (PaymentReceipt $record): ?string => self::receiptUrl($record), shouldOpenInNewTab: true)

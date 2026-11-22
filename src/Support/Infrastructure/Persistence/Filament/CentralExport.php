@@ -21,4 +21,7 @@ use Stancl\Tenancy\Database\Concerns\CentralConnection;
 final class CentralExport extends Export
 {
     use CentralConnection;
+
+    // اسم الجدول بيتشتق من اسم الكلاس (`central_exports`) — لازم يتثبت على جدول Filament الأصلي
+    protected $table = 'exports';
 }

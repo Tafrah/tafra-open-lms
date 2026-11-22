@@ -39,7 +39,8 @@ tafra-export-2026-11-21.zip
 | `online_exams` | + `material_id`, `exam_category_id` |
 | `questions` | `questionable_type` = `multiple_choices` أو `essay_question`، `questionable_id` = id السؤال. **زيادة:** `online_exam_id`, `order`, `type`, `mark` |
 | `online_exam_blocks` · `online_exam_block_items` | بلوك واحد لكل امتحان (id البلوك = id الامتحان)، والعنصر `linkable_item_type = question` |
-| `multiple_choices` · `choices` · `essay_question` | زي طفرة |
+| `multiple_choices` · `choices` · `essay_question` | زي طفرة. صور الأسئلة في `media/questions/<id>/image/` و`explanation_image/`، وصورة الاختيار في `media/choices/<id>/choice_image/` |
+| أعمدة زيادة (إضافية — المستورد بيتجاهل اللي مش عنده) | `online_exams.show_answers_at` · `bootcamp_section_items.visible_from/visible_until` · `online_lessons.allow_download`. استثناءات المشاهدات (`student_item_view_grants`) مابتتصدّرش |
 | `online_passed_exams` · `student_exam_answers` · `section_item_views` | `user_id` = مستخدم الطالب |
 | `bootcamp_enrolled_students_histories` | `source`: `receipt` · `wallet` · `recharge_card` · `admin` · `free` |
 | `payment_invoices` | `payment_gateway`: `manual_transfer` · `wallet` · `recharge_card` · `free`. `invoice_id = invoice_key = number` |

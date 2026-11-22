@@ -13,4 +13,7 @@ use Stancl\Tenancy\Database\Concerns\CentralConnection;
 final class CentralFailedImportRow extends FailedImportRow
 {
     use CentralConnection;
+
+    // اسم الجدول بيتشتق من اسم الكلاس (`central_failed_import_rows`) — لازم يتثبت على جدول Filament الأصلي
+    protected $table = 'failed_import_rows';
 }

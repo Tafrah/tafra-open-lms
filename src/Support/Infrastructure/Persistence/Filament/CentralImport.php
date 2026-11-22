@@ -16,4 +16,7 @@ use Stancl\Tenancy\Database\Concerns\CentralConnection;
 final class CentralImport extends Import
 {
     use CentralConnection;
+
+    // اسم الجدول بيتشتق من اسم الكلاس (`central_imports`) — لازم يتثبت على جدول Filament الأصلي
+    protected $table = 'imports';
 }

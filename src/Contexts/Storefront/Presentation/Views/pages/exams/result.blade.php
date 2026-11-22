@@ -44,6 +44,12 @@
             </div>
         </section>
 
+        @if ($answersOn)
+            <p class="sf-card p-4 text-center text-sm font-bold text-body">
+                <x-storefront::icon name="clock" class="inline size-4" /> {{ __('storefront::storefront.exams.answers_on', ['date' => $answersOn->translatedFormat('j F Y — H:i')]) }}
+            </p>
+        @endif
+
         @if ($showAnswers)
             <section class="space-y-4" aria-labelledby="review-title">
                 <h2 id="review-title" class="text-lg font-bold text-navy">{{ __('storefront::storefront.exams.review') }}</h2>
@@ -59,6 +65,9 @@
                             <span class="text-xs font-bold text-body" dir="ltr">{{ fc_number((float) ($answer?->student_awarded_mark ?? 0), 1) }} / {{ fc_number((float) $question->mark, 1) }}</span>
                         </div>
                         <div class="sf-prose">{!! app(\Src\Support\Infrastructure\Html\HtmlSanitizer::class)->clean($question->text) !!}</div>
+                        @if ($questionImage = \Src\Contexts\Storefront\Presentation\Support\ExamMediaLinks::first($attempt->getKey(), $question, 'image'))
+                            <img src="{{ $questionImage }}" alt="{{ __('storefront::storefront.exams.question_image') }}" class="max-h-80 rounded-card border border-line" loading="lazy">
+                        @endif
                         @if ($isMcq)
                             <ul class="space-y-2">
                                 @foreach ($question->choices as $choice)
@@ -67,24 +76,40 @@
                                         $tone = $choice->is_correct ? 'border-success bg-success text-white' : ($mine ? 'border-danger bg-danger text-white' : 'border-line bg-surface text-ink');
                                     @endphp
                                     <li class="flex items-center gap-3 rounded-lg border-2 p-4 font-bold {{ $tone }}">
-                                        <span class="flex-1">{{ $choice->text }}</span>
+                                        <span class="flex flex-1 flex-col gap-2">
+                                            <span>{{ $choice->text }}</span>
+                                            @if ($choiceImage = \Src\Contexts\Storefront\Presentation\Support\ExamMediaLinks::first($attempt->getKey(), $choice, 'choice_image'))
+                                                <img src="{{ $choiceImage }}" alt="{{ __('storefront::storefront.exams.choice_image') }}" class="max-h-40 rounded-lg border border-line bg-white" loading="lazy">
+                                            @endif
+                                        </span>
                                         @if ($choice->is_correct)<span class="text-xs">{{ __('storefront::storefront.exams.correct_answer') }}</span>@endif
                                         @if ($mine && ! $choice->is_correct)<span class="text-xs">{{ __('storefront::storefront.exams.your_choice') }}</span>@endif
                                     </li>
                                 @endforeach
                             </ul>
                         @else
-                            <div class="rounded-lg bg-surface-alt p-4 text-sm leading-7 whitespace-pre-line text-ink">{{ trim((string) ($answer?->answer['text'] ?? '')) ?: __('storefront::storefront.exams.no_answer') }}</div>
+                            @php $answerImages = \Src\Contexts\Storefront\Presentation\Support\ExamMediaLinks::all($attempt->getKey(), $answer, 'answer_images'); @endphp
+                            <div class="rounded-lg bg-surface-alt p-4 text-sm leading-7 whitespace-pre-line text-ink">{{ trim((string) ($answer?->answer['text'] ?? '')) ?: ($answerImages === [] ? __('storefront::storefront.exams.no_answer') : '') }}</div>
+                            @if ($answerImages !== [])
+                                <ul class="flex flex-wrap gap-3" aria-label="{{ __('storefront::storefront.exams.your_images') }}">
+                                    @foreach ($answerImages as $image)
+                                        <li><a href="{{ $image['url'] }}" target="_blank" rel="noopener"><img src="{{ $image['url'] }}" alt="{{ __('storefront::storefront.exams.answer_image_n', ['n' => $loop->iteration]) }}" class="size-28 rounded-lg border border-line object-cover"></a></li>
+                                    @endforeach
+                                </ul>
+                            @endif
                             @if ($answer?->grading_status === \Src\Contexts\Exams\Domain\Enums\GradingStatus::Pending)
                                 <p class="text-sm font-bold text-warning-ink">{{ __('storefront::storefront.exams.awaiting_essay') }}</p>
                             @elseif ($answer?->grader_feedback)
                                 <p class="text-sm text-body">{{ __('storefront::storefront.exams.feedback', ['feedback' => $answer->grader_feedback]) }}</p>
                             @endif
                         @endif
-                        @if ($showExplanation && filled($question->explanation_text))
+                        @if ($showExplanation && (filled($question->explanation_text) || $question->getFirstMedia('explanation_image') !== null))
                             <div class="sf-prose rounded-lg bg-gray-50 p-4 text-sm dark:bg-surface-alt">
                                 <p class="font-bold text-navy">{{ __('storefront::storefront.exams.explanation') }}</p>
                                 {!! app(\Src\Support\Infrastructure\Html\HtmlSanitizer::class)->clean($question->explanation_text) !!}
+                                @if ($explanationImage = \Src\Contexts\Storefront\Presentation\Support\ExamMediaLinks::first($attempt->getKey(), $question, 'explanation_image'))
+                                    <img src="{{ $explanationImage }}" alt="{{ __('storefront::storefront.exams.explanation_image') }}" class="mt-3 max-h-80 rounded-card border border-line" loading="lazy">
+                                @endif
                             </div>
                         @endif
                     </article>

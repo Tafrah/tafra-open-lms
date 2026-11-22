@@ -40,6 +40,14 @@ final class StudentPolicy extends StandardPolicy
             ->response();
     }
 
+    /** مشاهدات زيادة لطالب في درس محدود المشاهدات */
+    public function grantViews(User $user, Student $student): Response
+    {
+        return $this->owned($user, $student, 'grant_views')
+            ->rule(! $student->trashed(), 'record_trashed')
+            ->response();
+    }
+
     public function block(User $user, Student $student): Response
     {
         return $this->owned($user, $student, 'block')

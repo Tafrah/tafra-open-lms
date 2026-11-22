@@ -9,6 +9,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
@@ -66,6 +67,12 @@ final class OnlineLessonForm
                         ->required(fn (Get $get): bool => self::type($get) === LessonType::Pdf)
                         ->visible(fn (Get $get): bool => self::type($get) === LessonType::Pdf)
                         ->columnSpanFull(),
+                    Toggle::make('allow_download')
+                        ->label(__('academy::academy.lesson.fields.allow_download'))
+                        ->helperText(__('academy::academy.lesson.help.allow_download'))
+                        ->default(false)
+                        ->visible(fn (Get $get): bool => self::type($get) === LessonType::Pdf)
+                        ->columnSpanFull(),
                     RichEditor::make('text')
                         ->label(__('academy::academy.lesson.fields.text'))
                         ->required(fn (Get $get): bool => self::type($get) === LessonType::Text)
@@ -96,6 +103,10 @@ final class OnlineLessonForm
 
         if ($type !== LessonType::Text) {
             $data['text'] = null;
+        }
+
+        if ($type !== LessonType::Pdf) {
+            $data['allow_download'] = false;
         }
 
         return $data;

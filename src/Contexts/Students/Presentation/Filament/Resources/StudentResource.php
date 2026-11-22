@@ -75,6 +75,7 @@ final class StudentResource extends Resource
             RelationManagers\EnrollmentsRelationManager::class,
             RelationManagers\TransactionsRelationManager::class,
             RelationManagers\AttemptsRelationManager::class,
+            RelationManagers\ViewGrantsRelationManager::class,
         ];
     }
 

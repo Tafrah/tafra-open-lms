@@ -14,6 +14,7 @@ use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 use Src\Contexts\Academy\Domain\Models\EducationalLevel;
 use Src\Contexts\Academy\Domain\Models\SectionItemView;
+use Src\Contexts\Academy\Domain\Models\StudentItemViewGrant;
 use Src\Contexts\Billing\Domain\Models\Enrollment;
 use Src\Contexts\Billing\Domain\Models\MoneyTransaction;
 use Src\Contexts\Billing\Domain\Models\PaymentInvoice;
@@ -96,6 +97,12 @@ final class Student extends Authenticatable
     public function views(): HasMany
     {
         return $this->hasMany(SectionItemView::class);
+    }
+
+    /** @return HasMany<StudentItemViewGrant, $this> */
+    public function viewGrants(): HasMany
+    {
+        return $this->hasMany(StudentItemViewGrant::class);
     }
 
     public function isBlocked(): bool

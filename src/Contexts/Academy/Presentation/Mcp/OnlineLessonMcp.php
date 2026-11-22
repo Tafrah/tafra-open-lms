@@ -29,6 +29,7 @@ final class OnlineLessonMcp extends McpResource
             McpField::enum('type', LessonType::class)->required()->filterable()->label(self::LABELS.'type'),
             McpField::string('external_url')->max(2048)->label(self::LABELS.'youtube_url'),
             McpField::text('description')->label(self::LABELS.'description'),
+            McpField::boolean('allow_download')->label(self::LABELS.'allow_download'),
         ];
     }
 

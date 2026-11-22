@@ -30,7 +30,12 @@ final readonly class CourseOutline
         $sections = $bootcamp->sections()
             ->where('publish_status', PublishStatus::Published)
             ->with(['items' => static function (Relation $query): void {
-                $query->where('publish_status', PublishStatus::Published)->with(['lesson', 'exam']);
+                // مواعيد الظهور: العنصر برا الشباك مابيظهرش للطالب خالص (اللوحة بتعرضه دايمًا)
+                $now = now();
+                $query->where('publish_status', PublishStatus::Published)
+                    ->where(fn ($q) => $q->whereNull('visible_from')->orWhere('visible_from', '<=', $now))
+                    ->where(fn ($q) => $q->whereNull('visible_until')->orWhere('visible_until', '>=', $now))
+                    ->with(['lesson', 'exam']);
             }])
             ->get();
 

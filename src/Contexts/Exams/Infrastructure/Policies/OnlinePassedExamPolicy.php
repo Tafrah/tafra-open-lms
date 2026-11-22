@@ -19,6 +19,18 @@ final class OnlinePassedExamPolicy extends StandardPolicy
         return 'exam_attempts';
     }
 
+    /** الزرار في شاشة الطالب (قبل ما يختار امتحان) — صلاحية بس */
+    public function resetAny(User $user): Response
+    {
+        return $this->decide()->permission($user, $this, 'reset')->response();
+    }
+
+    /** مسح المحاولة عشان الطالب يعيد الامتحان */
+    public function reset(User $user, OnlinePassedExam $record): Response
+    {
+        return $this->owned($user, $record, 'reset')->response();
+    }
+
     public function grade(User $user, OnlinePassedExam $record): Response
     {
         return $this->owned($user, $record, 'grade')

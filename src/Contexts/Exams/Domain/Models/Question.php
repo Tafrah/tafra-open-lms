@@ -71,6 +71,11 @@ final class Question extends Model implements HasMedia
         $this->addMediaCollection('image')
             ->singleFile()
             ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
+
+        // صورة جوه التفسير — بتظهر مع التفسير بعد التسليم بس
+        $this->addMediaCollection('explanation_image')
+            ->singleFile()
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
     }
 
     protected static function newFactory(): QuestionFactory

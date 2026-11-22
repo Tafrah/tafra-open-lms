@@ -24,6 +24,9 @@ return [
         'not_enrolled' => 'Enroll in the course to open this lesson.',
         'prerequisite_exam' => 'You need to pass the previous exam first.',
         'views_exhausted' => 'You have used all the allowed views for this lesson.',
+        'item_not_visible' => 'This item is not available at this time.',
+        'views_not_limited' => 'This lesson has unlimited views — no extra views needed.',
+        'extra_views_range' => 'Extra views must be between 1 and :max.',
     ],
     'level' => [
         'singular' => 'Grade',
@@ -110,12 +113,14 @@ return [
             'duration_minutes' => 'Duration (minutes)',
             'youtube_url' => 'YouTube video link',
             'pdf' => 'PDF file',
+            'allow_download' => 'Allow downloading the file',
             'text' => 'Lesson text',
             'description' => 'Short description',
             'used_in' => 'Used in',
         ],
         'help' => [
             'youtube_url' => 'Set the video to Unlisted on YouTube so it does not show in search.',
+            'allow_download' => 'Off: the file is shown inside the page with no download button. This makes downloading harder but cannot fully prevent it — anything shown on screen can be captured.',
         ],
         'validation' => [
             'youtube' => 'This is not a valid YouTube video link.',
@@ -207,16 +212,45 @@ return [
             'name' => 'Name shown to students',
             'publish_status' => 'Status',
             'allowed_views_number' => 'Allowed views',
+            'visible_from' => 'Visible from',
+            'visible_until' => 'Visible until',
+            'visibility' => 'Visibility window',
             'prerequisite_exam' => 'Exam to pass first',
             'is_free_preview' => 'Free preview',
         ],
         'help' => [
             'name' => 'Leave empty to use the lesson or exam name.',
             'allowed_views_number' => 'Leave empty for unlimited views.',
+            'visibility' => 'Optional. Outside this window students do not see the item at all — you always see it here.',
         ],
         'empty' => [
             'heading' => 'This section is empty',
             'description' => 'Add a lesson from the library or an exam.',
+        ],
+    ],
+    'view_grant' => [
+        'plural' => 'Extra views',
+        'fields' => [
+            'item' => 'Lesson',
+            'extra_views' => 'Extra views',
+            'allowed' => 'Base limit',
+            'granted_by' => 'Granted by',
+        ],
+        'help' => [
+            'item' => 'Only lessons with a view limit.',
+            'extra_views' => 'Added on top of any extra views granted before.',
+        ],
+        'actions' => [
+            'grant' => 'Extra views',
+            'revoke' => 'Revoke',
+        ],
+        'notifications' => [
+            'granted' => 'The extra views were added for this student.',
+            'revoked' => 'The extra views were revoked.',
+        ],
+        'empty' => [
+            'heading' => 'No extra views',
+            'description' => 'If a student used up a lesson\'s views and needs to watch it again, grant extra views to that student only.',
         ],
     ],
     'mcp' => [

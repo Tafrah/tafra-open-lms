@@ -4,15 +4,43 @@ declare(strict_types=1);
 
 namespace Src\Contexts\Exams\Presentation\Filament\Resources\OnlinePassedExamResource\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\ViewAction;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Auth\Access\AuthorizationException;
+use Src\Contexts\Exams\Application\Actions\ResetStudentExamAttemptsAction;
 use Src\Contexts\Exams\Domain\Enums\GradingStatus;
 use Src\Contexts\Exams\Domain\Models\OnlinePassedExam;
+use Src\Contexts\Identity\Domain\Models\User;
 
 final class OnlinePassedExamsTable
 {
+    /** كل محاولات الطالب ده في الامتحان ده تتمسح — مش المحاولة دي بس */
+    public static function resetAction(): Action
+    {
+        return Action::make('resetAttempts')
+            ->label(__('exams::exams.attempt.actions.reset'))
+            ->icon('heroicon-o-arrow-path')
+            ->color('danger')
+            ->authorize('reset')
+            ->requiresConfirmation()
+            ->modalDescription(__('exams::exams.attempt.confirm.reset'))
+            ->action(function (OnlinePassedExam $record): void {
+                $user = auth()->user();
+                $student = $record->student;
+                throw_unless($user instanceof User && $student !== null, AuthorizationException::class);
+
+                $count = app(ResetStudentExamAttemptsAction::class)->handle($student, (int) $record->online_exam_id, $user);
+
+                Notification::make()->success()
+                    ->title(trans_choice('exams::exams.attempt.notifications.reset', $count, ['count' => fc_number($count)]))
+                    ->send();
+            });
+    }
+
     public static function configure(Table $table): Table
     {
         return $table
@@ -56,6 +84,7 @@ final class OnlinePassedExamsTable
                 ViewAction::make()->label(fn (OnlinePassedExam $record): string => $record->grading_status === GradingStatus::Pending
                     ? __('exams::exams.attempt.actions.grade')
                     : __('exams::exams.attempt.actions.view')),
+                self::resetAction(),
             ])
             ->emptyStateHeading(fn (Table $table): string => $table->isFiltered()
                 ? __('table.empty.no_results')

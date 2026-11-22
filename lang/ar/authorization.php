@@ -37,6 +37,8 @@ return [
         'approve' => 'قبول',
         'reject' => 'رفض',
         'print' => 'طباعة',
+        'reset' => 'إعادة المحاولات',
+        'grant_views' => 'مشاهدات زيادة لطالب',
     ],
 
     'resources' => [
