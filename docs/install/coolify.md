@@ -43,7 +43,7 @@
 
 ## البريد
 
-ضيف في Environment Variables: `MAIL_MAILER=smtp`، `MAIL_HOST`، `MAIL_PORT`، `MAIL_USERNAME`، `MAIL_PASSWORD` — أو اضبطه من لوحة التحكم ← الإعدادات ← البريد.
+ضيف في Environment Variables: `MAIL_MAILER=smtp`، `MAIL_HOST`، `MAIL_PORT`، `MAIL_USERNAME`، `MAIL_PASSWORD` — أو اضبطه من لوحة التحكم ← قايمة حسابك (فوق) ← إعدادات المنصة (البريد).
 
 ## مشاكل شائعة
 

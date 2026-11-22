@@ -175,4 +175,7 @@ return [
             ],
         ],
     ],
+    'menu' => [
+        'platform' => 'Platform settings (email)',
+    ],
 ];

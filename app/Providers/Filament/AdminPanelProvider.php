@@ -6,11 +6,13 @@ namespace App\Providers\Filament;
 
 use Filament\Actions\Action;
 use Filament\Enums\ThemeMode;
+use Filament\Facades\Filament;
 use Filament\FontProviders\GoogleFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Models\Contracts\FilamentUser;
 use Filament\Navigation\NavigationGroup as FilamentNavigationGroup;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
@@ -32,6 +34,7 @@ use Src\Contexts\Notifications\Presentation\Filament\Pages\NotificationPreferenc
 use Src\Contexts\Settings\Application\Services\TenantSettings;
 use Src\Contexts\Settings\Domain\Settings\AppearanceSettings;
 use Src\Contexts\Settings\Domain\Settings\GeneralSettings;
+use Src\Contexts\Settings\Presentation\Filament\Central\Pages\ManageMail;
 use Src\Contexts\Tenancy\Domain\Models\Tenant;
 use Src\Contexts\Tenancy\Presentation\Filament\Pages\EditOrganization;
 use Src\Contexts\Tenancy\Presentation\Http\Middleware\EnsureTenantIsActive;
@@ -206,6 +209,14 @@ final class AdminPanelProvider extends PanelProvider
                 ->icon('heroicon-o-sparkles')
                 ->url(fn (): string => AiConnections::getUrl())
                 ->visible(fn (): bool => AiConnections::canAccess()),
+
+            // صاحب المنصة: البريد (عشان «نسيت كلمة السر») والنسخ الاحتياطي في اللوحة المركزية
+            'platform_settings' => Action::make('platform_settings')
+                ->label(fn (): string => __('settings::settings.menu.platform'))
+                ->icon('heroicon-o-envelope')
+                ->url(fn (): string => ManageMail::getUrl(panel: 'central'))
+                ->visible(fn (): bool => ($user = auth()->user()) instanceof FilamentUser
+                    && $user->canAccessPanel(Filament::getPanel('central'))),
 
             'logout' => Action::make('logout')->label(fn (): string => __('common.logout')),
         ];
