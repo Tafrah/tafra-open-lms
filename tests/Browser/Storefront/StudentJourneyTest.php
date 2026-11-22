@@ -9,6 +9,7 @@ use Src\Contexts\Billing\Domain\Models\Coupon;
 use Src\Contexts\Billing\Domain\Models\RechargeCard;
 use Src\Contexts\Billing\Domain\Models\RechargeCardGroup;
 use Src\Contexts\Students\Domain\Models\Student;
+use Src\Contexts\Students\Infrastructure\Notifications\InvoiceReviewedNotification;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,6 +75,22 @@ it('الطالب بيطبّق كوبون ويشتري كورس من المحفظ
     $student = Student::query()->where('phone', '01012345678')->firstOrFail();
 
     expect((float) $student->balance)->toBe(20.0);
+
+    assertUiQuality($page);
+});
+
+it('الطالب بيشوف جرس الإشعارات وبيفتح الصفحة على موبايل', function (): void {
+    browserStudentLogin();
+    $student = Student::query()->where('phone', '01012345678')->firstOrFail();
+    $student->notifyNow(new InvoiceReviewedNotification(1, true, 'كيمياء', null, null));
+
+    $page = visit(route('site.dashboard', absolute: false))->resize(390, 844);
+    $page->assertVisible('[data-testid="notifications-bell"]')
+        ->click('[data-testid="notifications-bell"]')
+        ->assertPathIs(route('site.notifications', absolute: false))
+        ->assertSee('كيمياء');
+
+    expect($student->fresh()?->unreadNotifications()->count())->toBe(0);
 
     assertUiQuality($page);
 });

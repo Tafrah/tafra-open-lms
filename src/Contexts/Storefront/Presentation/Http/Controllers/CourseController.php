@@ -27,6 +27,13 @@ final class CourseController
     {
         $levels = $this->catalog->levels();
         $levelId = filter_var($request->query('level'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+
+        // الطالب بيشوف كورسات سنته الدراسية أول ما يفتح (plan: «الكورسات بتاعة سنته بس»)،
+        // و«كل السنين» (`level=all`) بيوريه الباقي
+        if ($levelId === false && $request->query('level') !== 'all') {
+            $levelId = $this->optionalStudent()?->educational_level_id ?? false;
+        }
+
         $activeLevel = $levelId !== false ? $levels->firstWhere('id', $levelId) : null;
         $term = is_string($request->query('q')) ? trim(mb_substr($request->query('q'), 0, 100)) : '';
 

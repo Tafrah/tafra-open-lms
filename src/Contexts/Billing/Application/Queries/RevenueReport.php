@@ -189,6 +189,13 @@ final class RevenueReport
             'total' => round((float) $this->cardRedemptions()->sum('amount'), 2),
         ];
         $lines[] = [
+            'key' => 'manual',
+            'name' => __('billing::billing.report.lines.manual_deposits'),
+            'detail' => __('billing::billing.report.manual_note'),
+            'count' => $this->manualDeposits()->count(),
+            'total' => round((float) $this->manualDeposits()->sum('amount'), 2),
+        ];
+        $lines[] = [
             'key' => 'wallet',
             'name' => __('billing::billing.report.lines.wallet_purchases'),
             'detail' => __('billing::billing.report.wallet_note'),
@@ -206,6 +213,20 @@ final class RevenueReport
             ->where('status', InvoiceStatus::Paid)
             ->whereBetween('paid_at', [$this->from, $this->to])
             ->when($gateway !== null, fn (Builder $q): Builder => $q->where('payment_gateway', $gateway));
+    }
+
+    /**
+     * إيداع المدرس/المساعد يدوي في محفظة طالب — غالباً كاش في السنتر، وساعات
+     * تعويض. بيظهر سطر لوحده ومش داخل في «اللي اتحصّل» عشان مش كله فلوس جديدة.
+     *
+     * @return Builder<MoneyTransaction>
+     */
+    private function manualDeposits(): Builder
+    {
+        return MoneyTransaction::query()
+            ->where('type', TransactionType::Deposit)
+            ->where('source', TransactionSource::Admin)
+            ->whereBetween('created_at', [$this->from, $this->to]);
     }
 
     /** @return Builder<MoneyTransaction> */

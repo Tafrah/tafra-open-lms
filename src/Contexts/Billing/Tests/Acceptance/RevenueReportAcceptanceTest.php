@@ -92,7 +92,10 @@ it('التحويلات وكروت الشحن والشراء بالمحفظة س�
     expect($methods['method:'.$vodafone->getKey()]['total'])->toBe(300.0)
         ->and($methods['method:'.$vodafone->getKey()]['count'])->toBe(2)
         ->and($methods['cards']['total'])->toBe(50.0)
-        ->and($methods['wallet']['total'])->toBe(150.0);
+        ->and($methods['wallet']['total'])->toBe(150.0)
+        // إيداع الإدارة (كاش السنتر) سطر لوحده ومش داخل في «اللي اتحصّل»
+        ->and($methods['manual']['total'])->toBe(70.0)
+        ->and($methods['manual']['count'])->toBe(1);
 });
 
 it('فلتر الفترة بيشيل اللي برّاها', function (): void {

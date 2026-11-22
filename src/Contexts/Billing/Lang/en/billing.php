@@ -430,10 +430,12 @@ return [
         'by_method' => 'By payment method / number',
         'empty' => 'No paid invoices in this period.',
         'unknown_method' => 'No specific number',
+        'manual_note' => 'Cash at the centre or compensation — not counted in “Collected”',
         'wallet_note' => 'Spent from balance topped up earlier — not new money',
         'lines' => [
             'collected' => 'Collected',
             'transfers' => 'Approved transfers',
+            'manual_deposits' => 'Manual wallet deposits',
             'card_redemptions' => 'Recharge cards',
             'wallet_purchases' => 'Wallet purchases',
         ],

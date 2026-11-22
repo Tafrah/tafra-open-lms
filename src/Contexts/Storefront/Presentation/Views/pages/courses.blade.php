@@ -17,7 +17,7 @@
                 <div>
                     <label for="courses-level" class="sr-only">{{ __('storefront::storefront.courses.level') }}</label>
                     <select id="courses-level" name="level" class="sf-input" onchange="this.form.submit()">
-                        <option value="">{{ __('storefront::storefront.courses.all_levels') }}</option>
+                        <option value="all">{{ __('storefront::storefront.courses.all_levels') }}</option>
                         @foreach ($levels as $level)
                             <option value="{{ $level->getKey() }}" @selected($activeLevel?->is($level))>{{ $level->name }}</option>
                         @endforeach
@@ -28,7 +28,7 @@
 
             @if ($levels->isNotEmpty())
                 <div class="mt-4 flex flex-wrap gap-2" aria-label="{{ __('storefront::storefront.courses.level') }}">
-                    <a href="{{ route('site.courses', array_filter(['q' => $term])) }}" class="rounded-full border px-4 py-1.5 text-sm font-bold transition {{ $activeLevel === null ? 'border-primary bg-primary text-white' : 'border-line bg-surface text-ink hover:border-primary' }}">{{ __('storefront::storefront.courses.all_levels') }}</a>
+                    <a href="{{ route('site.courses', array_filter(['level' => 'all', 'q' => $term])) }}" class="rounded-full border px-4 py-1.5 text-sm font-bold transition {{ $activeLevel === null ? 'border-primary bg-primary text-white' : 'border-line bg-surface text-ink hover:border-primary' }}">{{ __('storefront::storefront.courses.all_levels') }}</a>
                     @foreach ($levels as $level)
                         <a href="{{ route('site.courses', array_filter(['level' => $level->getKey(), 'q' => $term])) }}" class="rounded-full border px-4 py-1.5 text-sm font-bold transition {{ $activeLevel?->is($level) ? 'border-primary bg-primary text-white' : 'border-line bg-surface text-ink hover:border-primary' }}" @if ($activeLevel?->is($level)) aria-current="true" @endif>{{ $level->name }}</a>
                     @endforeach
