@@ -107,6 +107,7 @@ return [
         'widget.recent_activity' => 'Recent activity widget',
         'widget.onboarding_checklist' => 'Getting-started checklist widget',
         'widget.lms_overview' => 'Learning platform overview',
+        'widget.platform_shortcuts' => 'Platform management tiles',
     ],
 
     'roles' => [

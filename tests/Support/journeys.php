@@ -45,6 +45,22 @@ function navLinkSelector(string $path, string $area = 'sidebar'): string
 }
 
 /**
+ * الأقسام اللي بتتفتح من وقت للتاني مطوية افتراضياً (NavigationGroup::folded) —
+ * المدرس بيفتح القسم الأول، والرحلة كمان.
+ */
+function openSidebarGroupOf(object $page, string $linkSelector): void
+{
+    $opened = $page->script(sprintf(
+        '(() => { const g = document.querySelector(%s)?.closest(".fi-sidebar-group.fi-collapsed"); if (! g) return false; g.querySelector(".fi-sidebar-group-btn")?.click(); return true; })()',
+        json_encode($linkSelector),
+    ));
+
+    if ($opened === true) {
+        $page->wait(0.5);
+    }
+}
+
+/**
  * زرار بالاسم الظاهر بالظبط (زي ما قارئ الشاشة بيشوفه) — أثبت من كلاسات
  * Filament اللي بتتبني في PHP، ومابيطابقش العناصر المخفية.
  */
@@ -112,6 +128,7 @@ function journeyToScreen(string $homePath, string $path, string $tourKey, string
     $home->assertPresent(navLinkSelector($path, $area));
 
     if ($area === 'sidebar') {
+        openSidebarGroupOf($home, navLinkSelector($path, $area));
         $home->click(navLinkSelector($path, $area));
     } else {
         // قائمة المستخدم منسدلة — الرابط موجود في الـ DOM وبنفتحه بالرابط نفسه

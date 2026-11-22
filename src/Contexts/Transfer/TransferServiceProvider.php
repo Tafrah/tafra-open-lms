@@ -12,6 +12,7 @@ use Src\Contexts\Transfer\Presentation\Console\ExportAcademyCommand;
 use Src\Contexts\Transfer\Presentation\Console\ImportAcademyCommand;
 use Src\Contexts\Transfer\Presentation\Filament\Pages\TafraFeatures;
 use Src\Support\Infrastructure\Providers\ContextServiceProvider;
+use Src\Support\Presentation\Filament\Pages\Dashboard as AdminDashboard;
 
 /** نقل الأكاديمية من وإلى طفرة (docs/transfer/format.md). */
 final class TransferServiceProvider extends ContextServiceProvider
@@ -48,7 +49,7 @@ final class TransferServiceProvider extends ContextServiceProvider
                     'url' => TafraFeatures::getUrl(),
                 ])->render();
             },
-            scopes: Dashboard::class,
+            scopes: [Dashboard::class, AdminDashboard::class],
         );
     }
 }

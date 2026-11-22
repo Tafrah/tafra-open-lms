@@ -80,6 +80,7 @@ return [
         SetupWizard::class => 'fc-onboarding::onboarding.exempt.wizard',
         OnboardingAnalytics::class => 'fc-onboarding::onboarding.exempt.analytics',
         Dashboard::class => 'fc-onboarding::onboarding.exempt.dashboard',
+        Src\Support\Presentation\Filament\Pages\Dashboard::class => 'fc-onboarding::onboarding.exempt.dashboard',
         EditProfile::class => 'fc-onboarding::onboarding.exempt.profile',
     ],
 

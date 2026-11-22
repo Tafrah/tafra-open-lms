@@ -35,22 +35,29 @@ enum NavigationGroup: string implements HasIcon, HasLabel
         return __("navigation.groups.{$this->value}");
     }
 
+    /** أيقونات Phosphor بنفس اختيار «طفرة البسيط» (themes/simple → railIcons) */
     public function getIcon(): string
     {
         return match ($this) {
-            self::Dashboard => 'heroicon-o-home',
-            self::Learning => 'heroicon-o-academic-cap',
-            self::Exams => 'heroicon-o-clipboard-document-check',
-            self::Students => 'heroicon-o-user-group',
-            self::Finance => 'heroicon-o-banknotes',
-            self::Identity => 'heroicon-o-users',
-            self::Content => 'heroicon-o-document-text',
-            self::Operations => 'heroicon-o-cog-6-tooth',
-            self::Reports => 'heroicon-o-chart-bar',
-            self::Tenancy => 'heroicon-o-building-office-2',
-            self::System => 'heroicon-o-server-stack',
-            self::Tafra => 'heroicon-o-sparkles',
+            self::Dashboard => 'phosphor-squares-four-bold',
+            self::Learning => 'phosphor-book-open-bold',
+            self::Exams => 'phosphor-exam-bold',
+            self::Students => 'phosphor-student-bold',
+            self::Finance => 'phosphor-wallet-bold',
+            self::Identity => 'phosphor-users-bold',
+            self::Content => 'phosphor-bell-bold',
+            self::Operations => 'phosphor-gear-bold',
+            self::Reports => 'phosphor-chart-bar-bold',
+            self::Tenancy => 'phosphor-buildings-bold',
+            self::System => 'phosphor-gear-six-bold',
+            self::Tafra => 'phosphor-sparkle-bold',
         };
+    }
+
+    /** مطوية افتراضياً — بتتفتح من وقت للتاني (foldedSections في طفرة) */
+    public function folded(): bool
+    {
+        return in_array($this, [self::Identity, self::System, self::Tafra, self::Tenancy], true);
     }
 
     public function sort(): int

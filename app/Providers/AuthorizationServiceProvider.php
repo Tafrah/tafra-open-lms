@@ -71,6 +71,12 @@ final class AuthorizationServiceProvider extends ServiceProvider
                 return null;   // ← null مش false، عشان الـ Policy تكمّل
             }
 
+            // الودجتس اختيار عرض مش أمان: صاحب المنصة بيشوف رئيسية دوره في
+            // المؤسسة (مربعات المنصة والملخص)، مش كل ودجتس القالب
+            if (str_starts_with($ability, 'widget.')) {
+                return null;
+            }
+
             if (app(InvariantRegistry::class)->guards($ability, $arguments[0] ?? null)) {
                 return null;
             }

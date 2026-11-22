@@ -170,6 +170,8 @@ return [
         'widget.onboarding_checklist' => 'dashboard',
         // ملخص المنصة: الطلبة، الدخل، الإيصالات والمقالي المستنية
         'widget.lms_overview' => 'dashboard',
+        // «إدارة المنصة»: مربع لكل صفحة أساسية (شكل طفرة البسيط)
+        'widget.platform_shortcuts' => 'dashboard',
     ],
 
     /*
@@ -196,7 +198,7 @@ return [
             'access.my_devices', 'access.two_factor', 'access.notification_preferences',
             'access.panel.admin',
             // ملخص المنصة + قائمة البداية — ودجتس القالب (المستخدمين/الإعلانات) مالهاش لازمة للمدرس
-            'widget.lms_overview', 'widget.onboarding_checklist', 'widget.recent_activity',
+            'widget.platform_shortcuts', 'widget.lms_overview', 'widget.onboarding_checklist', 'widget.recent_activity',
         ],
 
         'editor' => [
@@ -223,13 +225,13 @@ return [
             'view_any.recharge_cards', 'view.recharge_cards',
             // صور الإيصالات ملفات خاصة — بتتفتح برابط موقّع بيسأل عن الصلاحية دي
             'download.media',
-            'access.dashboard', 'access.panel.admin',
+            'access.dashboard', 'access.panel.admin', 'widget.platform_shortcuts',
             'access.my_devices', 'access.two_factor', 'access.notification_preferences',
         ],
 
         'viewer' => [
             'view_any.*', 'view.*',
-            'access.dashboard', 'access.panel.admin', 'access.ai',
+            'access.dashboard', 'access.panel.admin', 'access.ai', 'widget.platform_shortcuts',
             'access.my_devices', 'access.two_factor', 'access.notification_preferences',
         ],
     ],

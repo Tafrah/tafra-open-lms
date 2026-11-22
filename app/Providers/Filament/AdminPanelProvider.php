@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\PlatformShortcuts;
 use Filament\Actions\Action;
 use Filament\Enums\ThemeMode;
 use Filament\Facades\Filament;
@@ -14,11 +15,10 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Navigation\NavigationGroup as FilamentNavigationGroup;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Support\Enums\Platform;
 use Filament\Support\Enums\Width;
+use Filament\View\PanelsRenderHook;
 use FutureCode\Onboarding\FilamentOnboardingPlugin;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -42,6 +42,7 @@ use Src\Support\Infrastructure\Theming\BrandLogoResolver;
 use Src\Support\Infrastructure\Theming\ThemeColorResolver;
 use Src\Support\Presentation\Filament\ContextPanelRegistry;
 use Src\Support\Presentation\Filament\Navigation\NavigationGroup;
+use Src\Support\Presentation\Filament\Pages\Dashboard;
 use Src\Support\Presentation\Http\Middleware\AssignRequestContext;
 use Src\Support\Presentation\Http\Middleware\EnforceImpersonationTimeout;
 use Src\Support\Presentation\Http\Middleware\EnsureTwoFactorIsConfigured;
@@ -108,13 +109,13 @@ final class AdminPanelProvider extends PanelProvider
             ->navigationGroups($this->navigationGroups())
             ->sidebarCollapsibleOnDesktop()
             ->collapsibleNavigationGroups()
-            ->sidebarWidth('17rem')
-            ->collapsedSidebarWidth('4.5rem')
+            // مقاسات «طفرة البسيط»: 264px مفتوح، 76px أيقونات بس
+            ->sidebarWidth('16.5rem')
+            ->collapsedSidebarWidth('4.75rem')
             ->maxContentWidth(Width::Full)
-            ->globalSearch()
-            ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
-            ->globalSearchFieldSuffix(fn (): string => Platform::detect() === Platform::Mac ? '⌘K' : 'Ctrl+K')
-            ->globalSearchDebounce('400ms')
+            // مدرس واحد لكل تثبيت — مفيش قايمة تبديل مؤسسات؛ والبحث عن الصفحات من السايدبار
+            ->tenantMenu(false)
+            ->globalSearch(false)
             ->unsavedChangesAlerts()
             ->spa()
 
@@ -124,6 +125,7 @@ final class AdminPanelProvider extends PanelProvider
 
             // ═══════════ الصفحات والودجتس ═══════════
             ->pages([Dashboard::class])
+            ->widgets([PlatformShortcuts::class])
 
             // الأونبوردنج بيركّب نفسه: صفحاته وودجته بيتسجّلوا من جوه
             // الباكدج حسب `config/fc-onboarding.php` (docs/15 بند ٢).
@@ -157,8 +159,28 @@ final class AdminPanelProvider extends PanelProvider
             ], isPersistent: true)
             ->userMenuItems($this->userMenuItems());
 
+        $panel = $this->simpleShell($panel);
+
         // كل سياق بيضيف موارده وصفحاته وودجتسه من مساره الخاص
         return app(ContextPanelRegistry::class)->applyTo($panel);
+    }
+
+    /**
+     * غلاف «طفرة البسيط» (LMS-Admin-ReactJS → themes/simple): رأس السايدبار بالاسم
+     * واللوجو، البحث في الصفحات، القاع (الإعلانات، المرشد، المستخدم)، روابط الهيدر
+     * السريعة وبوابة الطلاب، وتنبيه التحقق بخطوتين على الرئيسية. الشكل في
+     * resources/css/filament/admin/simple.css.
+     */
+    private function simpleShell(Panel $panel): Panel
+    {
+        return $panel
+            ->renderHook(PanelsRenderHook::SIDEBAR_LOGO_BEFORE, static fn (): string => view('theme.simple.sidebar-head')->render())
+            ->renderHook(PanelsRenderHook::SIDEBAR_NAV_START, static fn (): string => view('theme.simple.sidebar-filter')->render())
+            ->renderHook(PanelsRenderHook::SIDEBAR_FOOTER, static fn (): string => view('theme.simple.sidebar-foot')->render())
+            ->renderHook(PanelsRenderHook::TOPBAR_LOGO_AFTER, static fn (): string => view('theme.simple.topbar-links')->render())
+            ->renderHook(PanelsRenderHook::GLOBAL_SEARCH_BEFORE, static fn (): string => view('theme.simple.topbar-actions')->render())
+            ->renderHook(PanelsRenderHook::USER_MENU_BEFORE, static fn (): string => view('theme.simple.theme-toggle')->render())
+            ->renderHook(PanelsRenderHook::PAGE_START, static fn (): string => view('theme.simple.two-factor-banner')->render(), scopes: Dashboard::class);
     }
 
     /** @return array<int, FilamentNavigationGroup> */
@@ -172,7 +194,8 @@ final class AdminPanelProvider extends PanelProvider
             ->map(fn (NavigationGroup $group): FilamentNavigationGroup => FilamentNavigationGroup::make()
                 ->label(fn (): string => $group->getLabel())
                 ->icon($group->getIcon())
-                ->collapsible())
+                ->collapsible($group->folded())
+                ->collapsed($group->folded()))
             ->values()
             ->all();
     }
@@ -184,6 +207,13 @@ final class AdminPanelProvider extends PanelProvider
             'profile' => Action::make('profile')
                 ->label(fn (): string => auth()->user()->name ?? __('common.profile'))
                 ->icon('heroicon-o-user-circle'),
+
+            // قايمة المؤسسات مقفولة (مدرس واحد) — ملف المؤسسة (الاسم واللون) من هنا
+            'organization_profile' => Action::make('organization_profile')
+                ->label(fn (): string => EditOrganization::getLabel())
+                ->icon('phosphor-buildings-bold')
+                ->url(fn (): ?string => ($tenant = Filament::getTenant()) !== null ? EditOrganization::getUrl(tenant: $tenant) : null)
+                ->visible(fn (): bool => Filament::getTenant() !== null && Gate::allows('access.organization_profile')),
 
             'devices' => Action::make('devices')
                 ->label(fn (): string => __('identity::identity.menu.devices'))

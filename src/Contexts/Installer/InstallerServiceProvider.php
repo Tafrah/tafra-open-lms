@@ -15,6 +15,7 @@ use Src\Contexts\Installer\Infrastructure\Updates\ReleaseChecker;
 use Src\Contexts\Installer\Presentation\Console\CheckUpdateCommand;
 use Src\Contexts\Installer\Presentation\Console\InstallCommand;
 use Src\Support\Infrastructure\Providers\ContextServiceProvider;
+use Src\Support\Presentation\Filament\Pages\Dashboard as AdminDashboard;
 
 /**
  * المثبّت: `/install` للاستضافة المشتركة، و`php artisan lms:install` للـ VPS/Docker.
@@ -70,7 +71,7 @@ final class InstallerServiceProvider extends ContextServiceProvider
                     'current' => app(InstallationState::class)->version(),
                 ])->render();
             },
-            scopes: Dashboard::class,
+            scopes: [Dashboard::class, AdminDashboard::class],
         );
     }
 }

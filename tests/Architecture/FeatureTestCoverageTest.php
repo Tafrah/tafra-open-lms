@@ -34,6 +34,7 @@ function coverageExemptions(): array
         OnboardingAnalytics::class => 'onboarding package',
         // لوحة المعلومات مجموعة ودجتس، كل ودجت عليه canView() — PanelSmokeTest + SmokeTest
         Dashboard::class => 'widgets container',
+        Src\Support\Presentation\Filament\Pages\Dashboard::class => 'widgets container',
         // صفحة الحساب الجاهزة من Filament (اسم/بريد/كلمة مرور) — قواعد كلمة المرور
         // مختبرة في SecurityLifecycleTest، والصفحة نفسها مش كود بتاعنا
         EditProfile::class => 'filament built-in profile',

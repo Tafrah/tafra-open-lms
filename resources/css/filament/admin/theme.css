@@ -1,4 +1,6 @@
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
+/* شكل «طفرة البسيط» — السايدبار والهيدر والخلفية ومربعات الرئيسية */
+@import './simple.css';
 
 /* Tailwind v4: بنحدد المصادر صراحةً — Filament مابيمسحش الـ views بتاعتنا تلقائياً */
 @source '../../../../app/**/*.php';
@@ -107,23 +109,7 @@
   display: inline-block;
 }
 
-/* ═══ لمسات الشكل — كود المستقبل ═══ */
-.fi-sidebar {
-  background: var(--fc-surface);
-  border-inline-end: 1px solid var(--fc-border-subtle);
-}
-
-.fi-main,
-.fi-body {
-  background: var(--fc-bg);
-}
-
-.fi-section,
-.fi-ta-ctn,
-.fi-wi-stats-overview-stat {
-  border-radius: var(--radius-fc-lg);
-  box-shadow: var(--shadow-fc-card);
-}
+/* ═══ لمسات الشكل — الخلفية والسايدبار والكروت في simple.css ═══ */
 
 .fi-btn {
   border-radius: var(--radius-fc);
@@ -161,10 +147,8 @@
 
 /* ═══ الفوتر ═══ */
 .fc-footer {
-  border-block-start: 1px solid var(--fc-border-subtle);
   padding-block: 1rem;
   padding-inline: 1.5rem;
-  background: var(--fc-surface);
 }
 
 .fc-footer__inner {

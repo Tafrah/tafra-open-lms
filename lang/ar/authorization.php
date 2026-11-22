@@ -107,6 +107,7 @@ return [
         'widget.recent_activity' => 'ودجت آخر النشاطات',
         'widget.onboarding_checklist' => 'ودجت قائمة البداية',
         'widget.lms_overview' => 'ملخص المنصة التعليمية',
+        'widget.platform_shortcuts' => 'مربعات «إدارة المنصة»',
     ],
 
     'roles' => [

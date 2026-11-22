@@ -455,3 +455,20 @@ Filament v4/v5 بيدعم RTL جاهز بعد كده. المشاكل المتب�
 - [ ] لقطات شاشة: عربي فاتح، عربي داكن، إنجليزي فاتح، إنجليزي داكن
 - [ ] اختبار تباين آلي بيرفض أي لون أساسي تباينه < 4.5:1
 - [ ] الخطوط بتتحمّل من Google Fonts والـ fallback شغّال لو النت وقف
+
+## غلاف «طفرة البسيط» (لوحة المدرس)
+
+لوحة `admin` بتنسخ شكل الثيم `simple` في LMS-Admin-ReactJS بالظبط — نفس المقاسات والألوان:
+
+| الجزء | في طفرة | هنا |
+|---|---|---|
+| السايدبار (264px / 76px أيقونات) | `sidebar/simple/SimpleSidebar.tsx` + `_simple.scss` | `AdminPanelProvider::simpleShell()` + `resources/views/theme/simple/sidebar-*.blade.php` |
+| أيقونات الأقسام | Phosphor bold (`railIcons`) | `codeat3/blade-phosphor-icons` في `NavigationGroup::getIcon()` |
+| الهيدر (74px زجاج مطفي، روابط سريعة، بوابة الطلاب) | `header/Navbar.tsx` + `MenuInner.tsx` | `topbar-links` و`topbar-actions` و`theme-toggle` |
+| «إدارة المنصة» | `PlatformShortcuts.tsx/.css` | `App\Filament\Widgets\PlatformShortcuts` (المربعات في `AdminShell::shortcuts()`) |
+| الخلفية (#f7f7f8 + علامات +) | `_simple.scss` → Page backdrop | `resources/css/filament/admin/simple.css` |
+
+- كل رابط في الهيدر والمربعات بيظهر بس لو المستخدم يقدر يفتح صفحته (`canViewAny` / `canAccess`).
+- الأقسام اللي بتتفتح من وقت للتاني مطوية افتراضياً (`NavigationGroup::folded()`) زي `foldedSections` في طفرة.
+- الودجتس اختيار عرض مش صلاحية أمان: `Gate::before` بتاع المدير العام مابيشملش `widget.*`، فصاحب المنصة بيشوف رئيسية دوره.
+- أي تعديل في شكل طفرة البسيط: عدّل `simple.css` بنفس القيم اللي في `_simple.scss`، وصوّر الرئيسية فاتح وداكن وموبايل.
