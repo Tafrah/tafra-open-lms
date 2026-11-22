@@ -12,6 +12,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Src\Contexts\Billing\Domain\Models\Coupon;
 use Src\Contexts\Billing\Presentation\Filament\Resources\CouponResource\Pages;
+use Src\Contexts\Billing\Presentation\Filament\Resources\CouponResource\RelationManagers\RedemptionsRelationManager;
 use Src\Contexts\Billing\Presentation\Filament\Resources\CouponResource\Schemas\CouponForm;
 use Src\Contexts\Billing\Presentation\Filament\Resources\CouponResource\Tables\CouponsTable;
 use Src\Support\Presentation\Filament\Navigation\NavigationGroup;
@@ -48,7 +49,8 @@ final class CouponResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery();
+        // إجمالي الخصم لكل كوبون في نفس الاستعلام (مش استعلام لكل صف)
+        return parent::getEloquentQuery()->withSum('redemptions', 'discount_amount');
     }
 
     public static function form(Schema $schema): Schema
@@ -65,6 +67,14 @@ final class CouponResource extends Resource
     public static function getGloballySearchableAttributes(): array
     {
         return ['code'];
+    }
+
+    /** @return array<int, class-string> */
+    public static function getRelations(): array
+    {
+        return [
+            RedemptionsRelationManager::class,
+        ];
     }
 
     /** @return array<string, PageRegistration> */

@@ -34,6 +34,7 @@ final class PaymentMethod extends Model
         'type',
         'account_number',
         'account_name',
+        'monthly_limit',
         'instructions',
         'is_active',
         'order',
@@ -42,7 +43,7 @@ final class PaymentMethod extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['name', 'type', 'account_number', 'is_active'])
+            ->logOnly(['name', 'type', 'account_number', 'is_active', 'monthly_limit'])
             ->logOnlyDirty()
             ->dontLogEmptyChanges()
             ->useLogName('billing');
@@ -60,6 +61,7 @@ final class PaymentMethod extends Model
             'type' => PaymentMethodType::class,
             'is_active' => 'boolean',
             'order' => 'integer',
+            'monthly_limit' => 'decimal:2',
         ];
     }
 }

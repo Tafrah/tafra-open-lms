@@ -25,6 +25,7 @@ final class EnrollmentsListTour extends Tour
     {
         return [
             self::step(self::PREFIX, 'purpose', '.fi-header-heading'),
+            self::step(self::PREFIX, 'bulk', '.fi-header .fi-ac'),
             self::step(self::PREFIX, 'table', '.fi-ta-ctn'),
         ];
     }

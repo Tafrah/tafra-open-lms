@@ -11,6 +11,7 @@ use Illuminate\Validation\Rule;
 use Src\Contexts\Academy\Domain\Models\Bootcamp;
 use Src\Contexts\Billing\Application\Actions\CheckoutAction;
 use Src\Contexts\Billing\Application\Actions\SubmitReceiptAction;
+use Src\Contexts\Billing\Application\Queries\PaymentMethodUsage;
 use Src\Contexts\Billing\Domain\Enums\InvoiceStatus;
 use Src\Contexts\Billing\Domain\Enums\PaymentGateway;
 use Src\Contexts\Billing\Domain\Models\PaymentInvoice;
@@ -53,14 +54,15 @@ final class CheckoutController
             'invoice' => $invoice,
             'course' => $invoice->bootcamp,
             'receipt' => $invoice->receipts->sortByDesc('id')->first(),
-            'methods' => PaymentMethod::query()->where('is_active', true)->orderBy('order')->orderBy('id')->get(),
+            // الرقم اللي وصل حده الشهري مابيظهرش (PaymentMethodUsage)
+            'methods' => app(PaymentMethodUsage::class)->availableForCheckout(),
         ]);
     }
 
     public function receipt(Request $request, string $number, SubmitReceiptAction $submit): RedirectResponse
     {
         $invoice = $this->invoice($number);
-        $methodIds = PaymentMethod::query()->where('is_active', true)->pluck('id')->all();
+        $methodIds = app(PaymentMethodUsage::class)->availableForCheckout()->modelKeys();
 
         $data = $request->validate([
             'payment_method_id' => ['required', 'integer', Rule::in($methodIds)],

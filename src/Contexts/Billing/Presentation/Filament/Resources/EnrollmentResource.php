@@ -7,12 +7,10 @@ namespace Src\Contexts\Billing\Presentation\Filament\Resources;
 use BackedEnum;
 use Filament\Resources\Pages\PageRegistration;
 use Filament\Resources\Resource;
-use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Src\Contexts\Billing\Domain\Models\Enrollment;
 use Src\Contexts\Billing\Presentation\Filament\Resources\EnrollmentResource\Pages;
-use Src\Contexts\Billing\Presentation\Filament\Resources\EnrollmentResource\Schemas\EnrollmentForm;
 use Src\Contexts\Billing\Presentation\Filament\Resources\EnrollmentResource\Tables\EnrollmentsTable;
 use Src\Support\Presentation\Filament\Navigation\NavigationGroup;
 
@@ -49,11 +47,6 @@ final class EnrollmentResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->with(['student:id,name,phone', 'bootcamp:id,name']);
-    }
-
-    public static function form(Schema $schema): Schema
-    {
-        return EnrollmentForm::configure($schema);
     }
 
     public static function table(Table $table): Table

@@ -39,6 +39,11 @@ final class CouponsTable
                     ->label(__('billing::billing.coupon.fields.redemptions'))
                     ->formatStateUsing(fn (Coupon $record): string => fc_number($record->current_redemptions)
                         .($record->max_redemptions !== null ? ' / '.fc_number($record->max_redemptions) : '')),
+                TextColumn::make('redemptions_sum_discount_amount')
+                    ->label(__('billing::billing.coupon.fields.total_discount'))
+                    ->state(fn (Coupon $record): float => (float) ($record->getAttribute('redemptions_sum_discount_amount') ?? 0))
+                    ->formatStateUsing(fn (float $state): string => fc_number($state, 2).' '.__('academy::academy.currency'))
+                    ->sortable(),
                 TextColumn::make('applicable_type')
                     ->label(__('billing::billing.coupon.fields.applicable_type'))
                     ->badge()

@@ -6,10 +6,13 @@ namespace Src\Contexts\Billing\Presentation\Filament\Resources\PaymentInvoiceRes
 
 use Filament\Actions\ViewAction;
 use Filament\Support\Enums\FontWeight;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Src\Contexts\Billing\Application\Queries\ReceiptDuplicates;
 use Src\Contexts\Billing\Domain\Enums\InvoiceStatus;
 use Src\Contexts\Billing\Domain\Enums\PaymentGateway;
 use Src\Contexts\Billing\Domain\Models\PaymentInvoice;
@@ -46,6 +49,13 @@ final class PaymentInvoicesTable
                     ->description(fn (PaymentInvoice $record): ?string => $record->status === InvoiceStatus::Pending && $record->receipts->isEmpty()
                         ? __('billing::billing.invoice.no_receipt_yet')
                         : null),
+                // تحذير بس — المراجع بيفتح الفاتورة ويشوف التفاصيل (مفيش رفض تلقائي)
+                IconColumn::make('fraud_flagged')
+                    ->label(__('billing::billing.invoice.fraud.column'))
+                    ->state(fn (PaymentInvoice $record): bool => (bool) $record->getAttribute('fraud_flagged'))
+                    ->icon(fn (bool $state): ?string => $state ? 'heroicon-o-exclamation-triangle' : null)
+                    ->color('danger')
+                    ->tooltip(fn (bool $state): ?string => $state ? __('billing::billing.invoice.fraud.tooltip') : null),
                 TextColumn::make('created_at')
                     ->label(__('common.created_at'))
                     ->dateTime('d M Y — H:i')
@@ -59,6 +69,9 @@ final class PaymentInvoicesTable
                 SelectFilter::make('payment_gateway')
                     ->label(__('billing::billing.invoice.fields.gateway'))
                     ->options(PaymentGateway::class),
+                Filter::make('fraud_flagged')
+                    ->label(__('billing::billing.invoice.fraud.filter'))
+                    ->query(fn (Builder $query): Builder => ReceiptDuplicates::whereFlagged($query)),
                 Filter::make('has_receipt')
                     ->label(__('billing::billing.invoice.filters.has_receipt'))
                     ->query(fn ($query) => $query->whereHas('receipts')),

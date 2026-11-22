@@ -96,6 +96,7 @@ return [
         'access.ai' => 'Connect AI apps (Claude, ChatGPT)',
         'access.data_transfer' => 'Data transfer with Tafra',
         'access.site_settings' => 'Site settings',
+        'access.revenue_report' => 'Revenue report',
     ],
 
     'widgets' => [

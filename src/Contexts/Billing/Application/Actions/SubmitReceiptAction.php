@@ -6,6 +6,7 @@ namespace Src\Contexts\Billing\Application\Actions;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Src\Contexts\Billing\Application\Queries\PaymentMethodUsage;
 use Src\Contexts\Billing\Domain\Enums\InvoiceStatus;
 use Src\Contexts\Billing\Domain\Enums\PaymentGateway;
 use Src\Contexts\Billing\Domain\Enums\ReceiptStatus;
@@ -22,7 +23,10 @@ use Src\Support\Application\Contracts\DiskResolver;
  */
 final readonly class SubmitReceiptAction
 {
-    public function __construct(private DiskResolver $disks) {}
+    public function __construct(
+        private DiskResolver $disks,
+        private PaymentMethodUsage $usage,
+    ) {}
 
     public function handle(
         Student $student,
@@ -36,6 +40,7 @@ final readonly class SubmitReceiptAction
         throw_unless($invoice->status === InvoiceStatus::Pending, BillingException::because('invoice_closed'));
         throw_unless($invoice->payment_gateway === PaymentGateway::ManualTransfer, BillingException::because('invoice_not_manual'));
         throw_unless($method->is_active, BillingException::because('method_inactive'));
+        throw_unless($this->usage->isAvailable($method), BillingException::because('method_limit_reached'));
 
         return DB::transaction(function () use ($student, $invoice, $method, $image, $senderPhone, $reference): PaymentReceipt {
             $receipt = PaymentReceipt::query()
@@ -51,6 +56,8 @@ final readonly class SubmitReceiptAction
                 'amount' => $invoice->amount,
                 'sender_phone' => $senderPhone,
                 'transfer_reference' => $reference,
+                // بصمة الملف — نفس الصورة على فاتورة تانية بتطلع تحذير للمراجع (ReceiptDuplicates)
+                'file_hash' => self::hash($image),
                 'status' => ReceiptStatus::Pending,
             ])->save();
 
@@ -60,5 +67,13 @@ final readonly class SubmitReceiptAction
 
             return $receipt;
         });
+    }
+
+    private static function hash(UploadedFile $image): ?string
+    {
+        $path = $image->getRealPath();
+        $hash = is_string($path) && $path !== '' ? hash_file('sha256', $path) : false;
+
+        return is_string($hash) ? $hash : null;
     }
 }

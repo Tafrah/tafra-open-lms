@@ -38,6 +38,7 @@ final class PaymentReceipt extends Model implements HasMedia
         'amount',
         'sender_phone',
         'transfer_reference',
+        'file_hash',
         'status',
     ];
 

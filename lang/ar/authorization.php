@@ -96,6 +96,7 @@ return [
         'access.ai' => 'ربط تطبيقات الذكاء الاصطناعي (Claude وChatGPT)',
         'access.data_transfer' => 'نقل البيانات من وإلى طفرة',
         'access.site_settings' => 'إعدادات الموقع',
+        'access.revenue_report' => 'تقرير الدخل',
     ],
 
     'widgets' => [

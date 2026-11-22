@@ -9,8 +9,11 @@ use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\HtmlString;
+use Src\Contexts\Billing\Application\Queries\ReceiptDuplicates;
 use Src\Contexts\Billing\Domain\Models\PaymentInvoice;
 use Src\Contexts\Billing\Domain\Models\PaymentReceipt;
 use Src\Contexts\Billing\Presentation\Filament\Actions\InvoiceReviewActions;
@@ -21,9 +24,19 @@ final class ViewPaymentInvoice extends ViewRecord
 {
     protected static string $resource = PaymentInvoiceResource::class;
 
+    /** @var list<array{signal: string, invoice_id: int, number: string}>|null */
+    private ?array $duplicates = null;
+
     public function infolist(Schema $schema): Schema
     {
         return $schema->components([
+            // تحذير الإيصال المكرر — للمراجع يقرر، مفيش رفض تلقائي (ReceiptDuplicates)
+            Callout::make(__('billing::billing.invoice.fraud.heading'))
+                ->danger()
+                ->icon('heroicon-o-exclamation-triangle')
+                ->description(fn (): HtmlString => $this->fraudDescription())
+                ->visible(fn (): bool => $this->duplicates() !== [])
+                ->columnSpanFull(),
             Section::make()
                 ->columnSpanFull()
                 ->columns(3)
@@ -93,6 +106,34 @@ final class ViewPaymentInvoice extends ViewRecord
     private function refreshRecord(): void
     {
         $this->record->refresh()->load(['receipts.media', 'receipts.method']);
+        $this->duplicates = null;
+    }
+
+    /** @return list<array{signal: string, invoice_id: int, number: string}> */
+    private function duplicates(): array
+    {
+        $record = $this->getRecord();
+
+        return $this->duplicates ??= $record instanceof PaymentInvoice
+            ? app(ReceiptDuplicates::class)->forInvoice($record)
+            : [];
+    }
+
+    private function fraudDescription(): HtmlString
+    {
+        $lines = [];
+
+        foreach ($this->duplicates() as $match) {
+            $other = PaymentInvoice::query()->find($match['invoice_id']);
+            $number = e($match['number']);
+            $link = $other !== null && (auth()->user()?->can('view', $other) ?? false)
+                ? '<a class="underline font-bold" href="'.e(PaymentInvoiceResource::getUrl('view', ['record' => $other])).'">'.$number.'</a>'
+                : $number;
+
+            $lines[] = e(__('billing::billing.invoice.fraud.signals.'.$match['signal'])).' — '.$link;
+        }
+
+        return new HtmlString(e(__('billing::billing.invoice.fraud.description')).'<br>'.implode('<br>', $lines));
     }
 
     private static function receiptUrl(PaymentReceipt $record): ?string

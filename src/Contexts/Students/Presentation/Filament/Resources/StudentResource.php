@@ -10,6 +10,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Src\Contexts\Billing\Presentation\Filament\RelationManagers\StudentInvoicesRelationManager;
 use Src\Contexts\Students\Domain\Models\Student;
 use Src\Contexts\Students\Presentation\Filament\Resources\StudentResource\Pages;
 use Src\Contexts\Students\Presentation\Filament\Resources\StudentResource\RelationManagers;
@@ -76,6 +77,7 @@ final class StudentResource extends Resource
             RelationManagers\TransactionsRelationManager::class,
             RelationManagers\AttemptsRelationManager::class,
             RelationManagers\DevicesRelationManager::class,
+            StudentInvoicesRelationManager::class,
         ];
     }
 
