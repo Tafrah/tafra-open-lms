@@ -11,6 +11,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cache;
+use Src\Contexts\Billing\Application\Queries\ReceiptDuplicates;
 use Src\Contexts\Billing\Domain\Enums\InvoiceStatus;
 use Src\Contexts\Billing\Domain\Models\PaymentInvoice;
 use Src\Contexts\Billing\Presentation\Filament\Resources\PaymentInvoiceResource\Pages;
@@ -76,7 +77,10 @@ final class PaymentInvoiceResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->with(['student:id,name,phone', 'bootcamp:id,name', 'receipts.media', 'receipts.method:id,name']);
+        // `fraud_flagged`: الإيصال متكرر على فاتورة تانية (ReceiptDuplicates) — subquery واحد للصفحة
+        return ReceiptDuplicates::flag(
+            parent::getEloquentQuery()->with(['student:id,name,phone', 'bootcamp:id,name', 'receipts.media', 'receipts.method:id,name']),
+        );
     }
 
     public static function form(Schema $schema): Schema

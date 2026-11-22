@@ -32,9 +32,9 @@ return [
     'limits' => [
         // محاولات دخول غلط لكل (موبايل + IP) في الدقيقة
         'login_attempts' => 5,
-        // أكواد شحن غلط لكل طالب في `redeem_decay_seconds`
+        // أكواد شحن غلط لكل طالب في `redeem_decay_seconds` (١٥ دقيقة — docs/product/plan.html)
         'redeem_attempts' => 5,
-        'redeem_decay_seconds' => 600,
+        'redeem_decay_seconds' => 900,
         // أي POST من الموقع (تسجيل، إيصال، كوبون...) لكل IP في الدقيقة
         'forms_per_minute' => 30,
     ],

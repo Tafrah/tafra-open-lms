@@ -12,7 +12,7 @@ use Src\Contexts\Students\Domain\Models\Student;
 
 /**
  * «شحن كود» من المحفظة أو من صفحة الكورس — نفس الحد في المكانين:
- * ٥ أكواد غلط لكل طالب في ١٠ دقايق (`RedeemRechargeCardAction` نفسه
+ * ٥ أكواد غلط لكل طالب في ١٥ دقيقة (`RedeemRechargeCardAction` نفسه
  * سايب الحد لطبقة العرض).
  */
 final readonly class CodeRedeemer
@@ -36,7 +36,7 @@ final readonly class CodeRedeemer
         try {
             return $this->redeem->handle($student, $code);
         } catch (BillingException $e) {
-            RateLimiter::hit($key, (int) config('storefront.limits.redeem_decay_seconds', 600));
+            RateLimiter::hit($key, (int) config('storefront.limits.redeem_decay_seconds', 900));
 
             throw $e;
         }

@@ -6,6 +6,7 @@ use Src\Contexts\Academy\Presentation\Filament\Resources\BootcampResource;
 use Src\Contexts\Academy\Presentation\Filament\Resources\BootcampSectionResource;
 use Src\Contexts\Academy\Presentation\Filament\Resources\EducationalLevelResource;
 use Src\Contexts\Academy\Presentation\Filament\Resources\OnlineLessonResource;
+use Src\Contexts\Billing\Presentation\Filament\Pages\RevenueReport;
 use Src\Contexts\Billing\Presentation\Filament\Resources\CouponResource;
 use Src\Contexts\Billing\Presentation\Filament\Resources\EnrollmentResource;
 use Src\Contexts\Billing\Presentation\Filament\Resources\MoneyTransactionResource;
@@ -38,6 +39,7 @@ dataset('lms_screens', [
     'transaction' => [MoneyTransactionResource::class, 'billing.transaction', 'sidebar'],
     'enrollment' => [EnrollmentResource::class, 'billing.enrollment', 'sidebar'],
     'data transfer' => [DataTransfer::class, 'transfer.page', 'sidebar'],
+    'revenue report' => [RevenueReport::class, 'billing.report', 'sidebar'],
 ]);
 
 it('المدير بيوصل لشاشة المنصة والجولة بتبدأ وبتتقفل', function (string $screen, string $tour, string $area): void {

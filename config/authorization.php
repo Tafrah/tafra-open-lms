@@ -152,6 +152,8 @@ return [
         'access.data_transfer' => 'system',
         // إعدادات الموقع العام (الواجهة، صورة المدرس، السوشيال)
         'access.site_settings' => 'system',
+        // تقرير الدخل (بالشهر، بالكورس، بطريقة الدفع) — للمدير بس، مش للمساعد
+        'access.revenue_report' => 'billing',
     ],
 
     /*
@@ -183,7 +185,7 @@ return [
             'educational_levels.*', 'online_lessons.*', 'bootcamps.*', 'online_exams.*',
             'exam_attempts.*', 'students.*', 'enrollments.*', 'payment_methods.*',
             'payment_invoices.*', 'money_transactions.*', 'recharge_cards.*', 'coupons.*',
-            'access.data_transfer', 'access.site_settings',
+            'access.data_transfer', 'access.site_settings', 'access.revenue_report',
             // مظهر المؤسسة وإشعاراتها بس — بتتكتب في `tenant_settings` مش في العام
             'manage_appearance.settings', 'manage_notifications.settings', 'manage_ai.settings',
             'view_any.activity_logs', 'view.activity_logs',

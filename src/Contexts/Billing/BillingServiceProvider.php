@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Src\Contexts\Billing;
 
 use Src\Contexts\Billing\Application\Queries\BootcampAccess;
+use Src\Contexts\Billing\Application\Queries\PaymentMethodUsage;
 use Src\Support\Infrastructure\Providers\ContextServiceProvider;
 
 final class BillingServiceProvider extends ContextServiceProvider
@@ -29,5 +30,7 @@ final class BillingServiceProvider extends ContextServiceProvider
     {
         // ذاكرة طلب واحد — نفس سؤال «مشترك؟» بيتسأل كذا مرة في الصفحة
         $this->app->scoped(BootcampAccess::class);
+        // مجاميع الشهر لكل طرق الدفع في استعلام واحد للطلب كله
+        $this->app->scoped(PaymentMethodUsage::class);
     }
 }

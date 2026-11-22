@@ -32,6 +32,13 @@ final class PaymentMethodForm
             TextInput::make('account_name')
                 ->label(__('billing::billing.method.fields.account_name'))
                 ->maxLength(255),
+            TextInput::make('monthly_limit')
+                ->label(__('billing::billing.method.fields.monthly_limit'))
+                ->helperText(__('billing::billing.method.help.monthly_limit'))
+                ->numeric()
+                ->minValue(1)
+                ->maxValue(99999999)
+                ->suffix(__('academy::academy.currency')),
             Textarea::make('instructions')
                 ->label(__('billing::billing.method.fields.instructions'))
                 ->rows(2)

@@ -56,7 +56,7 @@ it('كود كورس بيفتح الكورس ويودّي للمشغّل', functi
     expect(app(BootcampAccess::class)->has($student, $course))->toBeTrue();
 });
 
-it('بعد ٥ أكواد غلط في ١٠ دقايق الشحن بيتقفل حتى للكود الصح', function (): void {
+it('بعد ٥ أكواد غلط في ١٥ دقيقة الشحن بيتقفل حتى للكود الصح', function (): void {
     $student = sfLogin();
     $card = sfCard(50);
 
@@ -69,7 +69,11 @@ it('بعد ٥ أكواد غلط في ١٠ دقايق الشحن بيتقفل ح�
 
     expect((float) $student->fresh()->balance)->toBe(0.0);
 
+    // القفل ١٥ دقيقة (storefront.limits.redeem_decay_seconds) — بعد ١١ لسه مقفول
     $this->travel(11)->minutes();
+    $this->post(route('site.wallet.redeem'), ['code' => $card->code])->assertSessionHasErrors('code');
+
+    $this->travel(5)->minutes();
 
     $this->post(route('site.wallet.redeem'), ['code' => $card->code])->assertSessionHasNoErrors();
     expect((float) $student->fresh()->balance)->toBe(50.0);
