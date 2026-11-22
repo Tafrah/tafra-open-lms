@@ -59,6 +59,7 @@ rsync -aL \
 mkdir -p "$STAGE/deploy/shared-hosting"
 cp deploy/shared-hosting/index.php "$STAGE/deploy/shared-hosting/index.php"
 cp docs/install/shared-hosting.md "$STAGE/INSTALL-shared-hosting.md"
+cp docs/teacher-guide.md "$STAGE/TEACHER-GUIDE.md"
 
 echo "v${VERSION}" > "$STAGE/VERSION"
 

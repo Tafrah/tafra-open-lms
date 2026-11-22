@@ -10,7 +10,7 @@
 | **VPS بأمر واحد** | سيرفر Ubuntu/Debian: `curl -fsSL https://raw.githubusercontent.com/Tafrah/tafra-open-lms/main/install.sh \| sudo bash` (Docker + MySQL + HTTPS تلقائي). | [`docs/install/vps.md`](docs/install/vps.md) |
 | **Coolify** | Docker Compose ← `docker-compose.coolify.yml` — الدومين وكلمات السر بتتولّد لوحدها. | [`docs/install/coolify.md`](docs/install/coolify.md) |
 
-بعد التثبيت: لوحة التحكم على `/admin`، وسطر Cron واحد (`php artisan schedule:run` كل دقيقة) بيشغّل الإشعارات ومعالجة الصور والنسخ الاحتياطي — مفيش Redis ولا عامل طابور مطلوب. من غير واجهة: `php artisan lms:install --help`.
+بعد التثبيت: لوحة التحكم على `/admin` ([دليل المدرّس](docs/teacher-guide.md))، وسطر Cron واحد (`php artisan schedule:run` كل دقيقة) بيشغّل الإشعارات ومعالجة الصور والنسخ الاحتياطي — مفيش Redis ولا عامل طابور مطلوب. من غير واجهة: `php artisan lms:install --help`.
 
 **English:** Tafra is a free, open-source LMS for teachers (one teacher per install). Install it on **shared hosting** (upload the release zip, create a MySQL database, open `/install`), on a **VPS** with one command (`install.sh`, Docker + MySQL + automatic HTTPS), or on **Coolify** (`docker-compose.coolify.yml`). Headless: `php artisan lms:install`. Guides: `docs/install/`.
 
@@ -25,6 +25,7 @@
 
 - خريطة المنصة التعليمية: `src/Contexts/{Academy,Exams,Students,Billing,Storefront,Transfer,Installer}` — والقواعد في `CLAUDE.md`.
 - النقل من/إلى طفرة: [`docs/transfer/format.md`](docs/transfer/format.md).
+- دليل المدرّس (الاستخدام اليومي): [`docs/teacher-guide.md`](docs/teacher-guide.md).
 - إزاي تساهم: [`CONTRIBUTING.md`](CONTRIBUTING.md).
 - الخطة والميزات: [`docs/product/plan.html`](docs/product/plan.html) · [`docs/product/features.html`](docs/product/features.html) · التصميم: [`docs/product/design-spec.md`](docs/product/design-spec.md).
 
