@@ -23,6 +23,7 @@ final class AnnouncementForm
     {
         return $schema->components([
             Section::make(__('content::content.announcement.sections.content'))
+                ->description(__('content::content.announcement.sections.content_help'))
                 ->columnSpanFull()
                 ->schema([
                     Tabs::make('translations')

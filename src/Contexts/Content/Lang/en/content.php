@@ -9,6 +9,7 @@ return [
 
         'sections' => [
             'content' => 'Announcement content',
+            'content_help' => 'A published announcement shows to students on the website (dashboard and notifications page) and to the panel team.',
             'settings' => 'Publishing settings',
         ],
 
