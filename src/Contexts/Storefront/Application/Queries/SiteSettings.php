@@ -54,6 +54,7 @@ final class SiteSettings
             'parent_phone_required' => false,
             'ask_governorate' => true,
             'ask_school_type' => true,
+            'max_devices_per_student' => (int) config('storefront.devices.default_limit', 1),
         ];
     }
 

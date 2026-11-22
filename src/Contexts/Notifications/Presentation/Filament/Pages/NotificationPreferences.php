@@ -56,7 +56,11 @@ final class NotificationPreferences extends Page
     /** @return array<string, array<string, mixed>> */
     public function catalog(): array
     {
-        return (array) config('notifications.catalog', []);
+        // إشعارات الطلبة (`audience => students`) مش لمستخدمي اللوحة
+        return array_filter(
+            (array) config('notifications.catalog', []),
+            static fn (array $definition): bool => ($definition['audience'] ?? 'users') === 'users',
+        );
     }
 
     /** @return array<string, array<string, array<string, mixed>>> */

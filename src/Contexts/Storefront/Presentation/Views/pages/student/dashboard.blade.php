@@ -22,6 +22,20 @@
             </div>
         </section>
 
+        @if ($announcements->isNotEmpty())
+            <section aria-labelledby="dashboard-announcements-title" class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <h2 id="dashboard-announcements-title" class="text-lg font-bold text-navy">{{ __('storefront::storefront.notifications.announcements') }}</h2>
+                    <a href="{{ route('site.notifications') }}" class="text-sm font-bold text-primary hover:underline">{{ __('storefront::storefront.actions.view_all') }}</a>
+                </div>
+                <div class="space-y-3">
+                    @foreach ($announcements as $announcement)
+                        @include('storefront::pages.student.partials.announcement', ['announcement' => $announcement])
+                    @endforeach
+                </div>
+            </section>
+        @endif
+
         @if ($pendingInvoices->isNotEmpty())
             <section aria-labelledby="pending-title" class="space-y-3">
                 <h2 id="pending-title" class="text-lg font-bold text-navy">{{ __('storefront::storefront.dashboard.pending_invoices') }}</h2>

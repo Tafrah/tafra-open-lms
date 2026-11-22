@@ -15,6 +15,7 @@ use Src\Contexts\Storefront\Application\Actions\AuthenticateStudentAction;
 use Src\Contexts\Storefront\Application\DataObjects\SiteSettingsData;
 use Src\Contexts\Storefront\Application\Queries\CourseCatalog;
 use Src\Contexts\Storefront\Domain\Exceptions\StorefrontException;
+use Src\Contexts\Storefront\Presentation\Support\StudentDeviceSession;
 use Src\Contexts\Students\Application\Actions\RegisterStudentAction;
 use Src\Contexts\Students\Domain\Enums\SchoolType;
 use Src\Contexts\Students\Domain\Exceptions\StudentsException;
@@ -37,7 +38,7 @@ final class AuthController
         return view('storefront::pages.auth.login');
     }
 
-    public function login(Request $request, AuthenticateStudentAction $authenticate): RedirectResponse
+    public function login(Request $request, AuthenticateStudentAction $authenticate, StudentDeviceSession $devices): RedirectResponse
     {
         $request->merge(['phone' => RegisterStudentAction::normalizePhone((string) $request->input('phone'))]);
 
@@ -66,6 +67,13 @@ final class AuthController
 
         RateLimiter::clear($key);
 
+        // الجهاز قبل الدخول: جهاز زيادة عن المسموح مايدخلش أصلًا (مش بيتحسب محاولة غلط)
+        try {
+            $devices->register($request, $student);
+        } catch (StorefrontException $e) {
+            throw ValidationException::withMessages(['phone' => $e->getMessage()]);
+        }
+
         Auth::guard('student')->login($student, (bool) ($data['remember'] ?? false));
         $request->session()->regenerate();
 
@@ -81,7 +89,7 @@ final class AuthController
         ]);
     }
 
-    public function register(Request $request, RegisterStudentAction $register, CourseCatalog $catalog): RedirectResponse
+    public function register(Request $request, RegisterStudentAction $register, CourseCatalog $catalog, StudentDeviceSession $devices): RedirectResponse
     {
         /** @var SiteSettingsData $site */
         $site = view()->shared('site');
@@ -120,6 +128,13 @@ final class AuthController
             throw ValidationException::withMessages(['phone' => $e->getMessage()]);
         }
 
+        // حساب جديد = أول جهاز، فالحد مايترفضش هنا إلا لو المدرس حاطط حاجة غريبة
+        try {
+            $devices->register($request, $student);
+        } catch (StorefrontException $e) {
+            throw ValidationException::withMessages(['phone' => $e->getMessage()]);
+        }
+
         Auth::guard('student')->login($student);
         $request->session()->regenerate();
 
@@ -132,9 +147,10 @@ final class AuthController
         return view('storefront::pages.auth.forgot');
     }
 
-    public function logout(Request $request): RedirectResponse
+    public function logout(Request $request, StudentDeviceSession $devices): RedirectResponse
     {
         Auth::guard('student')->logout();
+        $devices->forget($request);
 
         // من غير invalidate(): الجلسة ممكن تكون شايلة دخول اللوحة كمان (حارس web)
         $request->session()->migrate(true);

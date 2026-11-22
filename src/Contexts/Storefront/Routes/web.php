@@ -10,6 +10,7 @@ use Src\Contexts\Storefront\Presentation\Http\Controllers\ExamController;
 use Src\Contexts\Storefront\Presentation\Http\Controllers\HomeController;
 use Src\Contexts\Storefront\Presentation\Http\Controllers\LearnController;
 use Src\Contexts\Storefront\Presentation\Http\Controllers\LocaleController;
+use Src\Contexts\Storefront\Presentation\Http\Controllers\NotificationsController;
 use Src\Contexts\Storefront\Presentation\Http\Controllers\StudentAreaController;
 use Src\Contexts\Storefront\Presentation\Http\Controllers\WalletController;
 use Src\Contexts\Storefront\Presentation\Http\Middleware\AuthenticateStudent;
@@ -52,6 +53,7 @@ Route::middleware(['web', ResolveStorefrontTenant::class])->name('site.')->group
         Route::get('/my-courses', [StudentAreaController::class, 'courses'])->name('my-courses');
         Route::get('/invoices', [StudentAreaController::class, 'invoices'])->name('invoices');
         Route::get('/exams', [StudentAreaController::class, 'exams'])->name('exams');
+        Route::get('/notifications', NotificationsController::class)->name('notifications');
         Route::get('/profile', [StudentAreaController::class, 'profile'])->name('profile');
         Route::put('/profile', [StudentAreaController::class, 'updateProfile'])->middleware('throttle:storefront-forms')->name('profile.update');
         Route::put('/profile/password', [StudentAreaController::class, 'updatePassword'])->middleware('throttle:storefront-forms')->name('profile.password');

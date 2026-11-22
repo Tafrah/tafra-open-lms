@@ -7,10 +7,10 @@ use Src\Contexts\Tenancy\Domain\Models\Tenant;
 use Src\Support\Application\Contracts\TenantContext;
 
 dataset('students_Student_roles', [
-    ['super_admin', ['viewAny' => true, 'view' => true, 'create' => true, 'update' => true, 'delete' => true, 'enroll' => true, 'adjustWallet' => true, 'resetPassword' => true, 'block' => true]],
-    ['admin', ['viewAny' => true, 'view' => true, 'create' => true, 'update' => true, 'delete' => true, 'enroll' => true, 'adjustWallet' => true, 'resetPassword' => true, 'block' => true]],
-    ['assistant', ['viewAny' => true, 'view' => true, 'create' => true, 'update' => true, 'delete' => false, 'enroll' => true, 'adjustWallet' => false, 'resetPassword' => true, 'block' => true]],
-    ['viewer', ['viewAny' => true, 'view' => true, 'create' => false, 'update' => false, 'delete' => false, 'enroll' => false, 'adjustWallet' => false, 'resetPassword' => false, 'block' => false]],
+    ['super_admin', ['viewAny' => true, 'view' => true, 'create' => true, 'update' => true, 'delete' => true, 'enroll' => true, 'adjustWallet' => true, 'resetPassword' => true, 'block' => true, 'manageDevices' => true]],
+    ['admin', ['viewAny' => true, 'view' => true, 'create' => true, 'update' => true, 'delete' => true, 'enroll' => true, 'adjustWallet' => true, 'resetPassword' => true, 'block' => true, 'manageDevices' => true]],
+    ['assistant', ['viewAny' => true, 'view' => true, 'create' => true, 'update' => true, 'delete' => false, 'enroll' => true, 'adjustWallet' => false, 'resetPassword' => true, 'block' => true, 'manageDevices' => true]],
+    ['viewer', ['viewAny' => true, 'view' => true, 'create' => false, 'update' => false, 'delete' => false, 'enroll' => false, 'adjustWallet' => false, 'resetPassword' => false, 'block' => false, 'manageDevices' => false]],
 ]);
 
 it('يطبّق مصفوفة صلاحيات Student', function (string $role, array $expected): void {

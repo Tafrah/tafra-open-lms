@@ -37,6 +37,7 @@ return [
         'approve' => 'قبول',
         'reject' => 'رفض',
         'print' => 'طباعة',
+        'manage_devices' => 'إدارة أجهزة الطالب',
     ],
 
     'resources' => [

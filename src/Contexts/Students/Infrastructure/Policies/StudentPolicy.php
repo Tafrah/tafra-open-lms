@@ -10,7 +10,7 @@ use Src\Contexts\Students\Domain\Models\Student;
 use Src\Support\Domain\Authorization\StandardPolicy;
 
 /**
- * الطلبة: تعديل البيانات، الحظر، الرصيد، الاشتراك اليدوي.
+ * الطلبة: تعديل البيانات، الحظر، الرصيد، الاشتراك اليدوي، الأجهزة.
  */
 final class StudentPolicy extends StandardPolicy
 {
@@ -36,6 +36,14 @@ final class StudentPolicy extends StandardPolicy
     public function resetPassword(User $user, Student $student): Response
     {
         return $this->owned($user, $student, 'reset_password')
+            ->rule(! $student->trashed(), 'record_trashed')
+            ->response();
+    }
+
+    /** يشوف أجهزة الطالب ويفصلها كلها (الطالب بيدخل تاني من جهاز جديد) */
+    public function manageDevices(User $user, Student $student): Response
+    {
+        return $this->owned($user, $student, 'manage_devices')
             ->rule(! $student->trashed(), 'record_trashed')
             ->response();
     }

@@ -60,6 +60,27 @@ final readonly class ManageStudentAction
         return $student;
     }
 
+    /**
+     * «افصل كل الأجهزة»: الطالب بيخرج من كل مكان في أول طلب (`AuthenticateStudent`)،
+     * وأول جهاز يدخل منه بعدها بياخد المكان. `remember_token` بيتغيّر عشان
+     * «افتكرني» القديم مايرجّعوش من غير كلمة السر.
+     */
+    public function disconnectDevices(Student $student, User $actor): int
+    {
+        Gate::forUser($actor)->authorize('manageDevices', $student);
+
+        $removed = $student->devices()->delete();
+        $student->forceFill(['remember_token' => null])->saveQuietly();
+
+        activity('students')
+            ->performedOn($student)
+            ->causedBy($actor)
+            ->withProperties(['devices' => $removed])
+            ->log('devices_disconnected');
+
+        return (int) $removed;
+    }
+
     public function toggleBlock(Student $student, User $actor): Student
     {
         Gate::forUser($actor)->authorize('block', $student);

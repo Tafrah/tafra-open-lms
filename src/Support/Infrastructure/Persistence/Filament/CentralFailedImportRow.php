@@ -13,4 +13,7 @@ use Stancl\Tenancy\Database\Concerns\CentralConnection;
 final class CentralFailedImportRow extends FailedImportRow
 {
     use CentralConnection;
+
+    /** الاسم صريح: من غيره Eloquent بيخمّن الجدول من اسم الكلاس (`central_failed_import_rows`) */
+    protected $table = 'failed_import_rows';
 }

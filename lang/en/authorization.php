@@ -37,6 +37,7 @@ return [
         'approve' => 'Approve',
         'reject' => 'Reject',
         'print' => 'Print',
+        'manage_devices' => 'Manage student devices',
     ],
 
     'resources' => [

@@ -6,7 +6,9 @@ namespace Src\Contexts\Students\Presentation\Filament\Resources\StudentResource\
 
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
+use Filament\Actions\ExportAction;
 use Filament\Resources\Pages\ListRecords;
+use Src\Contexts\Students\Infrastructure\Exports\StudentExporter;
 use Src\Contexts\Students\Presentation\Filament\Resources\StudentResource;
 
 final class ListStudents extends ListRecords
@@ -18,6 +20,11 @@ final class ListStudents extends ListRecords
     {
         return [
             CreateAction::make(),
+            // Excel أو CSV — في الطابور، والرابط بيوصل في الإشعارات
+            ExportAction::make()
+                ->label(__('students::students.student.actions.export'))
+                ->exporter(StudentExporter::class)
+                ->authorize('export'),
         ];
     }
 }

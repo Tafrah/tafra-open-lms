@@ -6,6 +6,7 @@ namespace Src\Contexts\Storefront\Presentation\Livewire\Concerns;
 
 use Illuminate\Support\Facades\Auth;
 use Src\Contexts\Storefront\Presentation\Support\StorefrontTenantResolver;
+use Src\Contexts\Storefront\Presentation\Support\StudentDeviceSession;
 use Src\Contexts\Students\Domain\Models\Student;
 
 /**
@@ -32,5 +33,8 @@ trait ResolvesStorefrontTenant
 
         // حساب اتوقف وهو داخل — نفس `AuthenticateStudent`
         abort_if($student instanceof Student && $student->isBlocked(), 403);
+
+        // جهاز اتفصل من اللوحة — نفس `AuthenticateStudent` (الصفحة الجاية هتطلّعه برا)
+        abort_if($student instanceof Student && app(StudentDeviceSession::class)->disconnected(request(), $student), 403);
     }
 }

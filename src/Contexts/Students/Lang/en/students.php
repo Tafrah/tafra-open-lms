@@ -39,11 +39,13 @@ return [
             'transaction_type' => 'Transaction type',
             'amount' => 'Amount',
             'notes' => 'Note',
+            'enrolled_courses' => 'Enrolled courses',
         ],
         'relations' => [
             'enrollments' => 'Enrollments',
             'transactions' => 'Wallet transactions',
             'attempts' => 'Exams',
+            'devices' => 'Devices',
         ],
         'actions' => [
             'enroll' => 'Enroll in a course',
@@ -52,12 +54,21 @@ return [
             'reset_password' => 'Change password',
             'block' => 'Block account',
             'unblock' => 'Unblock account',
+            'disconnect_devices' => 'Disconnect all devices',
+            'export' => 'Export Excel / CSV',
         ],
         'notifications' => [
             'enrolled' => 'The student is enrolled.',
             'unenrolled' => 'The enrollment was removed.',
             'wallet' => 'The balance was updated.',
             'password' => 'The password was changed.',
+            'devices_disconnected' => 'The student’s devices were disconnected — they are signed out everywhere, and the next device they sign in from takes the slot.',
+        ],
+        'confirm' => [
+            'disconnect_devices' => 'The student will be signed out of every device they are using now, and can sign in again from one device (or the number set in “Site settings”).',
+        ],
+        'export' => [
+            'completed' => '{0} No students were exported|{1} One student was exported|[2,*] :count students were exported',
         ],
         'empty' => [
             'heading' => 'No students yet',
@@ -65,6 +76,18 @@ return [
         ],
         'validation' => [
             'phone' => 'The mobile number must be an 11-digit Egyptian number (e.g. 01012345678).',
+        ],
+    ],
+    'device' => [
+        'fields' => [
+            'device' => 'Device',
+            'ip' => 'IP address',
+            'last_seen' => 'Last seen',
+            'first_seen' => 'First sign-in',
+        ],
+        'empty' => [
+            'heading' => 'No devices',
+            'description' => 'Once the student signs in on the site, their device appears here.',
         ],
     ],
     'tours' => [

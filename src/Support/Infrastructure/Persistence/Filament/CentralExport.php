@@ -21,4 +21,7 @@ use Stancl\Tenancy\Database\Concerns\CentralConnection;
 final class CentralExport extends Export
 {
     use CentralConnection;
+
+    /** الاسم صريح: من غيره Eloquent بيخمّن الجدول من اسم الكلاس (`central_exports`) */
+    protected $table = 'exports';
 }

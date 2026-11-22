@@ -93,7 +93,7 @@ return [
         'students' => [
             'group' => 'students',
             'actions' => null,
-            'extra' => ['adjust_wallet', 'enroll', 'reset_password', 'block'],
+            'extra' => ['adjust_wallet', 'enroll', 'reset_password', 'block', 'manage_devices'],
         ],
         'enrollments' => [
             'group' => 'students',
@@ -208,7 +208,7 @@ return [
         // المساعد: بيراجع الإيصالات ويصحح المقالي ويتابع الطلبة — من غير فلوس ولا إعدادات
         'assistant' => [
             'view_any.students', 'view.students', 'create.students', 'update.students',
-            'enroll.students', 'reset_password.students', 'block.students',
+            'enroll.students', 'reset_password.students', 'block.students', 'manage_devices.students',
             'view_any.enrollments', 'view.enrollments', 'create.enrollments',
             'view_any.payment_invoices', 'view.payment_invoices', 'approve.payment_invoices', 'reject.payment_invoices',
             'view_any.exam_attempts', 'view.exam_attempts', 'grade.exam_attempts',

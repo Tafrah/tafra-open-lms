@@ -98,6 +98,12 @@ final class Student extends Authenticatable
         return $this->hasMany(SectionItemView::class);
     }
 
+    /** @return HasMany<StudentDevice, $this> */
+    public function devices(): HasMany
+    {
+        return $this->hasMany(StudentDevice::class);
+    }
+
     public function isBlocked(): bool
     {
         return $this->status === StudentStatus::Blocked;
