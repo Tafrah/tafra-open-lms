@@ -6,6 +6,7 @@
 مجانية ومفتوحة المصدر، وبتتثبّت على أي استضافة عادية في دقايق، من غير ما تعرف برمجة.
 
 [![CI](https://github.com/Tafrah/tafra-open-lms/actions/workflows/ci.yml/badge.svg)](https://github.com/Tafrah/tafra-open-lms/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/Tafrah/tafra-open-lms?label=release)](https://github.com/Tafrah/tafra-open-lms/releases/latest)
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
 ![PHP 8.4](https://img.shields.io/badge/PHP-8.4-777BB4)
 ![MySQL](https://img.shields.io/badge/MySQL-8-4479A1)
