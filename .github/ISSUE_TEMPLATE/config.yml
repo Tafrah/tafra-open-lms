@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 🔒 ثغرة أمنية / Security vulnerability
+    url: https://github.com/Tafrah/tafra-open-lms/security/advisories/new
+    about: بلّغ بشكل خاص — ماتفتحش Issue عام.
+  - name: 📘 دليل المدرّس / Teacher guide
+    url: https://github.com/Tafrah/tafra-open-lms/blob/main/docs/teacher-guide.md
+    about: الاستخدام اليومي والمشاكل المتكررة وحلولها.
+  - name: 🛠️ دليل التثبيت على استضافة مشتركة
+    url: https://github.com/Tafrah/tafra-open-lms/blob/main/docs/install/shared-hosting.md
+    about: من رفع الملف لحد سطر الـ Cron.

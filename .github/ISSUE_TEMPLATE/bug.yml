@@ -1,0 +1,49 @@
+name: 🐞 مشكلة / Bug
+description: حاجة مش شغّالة زي ما المفروض
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        شكراً إنك بلّغت! قبل ما تكتب، بُص على «مشاكل بتتكرر» في [دليل المدرّس](https://github.com/Tafrah/tafra-open-lms/blob/main/docs/teacher-guide.md#مشاكل-بتتكرر).
+        **ثغرة أمنية؟** ماتكتبهاش هنا — استخدم [Report a vulnerability](https://github.com/Tafrah/tafra-open-lms/security/advisories/new).
+  - type: input
+    id: version
+    attributes:
+      label: الإصدار
+      description: من ملف `VERSION` أو الشريط في اللوحة (مثلاً v1.0.0)
+    validations:
+      required: true
+  - type: dropdown
+    id: hosting
+    attributes:
+      label: نوع التثبيت
+      options:
+        - استضافة مشتركة (cPanel / Hostinger)
+        - VPS (install.sh)
+        - Coolify
+        - تطوير محلي
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: عملت إيه؟
+      description: الخطوات بالترتيب
+      placeholder: |
+        1. فتحت الفواتير
+        2. ضغطت «قبول»
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: إيه اللي حصل، وكنت مستني إيه؟
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: رسالة الخطأ أو آخر سطور `storage/logs`
+      description: امسح أي كلمة سر أو رقم موبايل أو بيانات طلبة قبل اللصق.
+      render: text

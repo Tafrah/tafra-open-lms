@@ -1,0 +1,15 @@
+name: 💡 اقتراح ميزة / Feature
+description: حاجة نفسك المنصة تعملها
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: المشكلة اللي بتواجهك
+      description: احكي الموقف من يومك كمدرّس — مش الحل بس.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: الحل اللي في بالك
