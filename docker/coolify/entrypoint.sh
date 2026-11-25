@@ -56,7 +56,10 @@ as_app php artisan route:clear >/dev/null
 as_app php artisan view:clear >/dev/null
 as_app php artisan event:clear >/dev/null
 
-if [ -n "${LMS_ADMIN_EMAIL:-}" ]; then
+if [ "${DEMO_MODE:-false}" = "true" ]; then
+    # نسخة تجربة: تثبيت + بيانات + دخول بضغطة (docs/install/demo.md)
+    as_app php artisan lms:demo --if-not-installed
+elif [ -n "${LMS_ADMIN_EMAIL:-}" ]; then
     as_app php artisan lms:install --no-interaction --skip-env --if-not-installed \
         --url="${APP_URL:-http://localhost}" \
         --platform-name="${LMS_PLATFORM_NAME:-Tafra LMS}" \

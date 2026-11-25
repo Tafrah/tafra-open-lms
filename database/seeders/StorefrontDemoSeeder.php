@@ -146,7 +146,8 @@ final class StorefrontDemoSeeder extends Seeder
             ['slug' => 'intro-chemistry-free', 'name' => 'مدخل الكيمياء — مجاني', 'level' => 1, 'price' => 0, 'discount' => null, 'featured' => true],
         ];
 
-        $videos = ['dQw4w9WgXcQ', 'M7lc1UVf-VE', 'aqz-KE-bpKQ', 'ScMzIvxBSi4'];
+        // أفلام Blender المفتوحة (CC-BY) — متاحة للتضمين، ومحايدة لحد ما المدرس يحط فيديوهاته
+        $videos = ['aqz-KE-bpKQ', 'eRsGyueVLvQ', 'R6MlUcmOul8', 'ScMzIvxBSi4'];
         $courses = [];
 
         foreach ($catalog as $index => $data) {

@@ -13,6 +13,7 @@ use Src\Contexts\Ai\AiServiceProvider;
 use Src\Contexts\Audit\AuditServiceProvider;
 use Src\Contexts\Billing\BillingServiceProvider;
 use Src\Contexts\Content\ContentServiceProvider;
+use Src\Contexts\Demo\DemoServiceProvider;
 use Src\Contexts\Exams\ExamsServiceProvider;
 use Src\Contexts\Identity\IdentityServiceProvider;
 use Src\Contexts\Installer\InstallerServiceProvider;
@@ -51,6 +52,8 @@ return [
     AiServiceProvider::class,
     // المثبّت (/install + lms:install) — مالوش شاشات Filament
     InstallerServiceProvider::class,
+    // نسخة التجربة (lms:demo + دخول بضغطة) — مقفولة إلا بـ DEMO_MODE=true
+    DemoServiceProvider::class,
 
     // اللوحات آخر حاجة — بتقرا من ContextPanelRegistry
     AdminPanelProvider::class,

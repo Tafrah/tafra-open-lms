@@ -73,3 +73,9 @@ Schedule::command('exams:finalize-expired')->everyFiveMinutes()->onOneServer()->
 if ((bool) config('installer.updates.enabled')) {
     Schedule::command('lms:check-update')->dailyAt('04:10')->onOneServer();
 }
+
+// ═══════════ نسخة التجربة: ترجع لأصلها كل يوم (DEMO_MODE + DEMO_AUTO_RESET) ═══════════
+// lms:demo نفسه بيرفض يلمس منصة متثبّتة بجد — الشرط هنا عشان مايشتغلش أصلاً
+Schedule::command('lms:demo --fresh')->dailyAt((string) config('demo.reset_at', '04:00'))
+    ->onOneServer()->withoutOverlapping()
+    ->when(static fn (): bool => (bool) config('demo.enabled') && (bool) config('demo.auto_reset'));

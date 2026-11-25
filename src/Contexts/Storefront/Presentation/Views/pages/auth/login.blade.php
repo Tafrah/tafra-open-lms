@@ -34,6 +34,10 @@
         <button type="submit" class="sf-btn-primary w-full py-3 text-base">{{ __('storefront::storefront.nav.login') }}</button>
     </form>
 
+    @isset($demo)
+        @include('demo::site-login', $demo)
+    @endisset
+
     <p class="mt-6 text-center text-sm text-body">
         {{ __('storefront::storefront.purchase.no_account') }}
         <a href="{{ route('site.register') }}" class="font-bold text-primary hover:underline">{{ __('storefront::storefront.nav.register') }}</a>

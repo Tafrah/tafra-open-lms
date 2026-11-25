@@ -1,7 +1,7 @@
 @if ($attempts->isEmpty())
     <x-storefront::empty icon="exam" :title="__('storefront::storefront.empty.results_title')" :body="__('storefront::storefront.empty.results_body')" />
 @else
-    <div class="sf-card overflow-x-auto">
+    <div class="sf-card relative overflow-x-auto">
         <table class="w-full min-w-[36rem] text-sm">
             <caption class="sr-only">{{ __('storefront::storefront.nav.exams') }}</caption>
             <thead class="bg-primary/5 text-body">

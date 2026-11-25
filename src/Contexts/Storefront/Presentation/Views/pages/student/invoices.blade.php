@@ -7,7 +7,7 @@
     @if ($invoices->isEmpty())
         <x-storefront::empty icon="document" :title="__('storefront::storefront.empty.invoices_title')" :body="__('storefront::storefront.empty.invoices_body')" />
     @else
-        <div class="sf-card overflow-x-auto">
+        <div class="sf-card relative overflow-x-auto">
             <table class="w-full min-w-[40rem] text-sm">
                 <caption class="sr-only">{{ __('storefront::storefront.nav.invoices') }}</caption>
                 <thead class="bg-primary/5 text-body">

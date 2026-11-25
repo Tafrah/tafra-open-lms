@@ -9,6 +9,7 @@
 
 @source '../../src/Contexts/Storefront/Presentation/Views/**/*.blade.php';
 @source '../../src/Contexts/Storefront/Presentation/Livewire/**/*.php';
+@source '../../src/Contexts/Demo/Presentation/Views/site-*.blade.php';
 
 @custom-variant dark (&:where(.dark, .dark *));
 

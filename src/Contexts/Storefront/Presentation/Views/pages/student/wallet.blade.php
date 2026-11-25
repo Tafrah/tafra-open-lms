@@ -5,7 +5,7 @@
 @section('content')
     <h1 class="sf-title mb-6">{{ __('storefront::storefront.nav.wallet') }}</h1>
     {{-- بعد شحن كود ناجح: رسالة النجاح تفضل ثانية ونص وبعدين الرصيد والحركات يتحدّثوا --}}
-    <div class="grid gap-6 lg:grid-cols-3" x-data x-on:wallet-updated.window="setTimeout(() => window.location.reload(), 1500)">
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3" x-data x-on:wallet-updated.window="setTimeout(() => window.location.reload(), 1500)">
         <div class="space-y-6">
             <div class="rounded-banner bg-primary p-6 text-white">
                 <p class="flex items-center gap-2 text-sm opacity-90"><x-storefront::icon name="wallet" /> {{ __('storefront::storefront.wallet.balance') }}</p>
@@ -25,12 +25,12 @@
             </div>
         </div>
 
-        <section class="lg:col-span-2" aria-labelledby="tx-title">
+        <section class="min-w-0 lg:col-span-2" aria-labelledby="tx-title">
             <h2 id="tx-title" class="mb-4 text-lg font-bold text-navy">{{ __('storefront::storefront.wallet.transactions') }}</h2>
             @if ($transactions->isEmpty())
                 <x-storefront::empty icon="wallet" :title="__('storefront::storefront.empty.transactions_title')" :body="__('storefront::storefront.empty.transactions_body')" />
             @else
-                <div class="sf-card overflow-x-auto">
+                <div class="sf-card relative overflow-x-auto">
                     <table class="w-full min-w-[32rem] text-sm">
                         <caption class="sr-only">{{ __('storefront::storefront.wallet.transactions') }}</caption>
                         <thead class="bg-primary/5 text-body">

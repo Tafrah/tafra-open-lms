@@ -54,6 +54,11 @@
         {{ __('storefront::storefront.a11y.skip') }}
     </a>
 
+    {{-- نسخة التجربة (DemoServiceProvider) --}}
+    @isset($demo)
+        @include('demo::site-banner', $demo)
+    @endisset
+
     @yield('body')
 
     @include('storefront::partials.toasts')

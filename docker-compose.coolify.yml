@@ -48,6 +48,11 @@ services:
       - SETTINGS_CACHE_STORE=database
       - PULSE_ENABLED=false
       - TELESCOPE_ENABLED=false
+      # نسخة تجربة (docs/install/demo.md): بيانات + دخول بضغطة بدل التثبيت العادي
+      - DEMO_MODE=${DEMO_MODE:-false}
+      - DEMO_PASSWORD=${DEMO_PASSWORD:-demo-password}
+      - DEMO_AUTO_RESET=${DEMO_AUTO_RESET:-true}
+      - DEMO_RESET_AT=${DEMO_RESET_AT:-04:00}
       - FILESYSTEM_DISK=public
       - MEDIA_DISK=public
       - BACKUP_DISKS=backups-local

@@ -5,7 +5,8 @@
         ? \Src\Contexts\Identity\Presentation\Filament\Pages\TwoFactorSettings::getUrl()
         : null;
 @endphp
-@if ($user && $url && blank($user->two_factor_confirmed_at))
+{{-- نسخة التجربة: الحساب مشترك بين كل الزوار — مفيش معنى نطلب منهم يفعّلوا التحقق --}}
+@if ($user && $url && blank($user->two_factor_confirmed_at) && ! app(\Src\Contexts\Demo\Application\DemoMode::class)->active())
     <div
         class="ss-alert"
         role="status"
