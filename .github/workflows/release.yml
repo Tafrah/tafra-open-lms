@@ -56,6 +56,22 @@ jobs:
           body: |
             ## التثبيت
 
-            - **استضافة مشتركة (cPanel / Hostinger):** نزّل `tafra-open-lms-${{ github.ref_name }}.zip`، ارفعه وفكّه، وافتح `/install` — الخطوات في `INSTALL-shared-hosting.md` جوه الحزمة.
+            - **استضافة مشتركة (cPanel / Hostinger):** نزّل `tafra-open-lms-${{ github.ref_name }}.zip` من تحت، ارفعه وفكّه، وافتح `/install`. الخطوات في `INSTALL-shared-hosting.md` جوه الحزمة.
             - **VPS:** `curl -fsSL https://raw.githubusercontent.com/${{ github.repository }}/main/install.sh | sudo bash`
-            - **Coolify:** Docker Compose → `docker-compose.coolify.yml`.
+            - **Coolify:** Docker Compose ← `docker-compose.coolify.yml`.
+            - **نسخة تجربة:** `DEMO_MODE=true php artisan lms:demo` (أكاديمية ببيانات جاهزة، ودخول بضغطة).
+
+            **المطلوب:** PHP 8.4 وMySQL 8 (أو MariaDB 10.6+)، وسطر Cron واحد. مش محتاج Redis ولا SSH.
+            **دليل المدرّس:** `TEACHER-GUIDE.md` جوه الحزمة.
+
+            **التحديث من إصدار قديم:**
+            - على استضافة مشتركة: ارفع ملفات الحزمة الجديدة فوق القديمة، ماعدا `.env` و`storage`. المنصة بتكمّل التحديث لوحدها مع أول زيارة.
+            - على VPS: شغّل أمر التثبيت تاني.
+
+            ---
+
+            **English:**
+            - **Shared hosting:** upload and extract the zip below, then open `/install`.
+            - **VPS:** one command (`install.sh`).
+            - **Coolify:** `docker-compose.coolify.yml`.
+            - **Requirements:** PHP 8.4, MySQL 8, one cron line.

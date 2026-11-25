@@ -13,7 +13,7 @@ declare(strict_types=1);
 return [
 
     // شارة «مطوّر بواسطة طفرة» في فوتر كل صفحة — تسويق، مش إعداد للمدرس
-    'tafra_url' => 'https://tafra.academy',
+    'tafra_url' => 'https://tafra-tech.com',
 
     'defaults' => [
         'primary_color' => '#3B82F6',
